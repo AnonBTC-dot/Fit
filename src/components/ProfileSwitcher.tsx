@@ -23,7 +23,7 @@ export function ProfileSwitcher() {
             onClick={() => setViewSlot(preset.slot)}
             disabled={!profile}
             className={`flex-1 rounded-full px-4 py-1.5 text-sm font-semibold transition-all disabled:opacity-40 ${
-              viewSlot === preset.slot ? "bg-white text-brand-600 shadow-sm" : "text-ink-500"
+              viewSlot === preset.slot ? "bg-ink-200 text-brand-400 shadow-sm" : "text-ink-500"
             }`}
           >
             {label}

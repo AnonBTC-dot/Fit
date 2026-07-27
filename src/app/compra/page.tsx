@@ -47,7 +47,7 @@ export default function ShoppingPage() {
         </p>
       </header>
 
-      <Card className="flex items-center justify-between bg-brand-50 !border-brand-100 !py-3">
+      <Card className="flex items-center justify-between bg-ink-200 !border-brand-100 !py-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-brand-800">
           <ShoppingCart size={18} /> {doneCount}/{items.length} en el carro
         </div>
@@ -75,7 +75,7 @@ export default function ShoppingPage() {
                   >
                     <span className="flex items-center gap-2.5">
                       {isChecked ? (
-                        <CheckCircle2 size={18} className="shrink-0 text-brand-600" />
+                        <CheckCircle2 size={18} className="shrink-0 text-brand-400" />
                       ) : (
                         <Circle size={18} className="shrink-0 text-ink-300" />
                       )}

@@ -82,7 +82,7 @@ export function IntervalTimer({
         finished
           ? "bg-emerald-50"
           : phase.kind === "work"
-            ? "bg-brand-50"
+            ? "bg-ink-200"
             : "bg-ink-50"
       }`}
     >
@@ -94,7 +94,7 @@ export function IntervalTimer({
             Ronda {Math.min(round, rounds)}/{rounds} · {phase.kind === "work" ? "¡Dale!" : "Respira"}
           </div>
           <div className="mt-0.5 truncate text-sm font-bold text-ink-800">{phase.label}</div>
-          <div className={`my-1 text-5xl font-extrabold tabular-nums ${phase.kind === "work" ? "text-brand-600" : "text-ink-500"}`}>
+          <div className={`my-1 text-5xl font-extrabold tabular-nums ${phase.kind === "work" ? "text-brand-400" : "text-ink-500"}`}>
             {left}
           </div>
         </>
@@ -102,14 +102,14 @@ export function IntervalTimer({
       <div className="mt-2 flex justify-center gap-3">
         <button
           onClick={() => (finished ? reset() : setRunning(!running))}
-          className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-600 text-white shadow-sm active:scale-95"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-ink-2000 text-ink-950 shadow-sm active:scale-95"
           aria-label={running ? "Pausar" : "Iniciar"}
         >
           {running ? <Pause size={18} /> : <Play size={18} className="ml-0.5" />}
         </button>
         <button
           onClick={reset}
-          className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-ink-500 shadow-sm active:scale-95"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-ink-200 text-ink-500 shadow-sm active:scale-95"
           aria-label="Reiniciar"
         >
           <RotateCcw size={16} />

@@ -85,7 +85,7 @@ function OnboardingInner() {
         </div>
         <div className="h-1.5 overflow-hidden rounded-full bg-ink-100">
           <div
-            className="h-full rounded-full bg-brand-500 transition-all duration-300"
+            className="h-full rounded-full bg-ink-2000 transition-all duration-300"
             style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
           />
         </div>
@@ -190,12 +190,12 @@ function OnboardingInner() {
           <Card className="text-center">
             <Flame className="mx-auto mb-2 text-brand-500" size={32} />
             <h2 className="text-lg font-bold">Tu objetivo diario, {profile.name}</h2>
-            <div className="my-3 text-4xl font-extrabold text-brand-600">
+            <div className="my-3 text-4xl font-extrabold text-brand-400">
               {targets.kcal} <span className="text-lg font-semibold text-ink-400">kcal</span>
             </div>
             <div className="grid grid-cols-3 gap-2 text-center">
               {[
-                { label: "Proteína", v: `${targets.protein_g} g`, color: "bg-brand-50 text-brand-700" },
+                { label: "Proteína", v: `${targets.protein_g} g`, color: "bg-ink-200 text-brand-700" },
                 { label: "Carbohidratos", v: `${targets.carbs_g} g`, color: "bg-ink-50 text-ink-700" },
                 { label: "Grasas", v: `${targets.fat_g} g`, color: "bg-ink-50 text-ink-700" }
               ].map((m) => (

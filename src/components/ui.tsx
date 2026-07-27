@@ -4,7 +4,7 @@ import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAt
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`rounded-xl2 bg-white shadow-sm border border-ink-100 p-4 ${className}`}>{children}</div>
+    <div className={`rounded-xl2 bg-ink-100 shadow-sm border border-ink-100 p-4 ${className}`}>{children}</div>
   );
 }
 
@@ -15,7 +15,7 @@ export function Button({
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "ghost" | "outline" }) {
   const styles = {
     primary:
-      "bg-brand-500 text-ink-950 hover:bg-brand-400 active:scale-[0.98] disabled:opacity-40 shadow-sm shadow-brand-200",
+      "bg-ink-2000 text-ink-950 hover:bg-brand-400 active:scale-[0.98] disabled:opacity-40 shadow-sm shadow-brand-900",
     ghost: "bg-ink-50 text-ink-800 hover:bg-ink-100 active:scale-[0.98]",
     outline: "border border-ink-200 text-ink-700 hover:bg-ink-50 active:scale-[0.98]"
   }[variant];
@@ -40,7 +40,7 @@ export function Field({ label, children, hint }: { label: string; children: Reac
 export function Input(props: InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
-      className="w-full rounded-xl border border-ink-200 bg-white px-3 py-3 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+      className="w-full rounded-xl border border-ink-200 bg-ink-100 px-3 py-3 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-900"
       {...props}
     />
   );
@@ -49,7 +49,7 @@ export function Input(props: InputHTMLAttributes<HTMLInputElement>) {
 export function Select(props: SelectHTMLAttributes<HTMLSelectElement>) {
   return (
     <select
-      className="w-full rounded-xl border border-ink-200 bg-white px-3 py-3 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+      className="w-full rounded-xl border border-ink-200 bg-ink-100 px-3 py-3 text-sm outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-900"
       {...props}
     />
   );
@@ -74,8 +74,8 @@ export function OptionGrid<T extends string | number>({
           onClick={() => onChange(o.value)}
           className={`rounded-xl border px-4 py-3 text-left transition-all ${
             value === o.value
-              ? "border-brand-500 bg-brand-50 ring-2 ring-brand-200"
-              : "border-ink-200 bg-white hover:border-ink-300"
+              ? "border-brand-500 bg-ink-200 ring-2 ring-brand-700"
+              : "border-ink-200 bg-ink-100 hover:border-ink-300"
           }`}
         >
           <span className="block text-sm font-semibold text-ink-800">{o.label}</span>
@@ -108,7 +108,7 @@ export function Ring({
   return (
     <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} stroke="#eceef2" strokeWidth={stroke} fill="none" />
+        <circle cx={size / 2} cy={size / 2} r={r} stroke="#232c3b" strokeWidth={stroke} fill="none" />
         <circle
           cx={size / 2}
           cy={size / 2}

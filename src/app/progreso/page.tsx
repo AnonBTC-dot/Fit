@@ -100,7 +100,7 @@ export default function ProgressPage() {
       {isMe && (
       <Card>
         <h2 className="mb-3 flex items-center gap-2 font-bold">
-          <Scale size={18} className="text-brand-600" /> Registrar hoy
+          <Scale size={18} className="text-brand-400" /> Registrar hoy
         </h2>
         <form onSubmit={save} className="grid grid-cols-3 gap-3">
           <Field label="Peso (kg)">

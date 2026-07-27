@@ -66,7 +66,7 @@ export default function DashboardPage() {
         <div className="mb-3 flex items-center justify-between">
           <h2 className="font-bold">{isMe ? "Tu objetivo de hoy" : `Objetivo de ${active.name}`}</h2>
           {isMe && (
-            <Link href={`/onboarding?slot=${active.slot}`} className="text-xs font-semibold text-brand-600">
+            <Link href={`/onboarding?slot=${active.slot}`} className="text-xs font-semibold text-brand-400">
               Editar perfil
             </Link>
           )}
@@ -92,7 +92,7 @@ export default function DashboardPage() {
       <Card>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-ink-200 text-brand-400">
               <Dumbbell size={22} />
             </div>
             <div>
@@ -121,9 +121,9 @@ export default function DashboardPage() {
       <Card>
         <div className="mb-2 flex items-center justify-between">
           <h2 className="flex items-center gap-2 font-bold">
-            <UtensilsCrossed size={16} className="text-brand-600" /> Menú de hoy
+            <UtensilsCrossed size={16} className="text-brand-400" /> Menú de hoy
           </h2>
-          <Link href="/nutricion" className="text-xs font-semibold text-brand-600">
+          <Link href="/nutricion" className="text-xs font-semibold text-brand-400">
             Ver recetas
           </Link>
         </div>
@@ -157,7 +157,7 @@ export default function DashboardPage() {
       <Card>
         <div className="mb-2 flex items-center justify-between">
           <h2 className="font-bold">Evolución del peso</h2>
-          <Link href="/progreso" className="text-xs font-semibold text-brand-600">
+          <Link href="/progreso" className="text-xs font-semibold text-brand-400">
             Registrar medidas
           </Link>
         </div>

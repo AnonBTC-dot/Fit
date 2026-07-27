@@ -53,7 +53,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   if (!hydrated) {
     return (
       <div className="flex min-h-dvh items-center justify-center">
-        <div className="animate-pulse text-lg font-bold text-brand-600">Fit 💪</div>
+        <div className="animate-pulse text-lg font-bold text-brand-400">Fit 💪</div>
       </div>
     );
   }
@@ -64,7 +64,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="mx-auto min-h-dvh max-w-md">
       <main className={showNav ? "pb-24" : ""}>{children}</main>
       {showNav && (
-        <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-md border-t border-ink-100 bg-white/95 backdrop-blur">
+        <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-md border-t border-ink-100 bg-ink-100/95 backdrop-blur">
           <div className="flex justify-around py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
             {NAV.map(({ href, label, icon: Icon }) => {
               const active = pathname.startsWith(href);
@@ -73,7 +73,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   key={href}
                   href={href}
                   className={`flex flex-col items-center gap-0.5 px-3 py-1 text-[11px] font-medium ${
-                    active ? "text-brand-600" : "text-ink-400"
+                    active ? "text-brand-400" : "text-ink-400"
                   }`}
                 >
                   <Icon size={22} strokeWidth={active ? 2.4 : 1.8} />

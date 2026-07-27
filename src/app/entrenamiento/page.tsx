@@ -11,7 +11,7 @@ import { useApp } from "@/lib/store";
 
 const KIND_META: Record<Block["kind"], { label: string; icon: typeof Flame; color: string }> = {
   warmup: { label: "Calentamiento", icon: Clock, color: "text-amber-500" },
-  strength: { label: "Fuerza", icon: Flame, color: "text-brand-600" },
+  strength: { label: "Fuerza", icon: Flame, color: "text-brand-400" },
   hiit: { label: "HIIT", icon: Zap, color: "text-violet-600" }
 };
 
@@ -73,10 +73,10 @@ export default function TrainingPage() {
             onClick={() => setViewDay(i)}
             className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold ${
               i === dayIdx
-                ? "bg-brand-600 text-white"
+                ? "bg-ink-2000 text-ink-950"
                 : i === todayIdx
-                  ? "border border-brand-300 bg-brand-50 text-brand-700"
-                  : "border border-ink-200 bg-white text-ink-500"
+                  ? "border border-brand-300 bg-ink-200 text-brand-700"
+                  : "border border-ink-200 bg-ink-100 text-ink-500"
             }`}
           >
             Día {i + 1}
@@ -92,7 +92,7 @@ export default function TrainingPage() {
             <p className="text-xs text-ink-500">{session.focus}</p>
           </div>
           <div className="text-right">
-            <div className="flex items-center gap-1 text-sm font-bold text-brand-600">
+            <div className="flex items-center gap-1 text-sm font-bold text-brand-400">
               <Clock size={14} /> {session.minutes} min
             </div>
             {isToday && (
@@ -105,7 +105,7 @@ export default function TrainingPage() {
         {isToday && (
           <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-ink-100">
             <div
-              className="h-full rounded-full bg-brand-500 transition-all"
+              className="h-full rounded-full bg-ink-2000 transition-all"
               style={{ width: `${totalRounds ? (doneRounds / totalRounds) * 100 : 0}%` }}
             />
           </div>
@@ -132,7 +132,7 @@ export default function TrainingPage() {
                 <div key={ei} className="rounded-xl bg-ink-50 p-3">
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="text-sm font-semibold text-ink-800">{ex.name}</span>
-                    <span className="shrink-0 text-xs font-bold text-brand-600">{ex.work}</span>
+                    <span className="shrink-0 text-xs font-bold text-brand-400">{ex.work}</span>
                   </div>
                   <p className="mt-1 text-xs text-ink-500">💡 {ex.tip}</p>
                 </div>
@@ -160,7 +160,7 @@ export default function TrainingPage() {
                     onClick={() => toggleRound(bi, ri)}
                     disabled={!isToday || !isMe}
                     className={`flex items-center gap-1 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
-                      checked ? "bg-brand-600 text-white" : "bg-white border border-ink-200 text-ink-500"
+                      checked ? "bg-ink-2000 text-ink-950" : "bg-ink-100 border border-ink-200 text-ink-500"
                     } ${!isToday || !isMe ? "opacity-40" : ""}`}
                   >
                     {checked ? <CheckCircle2 size={13} /> : <Circle size={13} />} Ronda {ri + 1}
@@ -173,7 +173,7 @@ export default function TrainingPage() {
       })}
 
       {isToday && log?.completed && (
-        <div className="flex items-center gap-2 rounded-xl bg-brand-50 p-3 text-sm font-semibold text-brand-700">
+        <div className="flex items-center gap-2 rounded-xl bg-ink-200 p-3 text-sm font-semibold text-brand-700">
           <PartyPopper size={18} /> ¡Sesión completada! Racha al alza 🔥
         </div>
       )}

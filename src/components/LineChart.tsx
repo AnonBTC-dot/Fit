@@ -28,7 +28,7 @@ export function LineChart({ series, height = 160, unit = "kg" }: { series: Serie
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full">
         {[yMin, (yMin + yMax) / 2, yMax].map((y) => (
           <g key={y}>
-            <line x1={pad.l} x2={width - pad.r} y1={yPos(y)} y2={yPos(y)} stroke="#eceef2" strokeWidth={1} />
+            <line x1={pad.l} x2={width - pad.r} y1={yPos(y)} y2={yPos(y)} stroke="#232c3b" strokeWidth={1} />
             <text x={2} y={yPos(y) + 4} fontSize={9} fill="#8593aa">
               {Math.round(y * 10) / 10}
             </text>
