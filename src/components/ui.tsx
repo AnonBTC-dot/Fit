@@ -15,7 +15,7 @@ export function Button({
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "ghost" | "outline" }) {
   const styles = {
     primary:
-      "bg-brand-600 text-white hover:bg-brand-700 active:scale-[0.98] disabled:opacity-40 shadow-sm shadow-brand-200",
+      "bg-brand-500 text-ink-950 hover:bg-brand-400 active:scale-[0.98] disabled:opacity-40 shadow-sm shadow-brand-200",
     ghost: "bg-ink-50 text-ink-800 hover:bg-ink-100 active:scale-[0.98]",
     outline: "border border-ink-200 text-ink-700 hover:bg-ink-50 active:scale-[0.98]"
   }[variant];
@@ -91,7 +91,7 @@ export function Ring({
   pct,
   size = 72,
   stroke = 8,
-  color = "#d92660",
+  color = "#ffd200",
   label,
   sub
 }: {

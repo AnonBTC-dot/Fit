@@ -5,17 +5,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Amarillo eléctrico estilo Fuertafit
         brand: {
-          50: "#fdf2f6",
-          100: "#fce7ef",
-          200: "#fbcfe0",
-          300: "#f9a8c5",
-          400: "#f4729d",
-          500: "#ea4879",
-          600: "#d92660",
-          700: "#bc184c",
-          800: "#9b1740",
-          900: "#821739"
+          50: "#fefce8",
+          100: "#fef9c3",
+          200: "#fef08a",
+          300: "#fde047",
+          400: "#ffdf20",
+          500: "#ffd200",
+          600: "#ca8a04",
+          700: "#a16207",
+          800: "#854d0e",
+          900: "#713f12"
         },
         ink: {
           50: "#f6f7f9",
@@ -28,7 +29,7 @@ const config: Config = {
           700: "#424d61",
           800: "#394252",
           900: "#333a46",
-          950: "#1c2029"
+          950: "#15181e"
         }
       },
       borderRadius: { xl2: "1.25rem" }

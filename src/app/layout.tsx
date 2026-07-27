@@ -5,13 +5,13 @@ import { AppShell } from "@/components/AppShell";
 export const metadata: Metadata = {
   title: "Fit · En forma juntos",
   description:
-    "Recomposición corporal en pareja: entrenos, nutrición económica y progreso compartido hasta la boda.",
+    "Recomposición corporal en pareja: entrenos estilo Fuertafit, nutrición rica y progreso compartido.",
   manifest: "/manifest.json",
   appleWebApp: { capable: true, statusBarStyle: "default", title: "Fit" }
 };
 
 export const viewport: Viewport = {
-  themeColor: "#d92660",
+  themeColor: "#15181e",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1

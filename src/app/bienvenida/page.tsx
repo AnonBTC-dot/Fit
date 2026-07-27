@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Heart } from "lucide-react";
+import { Zap } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { PRESET_PROFILES } from "@/lib/presets";
 
@@ -19,11 +19,11 @@ export default function WelcomePage() {
   return (
     <div className="flex min-h-dvh flex-col justify-center px-5 py-10">
       <div className="mb-10 text-center">
-        <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-600 shadow-lg shadow-brand-200">
-          <Heart className="text-white" size={30} fill="white" />
+        <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-ink-950 shadow-lg shadow-brand-200">
+          <Zap className="text-brand-500" size={30} fill="#ffd200" />
         </div>
         <h1 className="text-2xl font-extrabold text-ink-900">Fit</h1>
-        <p className="mt-1 text-sm text-ink-500">En forma juntos 💪</p>
+        <p className="mt-1 text-sm text-ink-500">Fuerza + HIIT · comida rica de verdad</p>
       </div>
 
       <p className="mb-3 text-center text-sm font-medium text-ink-600">¿Quién eres?</p>

@@ -1,22 +1,19 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { CalendarHeart, Clock, Dumbbell, Flame, Pencil, Trophy, UtensilsCrossed } from "lucide-react";
-import { Button, Card, Input, Ring } from "@/components/ui";
+import { Clock, Dumbbell, Flame, Trophy, UtensilsCrossed } from "lucide-react";
+import { Button, Card, Ring } from "@/components/ui";
 import { LineChart } from "@/components/LineChart";
 import { ProfileSwitcher } from "@/components/ProfileSwitcher";
-import { calcTargets, computeStreak, daysUntil, todayISO } from "@/lib/calculations";
+import { calcTargets, computeStreak, todayISO } from "@/lib/calculations";
 import { getPlan, todayDayIndex } from "@/data/workouts";
 import { MEALS, getCurrentWeekMenu } from "@/data/meals";
 import { useApp } from "@/lib/store";
 
-const SLOT_COLORS: Record<string, string> = { p1: "#d92660", p2: "#515e77" };
+const SLOT_COLORS: Record<string, string> = { p1: "#eab308", p2: "#333a46" };
 
 export default function DashboardPage() {
-  const { profiles, mySlot, viewSlot, measurements, logs, settings, setWeddingDate } = useApp();
-  const [editingDate, setEditingDate] = useState(false);
-  const [dateDraft, setDateDraft] = useState(settings.wedding_date ?? "");
+  const { profiles, mySlot, viewSlot, measurements, logs } = useApp();
 
   const active = profiles.find((p) => p.slot === viewSlot) ?? profiles[0];
   if (!active) return null;
@@ -45,8 +42,6 @@ export default function DashboardPage() {
   const done7 = last7.filter((d) => logs.some((l) => l.slot === active.slot && l.date === d && l.completed)).length;
   const weekPct = Math.round((done7 / active.days_per_week) * 100);
 
-  const wedding = settings.wedding_date ? daysUntil(settings.wedding_date) : null;
-
   const weightSeries = profiles.map((p) => ({
     name: p.name,
     color: SLOT_COLORS[p.slot],
@@ -61,48 +56,10 @@ export default function DashboardPage() {
         <h1 className="text-xl font-extrabold">
           {isMe ? `Hola, ${active.name} 👋` : `Progreso de ${active.name} 👀`}
         </h1>
-        <p className="text-sm text-ink-500">Equipo Fit · un día más cerca 💪</p>
+        <p className="text-sm text-ink-500">Equipo Fit · a darle caña 💪</p>
       </header>
 
       <ProfileSwitcher />
-
-      {/* Cuenta regresiva para la boda (opcional) */}
-      <Card className="bg-gradient-to-br from-brand-600 to-brand-800 !border-0 text-white">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <CalendarHeart size={28} />
-            {wedding !== null && !editingDate ? (
-              <div>
-                <div className="text-2xl font-extrabold">{wedding > 0 ? `${wedding} días` : "¡Es hoy! 🎉"}</div>
-                <div className="text-xs opacity-80">para el gran día</div>
-              </div>
-            ) : (
-              <div className="text-sm font-medium opacity-90">
-                {editingDate ? "Elige la fecha:" : "Sin prisa: lo importante es el proceso. ¿Fecha del gran día?"}
-              </div>
-            )}
-          </div>
-          {!editingDate ? (
-            <button onClick={() => setEditingDate(true)} className="rounded-full bg-white/20 p-2" aria-label="Editar fecha">
-              <Pencil size={14} />
-            </button>
-          ) : null}
-        </div>
-        {editingDate && (
-          <div className="mt-3 flex gap-2">
-            <Input type="date" value={dateDraft} onChange={(e) => setDateDraft(e.target.value)} />
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setWeddingDate(dateDraft || null);
-                setEditingDate(false);
-              }}
-            >
-              OK
-            </Button>
-          </div>
-        )}
-      </Card>
 
       {/* Objetivo nutricional del día */}
       <Card>
@@ -115,7 +72,7 @@ export default function DashboardPage() {
           )}
         </div>
         <div className="flex items-center gap-4">
-          <Ring pct={100} label={`${targets.kcal}`} sub="kcal" color="#d92660" size={84} />
+          <Ring pct={100} label={`${targets.kcal}`} sub="kcal" color="#eab308" size={84} />
           <div className="grid flex-1 grid-cols-3 gap-2 text-center">
             {[
               { l: "Prot", v: targets.protein_g },
