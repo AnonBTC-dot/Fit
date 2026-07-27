@@ -25,11 +25,16 @@ export function AppShell({ children }: { children: ReactNode }) {
       navigator.serviceWorker.register("/sw.js").catch(() => {});
     }
     loadFromServer();
+    // Asegura que hydrated se pone en true después de la carga
+    const timer = setTimeout(() => {
+      useApp.setState({ hydrated: true });
+    }, 100);
     const onOnline = () => loadFromServer();
     const onFocus = () => loadFromServer();
     window.addEventListener("online", onOnline);
     window.addEventListener("focus", onFocus);
     return () => {
+      clearTimeout(timer);
       window.removeEventListener("online", onOnline);
       window.removeEventListener("focus", onFocus);
     };
