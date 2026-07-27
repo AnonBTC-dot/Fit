@@ -85,7 +85,7 @@ function OnboardingInner() {
         </div>
         <div className="h-1.5 overflow-hidden rounded-full bg-ink-100">
           <div
-            className="h-full rounded-full bg-ink-2000 transition-all duration-300"
+            className="h-full rounded-full bg-brand-500 transition-all duration-300"
             style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
           />
         </div>

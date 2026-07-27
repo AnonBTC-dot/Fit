@@ -125,10 +125,10 @@ export default function NutritionPage() {
                 onClick={() => setDayIdx(i)}
                 className={`shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold ${
                   i === dayIdx
-                    ? "bg-ink-2000 text-ink-950"
+                    ? "bg-brand-500 text-ink-950"
                     : i === todayDow
                       ? "border border-brand-300 bg-ink-200 text-brand-700"
-                      : "border border-ink-200 bg-ink-100 text-ink-500"
+                      : "border border-ink-300 bg-ink-200 text-ink-600"
                 }`}
               >
                 {d.slice(0, 3)}
@@ -167,7 +167,7 @@ export default function NutritionPage() {
                 key={c}
                 onClick={() => setCategory(c)}
                 className={`shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold ${
-                  category === c ? "bg-ink-2000 text-ink-950" : "border border-ink-200 bg-ink-100 text-ink-500"
+                  category === c ? "bg-brand-500 text-ink-950" : "border border-ink-300 bg-ink-200 text-ink-600"
                 }`}
               >
                 {c === "all" ? "Todas" : CATEGORY_LABELS[c]}

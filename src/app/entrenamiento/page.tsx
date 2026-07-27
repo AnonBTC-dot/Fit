@@ -73,10 +73,10 @@ export default function TrainingPage() {
             onClick={() => setViewDay(i)}
             className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold ${
               i === dayIdx
-                ? "bg-ink-2000 text-ink-950"
+                ? "bg-brand-500 text-ink-950"
                 : i === todayIdx
                   ? "border border-brand-300 bg-ink-200 text-brand-700"
-                  : "border border-ink-200 bg-ink-100 text-ink-500"
+                  : "border border-ink-300 bg-ink-200 text-ink-600"
             }`}
           >
             Día {i + 1}
@@ -105,7 +105,7 @@ export default function TrainingPage() {
         {isToday && (
           <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-ink-100">
             <div
-              className="h-full rounded-full bg-ink-2000 transition-all"
+              className="h-full rounded-full bg-brand-500 transition-all"
               style={{ width: `${totalRounds ? (doneRounds / totalRounds) * 100 : 0}%` }}
             />
           </div>
@@ -160,7 +160,7 @@ export default function TrainingPage() {
                     onClick={() => toggleRound(bi, ri)}
                     disabled={!isToday || !isMe}
                     className={`flex items-center gap-1 rounded-lg px-3 py-2 text-xs font-semibold transition-all ${
-                      checked ? "bg-ink-2000 text-ink-950" : "bg-ink-100 border border-ink-200 text-ink-500"
+                      checked ? "bg-brand-500 text-ink-950" : "bg-ink-200 border border-ink-300 text-ink-500"
                     } ${!isToday || !isMe ? "opacity-40" : ""}`}
                   >
                     {checked ? <CheckCircle2 size={13} /> : <Circle size={13} />} Ronda {ri + 1}

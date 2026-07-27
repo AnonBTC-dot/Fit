@@ -102,7 +102,7 @@ export function IntervalTimer({
       <div className="mt-2 flex justify-center gap-3">
         <button
           onClick={() => (finished ? reset() : setRunning(!running))}
-          className="flex h-11 w-11 items-center justify-center rounded-full bg-ink-2000 text-ink-950 shadow-sm active:scale-95"
+          className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-500 text-ink-950 shadow-sm active:scale-95"
           aria-label={running ? "Pausar" : "Iniciar"}
         >
           {running ? <Pause size={18} /> : <Play size={18} className="ml-0.5" />}

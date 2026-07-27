@@ -15,9 +15,9 @@ export function Button({
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "ghost" | "outline" }) {
   const styles = {
     primary:
-      "bg-ink-2000 text-ink-950 hover:bg-brand-400 active:scale-[0.98] disabled:opacity-40 shadow-sm shadow-brand-900",
-    ghost: "bg-ink-50 text-ink-800 hover:bg-ink-100 active:scale-[0.98]",
-    outline: "border border-ink-200 text-ink-700 hover:bg-ink-50 active:scale-[0.98]"
+      "bg-brand-500 text-ink-950 hover:bg-brand-400 active:scale-[0.98] disabled:opacity-40 shadow-sm shadow-brand-900",
+    ghost: "bg-ink-200 text-ink-800 hover:bg-ink-300 active:scale-[0.98]",
+    outline: "border border-ink-300 text-ink-700 hover:bg-ink-200 active:scale-[0.98]"
   }[variant];
   return (
     <button

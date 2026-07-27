@@ -70,7 +70,7 @@ export default function ShoppingPage() {
                     key={item.ingredient.id}
                     onClick={() => toggleCheck(item.ingredient.id)}
                     className={`flex items-center justify-between rounded-xl px-2 py-2.5 text-left transition-all ${
-                      isChecked ? "opacity-40" : "hover:bg-ink-50"
+                      isChecked ? "opacity-40" : "hover:bg-ink-200"
                     }`}
                   >
                     <span className="flex items-center gap-2.5">
