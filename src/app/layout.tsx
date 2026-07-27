@@ -7,7 +7,8 @@ export const metadata: Metadata = {
   description:
     "Recomposición corporal en pareja: entrenos estilo Fuertafit, nutrición rica y progreso compartido.",
   manifest: "/manifest.json",
-  appleWebApp: { capable: true, statusBarStyle: "default", title: "Fit" }
+  icons: { icon: "/icons/icon-192.png", apple: "/icons/icon-192.png" },
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Fit" }
 };
 
 export const viewport: Viewport = {
