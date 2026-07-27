@@ -8,7 +8,7 @@ import { ProfileSwitcher } from "@/components/ProfileSwitcher";
 import { todayISO, waistHeightRatio } from "@/lib/calculations";
 import { useApp } from "@/lib/store";
 
-const SLOT_COLORS: Record<string, string> = { p1: "#eab308", p2: "#333a46" };
+const SLOT_COLORS: Record<string, string> = { p1: "#22c55e", p2: "#8593aa" };
 
 export default function ProgressPage() {
   const { profiles, mySlot, viewSlot, measurements, addMeasurement } = useApp();

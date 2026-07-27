@@ -20,7 +20,7 @@ export default function WelcomePage() {
     <div className="flex min-h-dvh flex-col justify-center px-5 py-10">
       <div className="mb-10 text-center">
         <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl bg-ink-950 shadow-lg shadow-brand-200">
-          <Zap className="text-brand-500" size={30} fill="#ffd200" />
+          <Zap className="text-brand-500" size={30} fill="#22c55e" />
         </div>
         <h1 className="text-2xl font-extrabold text-ink-900">Fit</h1>
         <p className="mt-1 text-sm text-ink-500">Fuerza + HIIT · comida rica de verdad</p>

@@ -91,7 +91,7 @@ export function Ring({
   pct,
   size = 72,
   stroke = 8,
-  color = "#ffd200",
+  color = "#22c55e",
   label,
   sub
 }: {

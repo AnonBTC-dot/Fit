@@ -10,7 +10,7 @@ import { getPlan, todayDayIndex } from "@/data/workouts";
 import { MEALS, getCurrentWeekMenu } from "@/data/meals";
 import { useApp } from "@/lib/store";
 
-const SLOT_COLORS: Record<string, string> = { p1: "#eab308", p2: "#333a46" };
+const SLOT_COLORS: Record<string, string> = { p1: "#22c55e", p2: "#8593aa" };
 
 export default function DashboardPage() {
   const { profiles, mySlot, viewSlot, measurements, logs } = useApp();
@@ -72,7 +72,7 @@ export default function DashboardPage() {
           )}
         </div>
         <div className="flex items-center gap-4">
-          <Ring pct={100} label={`${targets.kcal}`} sub="kcal" color="#eab308" size={84} />
+          <Ring pct={100} label={`${targets.kcal}`} sub="kcal" color="#22c55e" size={84} />
           <div className="grid flex-1 grid-cols-3 gap-2 text-center">
             {[
               { l: "Prot", v: targets.protein_g },
