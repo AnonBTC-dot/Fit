@@ -1,0 +1,552 @@
+/**
+ * Nutrición estilo Fuertafit: CERO dietas aburridas.
+ * Nada de "arroz, brócoli y pechuga seca": platos ricos, variados y fáciles
+ * siguiendo el MÉTODO DEL PLATO (½ verduras/hortalizas + ¼ proteína de
+ * calidad + ¼ carbohidrato complejo, con grasas saludables).
+ *
+ * Recetario: gachas de avena con fruta y frutos secos, fajitas saludables,
+ * pollo al curry con puré, salmón al horno, raviolis de calabacín,
+ * hamburguesa casera fit, pasta proteica con verduras, crema de verduras
+ * con toppings crujientes, mugcake fit de chocolate...
+ *
+ * Las cantidades base están calibradas para ~1800 kcal/día y se escalan
+ * linealmente al objetivo calórico de cada perfil (factor 0.75-1.45).
+ */
+
+export type IngUnit = "g" | "ml" | "ud";
+
+export type MarketSection = "Frescos" | "Proteínas" | "Lácteos y huevos" | "Despensa" | "Congelados";
+
+export const SECTION_ORDER: MarketSection[] = [
+  "Proteínas",
+  "Frescos",
+  "Lácteos y huevos",
+  "Congelados",
+  "Despensa"
+];
+
+export interface Ingredient {
+  id: string;
+  name: string;
+  unit: IngUnit;
+  section: MarketSection; // sección del supermercado
+  packLabel: string; // formato de compra habitual
+  packSize: number; // cuánto contiene un pack, en `unit`
+  packPrice: number; // € estimado por pack
+}
+
+export const INGREDIENTS: Record<string, Ingredient> = {
+  /* Despensa */
+  avena: { id: "avena", name: "Copos de avena", unit: "g", section: "Despensa", packLabel: "paquete 1 kg", packSize: 1000, packPrice: 1.6 },
+  nueces: { id: "nueces", name: "Nueces peladas", unit: "g", section: "Despensa", packLabel: "bolsa 200 g", packSize: 200, packPrice: 2.8 },
+  cremacacahuete: { id: "cremacacahuete", name: "Crema de cacahuete 100%", unit: "g", section: "Despensa", packLabel: "bote 340 g", packSize: 340, packPrice: 2.5 },
+  cacao: { id: "cacao", name: "Cacao puro en polvo", unit: "g", section: "Despensa", packLabel: "lata 250 g", packSize: 250, packPrice: 3.0 },
+  miel: { id: "miel", name: "Miel", unit: "g", section: "Despensa", packLabel: "bote 500 g", packSize: 500, packPrice: 3.5 },
+  pan: { id: "pan", name: "Pan integral", unit: "g", section: "Despensa", packLabel: "barra/paquete 500 g", packSize: 500, packPrice: 1.4 },
+  tortillawrap: { id: "tortillawrap", name: "Tortillas integrales (wrap/fajita)", unit: "ud", section: "Despensa", packLabel: "pack 6 uds", packSize: 6, packPrice: 1.8 },
+  arroz: { id: "arroz", name: "Arroz", unit: "g", section: "Despensa", packLabel: "paquete 1 kg", packSize: 1000, packPrice: 1.2 },
+  pasta: { id: "pasta", name: "Pasta integral/proteica", unit: "g", section: "Despensa", packLabel: "paquete 500 g", packSize: 500, packPrice: 1.6 },
+  quinoa: { id: "quinoa", name: "Quinoa", unit: "g", section: "Despensa", packLabel: "paquete 500 g", packSize: 500, packPrice: 2.8 },
+  lentejas: { id: "lentejas", name: "Lentejas cocidas (bote)", unit: "g", section: "Despensa", packLabel: "bote 400 g escurrido", packSize: 400, packPrice: 0.95 },
+  garbanzos: { id: "garbanzos", name: "Garbanzos cocidos (bote)", unit: "g", section: "Despensa", packLabel: "bote 400 g escurrido", packSize: 400, packPrice: 0.95 },
+  tomatetrit: { id: "tomatetrit", name: "Tomate triturado", unit: "g", section: "Despensa", packLabel: "brik 400 g", packSize: 400, packPrice: 0.8 },
+  atun: { id: "atun", name: "Atún al natural (lata)", unit: "g", section: "Despensa", packLabel: "pack 3 latas (3x56 g)", packSize: 168, packPrice: 2.7 },
+  aove: { id: "aove", name: "Aceite de oliva virgen extra", unit: "ml", section: "Despensa", packLabel: "botella 1 L", packSize: 1000, packPrice: 8.5 },
+  curry: { id: "curry", name: "Curry en polvo", unit: "g", section: "Despensa", packLabel: "bote 50 g", packSize: 50, packPrice: 1.2 },
+
+  /* Frescos */
+  platano: { id: "platano", name: "Plátano", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 0.35 },
+  manzana: { id: "manzana", name: "Manzana", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 0.4 },
+  aguacate: { id: "aguacate", name: "Aguacate", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 1.1 },
+  tomate: { id: "tomate", name: "Tomate fresco", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 0.45 },
+  cebolla: { id: "cebolla", name: "Cebolla", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 0.3 },
+  pimiento: { id: "pimiento", name: "Pimiento", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 0.7 },
+  calabacin: { id: "calabacin", name: "Calabacín", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 0.6 },
+  brocoli: { id: "brocoli", name: "Brócoli", unit: "g", section: "Frescos", packLabel: "pieza ~500 g", packSize: 500, packPrice: 1.5 },
+  calabaza: { id: "calabaza", name: "Calabaza", unit: "g", section: "Frescos", packLabel: "trozo ~1 kg", packSize: 1000, packPrice: 1.5 },
+  champinones: { id: "champinones", name: "Champiñones", unit: "g", section: "Frescos", packLabel: "bandeja 250 g", packSize: 250, packPrice: 1.4 },
+  ensalada: { id: "ensalada", name: "Ensalada variada (bolsa)", unit: "ud", section: "Frescos", packLabel: "bolsa", packSize: 1, packPrice: 1.1 },
+  patata: { id: "patata", name: "Patatas", unit: "g", section: "Frescos", packLabel: "malla 3 kg", packSize: 3000, packPrice: 3.5 },
+
+  /* Proteínas */
+  pollo: { id: "pollo", name: "Pechuga de pollo", unit: "g", section: "Proteínas", packLabel: "bandeja 1 kg", packSize: 1000, packPrice: 6.5 },
+  pavopicado: { id: "pavopicado", name: "Carne picada de pavo/pollo", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 4.2 },
+  salmon: { id: "salmon", name: "Lomos de salmón", unit: "g", section: "Proteínas", packLabel: "bandeja 2 lomos (500 g)", packSize: 500, packPrice: 7.5 },
+  merluza: { id: "merluza", name: "Filetes de merluza", unit: "g", section: "Proteínas", packLabel: "bandeja 400 g", packSize: 400, packPrice: 5.5 },
+
+  /* Lácteos y huevos */
+  leche: { id: "leche", name: "Leche semidesnatada", unit: "ml", section: "Lácteos y huevos", packLabel: "brik 1 L", packSize: 1000, packPrice: 0.95 },
+  huevo: { id: "huevo", name: "Huevos", unit: "ud", section: "Lácteos y huevos", packLabel: "docena", packSize: 12, packPrice: 2.6 },
+  yogurgriego: { id: "yogurgriego", name: "Yogur griego natural", unit: "ud", section: "Lácteos y huevos", packLabel: "pack 4 x 125 g", packSize: 4, packPrice: 2.2 },
+  quesobatido: { id: "quesobatido", name: "Queso fresco batido 0%", unit: "g", section: "Lácteos y huevos", packLabel: "tarrina 500 g", packSize: 500, packPrice: 1.5 },
+  quesorallado: { id: "quesorallado", name: "Queso rallado light", unit: "g", section: "Lácteos y huevos", packLabel: "bolsa 200 g", packSize: 200, packPrice: 2.2 },
+
+  /* Congelados */
+  frutosrojos: { id: "frutosrojos", name: "Frutos rojos congelados", unit: "g", section: "Congelados", packLabel: "bolsa 300 g", packSize: 300, packPrice: 2.5 },
+  gambas: { id: "gambas", name: "Gambas peladas congeladas", unit: "g", section: "Congelados", packLabel: "bolsa 500 g", packSize: 500, packPrice: 6.0 },
+  espinacas: { id: "espinacas", name: "Espinacas (congeladas o frescas)", unit: "g", section: "Congelados", packLabel: "bolsa 400 g", packSize: 400, packPrice: 1.5 }
+};
+
+export type MealCategory = "breakfast" | "lunch" | "dinner" | "snack";
+
+export const CATEGORY_LABELS: Record<MealCategory, string> = {
+  breakfast: "Desayunos",
+  lunch: "Almuerzos",
+  dinner: "Cenas",
+  snack: "Snacks"
+};
+
+export interface MealItem {
+  ing: string;
+  qty: number; // en la unidad del ingrediente, base 1800 kcal
+}
+
+export interface Meal {
+  id: string;
+  name: string;
+  category: MealCategory;
+  kcal: number; // aprox a base 1800
+  protein: number;
+  items: MealItem[];
+  prep: string; // 1-2 líneas
+}
+
+export const MEALS: Record<string, Meal> = {
+  /* ---------- Desayunos ---------- */
+  d_gachas: {
+    id: "d_gachas",
+    name: "Gachas de avena con plátano, frutos rojos y nueces",
+    category: "breakfast",
+    kcal: 430,
+    protein: 15,
+    items: [
+      { ing: "avena", qty: 50 },
+      { ing: "leche", qty: 250 },
+      { ing: "platano", qty: 0.5 },
+      { ing: "frutosrojos", qty: 50 },
+      { ing: "nueces", qty: 15 }
+    ],
+    prep: "Cuece la avena con la leche 3 min (fuego o micro). Corona con plátano, frutos rojos y nueces. Canela al gusto."
+  },
+  d_tostavo: {
+    id: "d_tostavo",
+    name: "Tostadas integrales con aguacate y huevo",
+    category: "breakfast",
+    kcal: 460,
+    protein: 22,
+    items: [
+      { ing: "pan", qty: 80 },
+      { ing: "aguacate", qty: 0.5 },
+      { ing: "huevo", qty: 2 },
+      { ing: "tomate", qty: 0.5 }
+    ],
+    prep: "Aguacate machacado sobre las tostadas, huevos a la plancha o poché encima y tomate en rodajas. Pimienta y listo."
+  },
+  d_bowlyogur: {
+    id: "d_bowlyogur",
+    name: "Bol de yogur griego con avena crujiente, manzana y miel",
+    category: "breakfast",
+    kcal: 400,
+    protein: 20,
+    items: [
+      { ing: "yogurgriego", qty: 2 },
+      { ing: "avena", qty: 30 },
+      { ing: "manzana", qty: 1 },
+      { ing: "miel", qty: 8 }
+    ],
+    prep: "Tuesta la avena 2 min en sartén (queda tipo granola). Monta el bol: yogur, manzana en dados, avena y un hilo de miel."
+  },
+  d_tortitas: {
+    id: "d_tortitas",
+    name: "Tortitas de avena y plátano con crema de cacahuete",
+    category: "breakfast",
+    kcal: 470,
+    protein: 22,
+    items: [
+      { ing: "avena", qty: 50 },
+      { ing: "huevo", qty: 2 },
+      { ing: "platano", qty: 1 },
+      { ing: "cremacacahuete", qty: 15 }
+    ],
+    prep: "Tritura avena + huevos + ½ plátano. Cuaja las tortitas en sartén y sirve con el resto del plátano y la crema de cacahuete."
+  },
+
+  /* ---------- Almuerzos ---------- */
+  c_curry: {
+    id: "c_curry",
+    name: "Pollo al curry cremoso con puré de patata",
+    category: "lunch",
+    kcal: 560,
+    protein: 45,
+    items: [
+      { ing: "pollo", qty: 150 },
+      { ing: "patata", qty: 250 },
+      { ing: "leche", qty: 50 },
+      { ing: "cebolla", qty: 0.5 },
+      { ing: "yogurgriego", qty: 1 },
+      { ing: "curry", qty: 4 },
+      { ing: "aove", qty: 8 }
+    ],
+    prep: "Sofríe cebolla, añade el pollo en dados y el curry; liga con el yogur (salsa cremosa sin nata). Puré: patata cocida machacada con leche."
+  },
+  c_salmon: {
+    id: "c_salmon",
+    name: "Salmón al horno con patata y brócoli",
+    category: "lunch",
+    kcal: 580,
+    protein: 38,
+    items: [
+      { ing: "salmon", qty: 150 },
+      { ing: "patata", qty: 250 },
+      { ing: "brocoli", qty: 150 },
+      { ing: "aove", qty: 8 }
+    ],
+    prep: "Todo a la bandeja: patata en rodajas 15 min, luego añade salmón y brócoli 12-15 min más a 200 ºC. Limón por encima."
+  },
+  c_fajitas: {
+    id: "c_fajitas",
+    name: "Fajitas saludables de pollo con verduras y salsa de yogur",
+    category: "lunch",
+    kcal: 560,
+    protein: 42,
+    items: [
+      { ing: "tortillawrap", qty: 2 },
+      { ing: "pollo", qty: 150 },
+      { ing: "pimiento", qty: 0.5 },
+      { ing: "cebolla", qty: 0.5 },
+      { ing: "yogurgriego", qty: 0.5 },
+      { ing: "aove", qty: 8 }
+    ],
+    prep: "Tiras de pollo con pimiento y cebolla a fuego fuerte con especias fajita. Rellena las tortillas y remata con salsa de yogur y limón."
+  },
+  c_bolonesa: {
+    id: "c_bolonesa",
+    name: "Pasta proteica con boloñesa de pavo",
+    category: "lunch",
+    kcal: 570,
+    protein: 40,
+    items: [
+      { ing: "pasta", qty: 90 },
+      { ing: "pavopicado", qty: 130 },
+      { ing: "tomatetrit", qty: 150 },
+      { ing: "cebolla", qty: 0.5 },
+      { ing: "quesorallado", qty: 15 }
+    ],
+    prep: "Boloñesa: pavo + cebolla + tomate triturado con orégano. Mezcla con la pasta y termina con el queso."
+  },
+  c_lentejas: {
+    id: "c_lentejas",
+    name: "Lentejas estofadas con verduras",
+    category: "lunch",
+    kcal: 520,
+    protein: 28,
+    items: [
+      { ing: "lentejas", qty: 300 },
+      { ing: "patata", qty: 100 },
+      { ing: "pimiento", qty: 0.5 },
+      { ing: "cebolla", qty: 0.5 },
+      { ing: "tomatetrit", qty: 100 },
+      { ing: "aove", qty: 8 }
+    ],
+    prep: "Sofrito de cebolla, pimiento y tomate; añade lentejas de bote y patata cocida. 10 min y plato de cuchara listo."
+  },
+  c_ensaladagarb: {
+    id: "c_ensaladagarb",
+    name: "Ensalada de garbanzos con atún y aguacate",
+    category: "lunch",
+    kcal: 540,
+    protein: 32,
+    items: [
+      { ing: "garbanzos", qty: 250 },
+      { ing: "atun", qty: 84 },
+      { ing: "aguacate", qty: 0.5 },
+      { ing: "tomate", qty: 1 },
+      { ing: "ensalada", qty: 0.5 },
+      { ing: "aove", qty: 8 }
+    ],
+    prep: "Todo al bol: garbanzos escurridos, atún, aguacate y tomate en dados sobre la ensalada. Aliña y mezcla."
+  },
+  c_bowlquinoa: {
+    id: "c_bowlquinoa",
+    name: "Bol de quinoa con pollo y verduras asadas",
+    category: "lunch",
+    kcal: 550,
+    protein: 42,
+    items: [
+      { ing: "quinoa", qty: 70 },
+      { ing: "pollo", qty: 150 },
+      { ing: "calabacin", qty: 0.5 },
+      { ing: "pimiento", qty: 0.5 },
+      { ing: "aove", qty: 8 }
+    ],
+    prep: "Quinoa cocida 12 min. Pollo y verduras a la plancha con especias. Móntalo en bol con un chorrito de aceite y limón."
+  },
+  c_arrozpavo: {
+    id: "c_arrozpavo",
+    name: "Arroz salteado estilo wok con pavo y verduras",
+    category: "lunch",
+    kcal: 550,
+    protein: 38,
+    items: [
+      { ing: "arroz", qty: 80 },
+      { ing: "pavopicado", qty: 130 },
+      { ing: "pimiento", qty: 0.5 },
+      { ing: "cebolla", qty: 0.5 },
+      { ing: "aove", qty: 8 }
+    ],
+    prep: "Saltea pavo con las verduras, añade el arroz cocido y un toque de soja. Estilo wok en 10 min."
+  },
+
+  /* ---------- Cenas ---------- */
+  n_raviolis: {
+    id: "n_raviolis",
+    name: "Raviolis de calabacín rellenos de pavo y queso",
+    category: "dinner",
+    kcal: 400,
+    protein: 33,
+    items: [
+      { ing: "calabacin", qty: 1 },
+      { ing: "pavopicado", qty: 120 },
+      { ing: "quesorallado", qty: 25 },
+      { ing: "tomatetrit", qty: 100 },
+      { ing: "cebolla", qty: 0.25 }
+    ],
+    prep: "Láminas finas de calabacín (pelador), rellena con pavo salteado, cierra en paquetitos, tomate y queso por encima y gratina 10 min."
+  },
+  n_burger: {
+    id: "n_burger",
+    name: "Hamburguesa casera fit con pan integral",
+    category: "dinner",
+    kcal: 460,
+    protein: 38,
+    items: [
+      { ing: "pavopicado", qty: 150 },
+      { ing: "pan", qty: 60 },
+      { ing: "ensalada", qty: 0.25 },
+      { ing: "tomate", qty: 0.5 },
+      { ing: "cebolla", qty: 0.25 },
+      { ing: "quesorallado", qty: 15 }
+    ],
+    prep: "Forma la burger con el pavo especiado (ajo, pimentón, perejil) y plancha. Monta con pan tostado, verduras y queso fundido."
+  },
+  n_merluza: {
+    id: "n_merluza",
+    name: "Merluza en papillote con verduras y patata",
+    category: "dinner",
+    kcal: 420,
+    protein: 33,
+    items: [
+      { ing: "merluza", qty: 150 },
+      { ing: "calabacin", qty: 0.5 },
+      { ing: "pimiento", qty: 0.5 },
+      { ing: "patata", qty: 150 },
+      { ing: "aove", qty: 8 }
+    ],
+    prep: "Papel de horno: merluza + verduras en juliana + patata en rodajas finas, cierra el paquete y 15 min a 200 ºC."
+  },
+  n_gambas: {
+    id: "n_gambas",
+    name: "Salteado de gambas con arroz y verduras",
+    category: "dinner",
+    kcal: 430,
+    protein: 30,
+    items: [
+      { ing: "gambas", qty: 125 },
+      { ing: "arroz", qty: 60 },
+      { ing: "brocoli", qty: 100 },
+      { ing: "pimiento", qty: 0.5 },
+      { ing: "aove", qty: 8 }
+    ],
+    prep: "Wok: gambas con ajo, añade verduras y el arroz cocido. Toque de soja y listo en 10 min."
+  },
+  n_tortillaverde: {
+    id: "n_tortillaverde",
+    name: "Tortilla de espinacas y champiñones con pan",
+    category: "dinner",
+    kcal: 420,
+    protein: 26,
+    items: [
+      { ing: "huevo", qty: 2 },
+      { ing: "espinacas", qty: 100 },
+      { ing: "champinones", qty: 100 },
+      { ing: "pan", qty: 40 },
+      { ing: "aove", qty: 8 }
+    ],
+    prep: "Saltea champiñones y espinacas, añade los huevos batidos y cuaja. Acompaña con pan tostado."
+  },
+  n_wrap: {
+    id: "n_wrap",
+    name: "Wrap integral de pollo con verduras y salsa de yogur",
+    category: "dinner",
+    kcal: 440,
+    protein: 38,
+    items: [
+      { ing: "tortillawrap", qty: 1 },
+      { ing: "pollo", qty: 130 },
+      { ing: "ensalada", qty: 0.5 },
+      { ing: "tomate", qty: 0.5 },
+      { ing: "yogurgriego", qty: 0.5 }
+    ],
+    prep: "Pollo a tiras a la plancha, monta el wrap con las verduras y salsa de yogur con limón y especias."
+  },
+  n_cremacalabaza: {
+    id: "n_cremacalabaza",
+    name: "Crema de calabaza con toppings crujientes y huevo",
+    category: "dinner",
+    kcal: 400,
+    protein: 20,
+    items: [
+      { ing: "calabaza", qty: 300 },
+      { ing: "patata", qty: 100 },
+      { ing: "huevo", qty: 2 },
+      { ing: "pan", qty: 30 },
+      { ing: "aove", qty: 8 }
+    ],
+    prep: "Cuece calabaza y patata, tritura con un chorrito de aceite. Toppings: huevo duro troceado y picatostes dorados en sartén."
+  },
+
+  /* ---------- Snacks ---------- */
+  s_mugcake: {
+    id: "s_mugcake",
+    name: "Mugcake fit de chocolate y plátano",
+    category: "snack",
+    kcal: 240,
+    protein: 12,
+    items: [
+      { ing: "avena", qty: 30 },
+      { ing: "huevo", qty: 1 },
+      { ing: "platano", qty: 0.5 },
+      { ing: "cacao", qty: 8 }
+    ],
+    prep: "Tritura todo, vierte en taza y 2 min al microondas. Bizcocho de chocolate saludable al momento."
+  },
+  s_yogurnueces: {
+    id: "s_yogurnueces",
+    name: "Yogur griego con nueces y miel",
+    category: "snack",
+    kcal: 210,
+    protein: 10,
+    items: [
+      { ing: "yogurgriego", qty: 1 },
+      { ing: "nueces", qty: 10 },
+      { ing: "miel", qty: 5 }
+    ],
+    prep: "Yogur con las nueces troceadas y un hilo de miel. Simple y saciante."
+  },
+  s_manzanacacahuete: {
+    id: "s_manzanacacahuete",
+    name: "Manzana con crema de cacahuete",
+    category: "snack",
+    kcal: 180,
+    protein: 6,
+    items: [
+      { ing: "manzana", qty: 1 },
+      { ing: "cremacacahuete", qty: 15 }
+    ],
+    prep: "Manzana en gajos para mojar en la crema de cacahuete."
+  },
+  s_batidorojo: {
+    id: "s_batidorojo",
+    name: "Batido de queso fresco con frutos rojos",
+    category: "snack",
+    kcal: 160,
+    protein: 16,
+    items: [
+      { ing: "quesobatido", qty: 200 },
+      { ing: "frutosrojos", qty: 75 }
+    ],
+    prep: "Mezcla en bol o tritura como batido. Alto en proteína, perfecto post-entreno."
+  }
+};
+
+export interface DayMenu {
+  breakfast: string;
+  lunch: string;
+  dinner: string;
+  snack: string;
+}
+
+export const WEEK_MENU: DayMenu[] = [
+  { breakfast: "d_gachas", lunch: "c_curry", dinner: "n_tortillaverde", snack: "s_yogurnueces" },
+  { breakfast: "d_tostavo", lunch: "c_lentejas", dinner: "n_raviolis", snack: "s_batidorojo" },
+  { breakfast: "d_bowlyogur", lunch: "c_bolonesa", dinner: "n_merluza", snack: "s_manzanacacahuete" },
+  { breakfast: "d_tortitas", lunch: "c_ensaladagarb", dinner: "n_burger", snack: "s_batidorojo" },
+  { breakfast: "d_gachas", lunch: "c_bowlquinoa", dinner: "n_gambas", snack: "s_mugcake" },
+  { breakfast: "d_tostavo", lunch: "c_salmon", dinner: "n_cremacalabaza", snack: "s_yogurnueces" },
+  { breakfast: "d_bowlyogur", lunch: "c_fajitas", dinner: "n_wrap", snack: "s_manzanacacahuete" }
+];
+
+export const DAY_NAMES = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+
+/* ---------- Ampliación: semanas 5-8 (recipesData.ts) ---------- */
+// Fusión automática: las nuevas recetas e ingredientes entran al recetario,
+// al buscador y a la lista de la compra sin tocar nada en Supabase.
+Object.assign(INGREDIENTS, NEW_INGREDIENTS);
+Object.assign(MEALS, NEW_MEALS);
+
+/** Ciclo de 8 semanas: 1-4 = menú base · 5-8 = menús nuevos. */
+export const MENU_CYCLE: DayMenu[][] = [WEEK_MENU, WEEK_MENU, WEEK_MENU, WEEK_MENU, ...WEEKS_5_8];
+
+export function currentCycleWeek(): number {
+  return isoWeekNumber() % MENU_CYCLE.length; // 0..7
+}
+
+/** Menú activo de esta semana (rota solo, según la semana ISO del año). */
+export function getCurrentWeekMenu(): DayMenu[] {
+  return MENU_CYCLE[currentCycleWeek()];
+}
+
+const BASE_KCAL = 1800;
+
+/** Factor de escala de raciones según objetivo calórico del perfil. */
+export function kcalFactor(targetKcal: number): number {
+  return Math.min(1.45, Math.max(0.75, targetKcal / BASE_KCAL));
+}
+
+export function scaleQty(qty: number, factor: number, unit: IngUnit): number {
+  const v = qty * factor;
+  if (unit === "ud") return Math.round(v * 4) / 4; // cuartos de unidad
+  return Math.round(v / 5) * 5; // redondeo a 5 g/ml
+}
+
+export interface ShoppingItem {
+  ingredient: Ingredient;
+  totalQty: number;
+  packs: number;
+  estPrice: number;
+}
+
+/** Lista de la compra COMPARTIDA de la semana: suma los menús de ambos. */
+export function buildShoppingList(targetKcals: number[]): ShoppingItem[] {
+  const totals: Record<string, number> = {};
+  for (const kcal of targetKcals) {
+    const f = kcalFactor(kcal);
+    for (const day of getCurrentWeekMenu()) {
+      for (const mealId of [day.breakfast, day.lunch, day.dinner, day.snack]) {
+        for (const item of MEALS[mealId].items) {
+          const unit = INGREDIENTS[item.ing].unit;
+          totals[item.ing] = (totals[item.ing] ?? 0) + scaleQty(item.qty, f, unit);
+        }
+      }
+    }
+  }
+  return Object.entries(totals).map(([id, totalQty]) => {
+    const ingredient = INGREDIENTS[id];
+    const packs = Math.max(1, Math.ceil(totalQty / ingredient.packSize));
+    return {
+      ingredient,
+      totalQty: Math.round(totalQty * 10) / 10,
+      packs,
+      estPrice: Math.round(packs * ingredient.packPrice * 100) / 100
+    };
+  });
+}
+
+export function formatQty(qty: number, unit: IngUnit): string {
+  if (unit === "ud") return `${qty} ud`;
+  if (qty >= 1000) return `${Math.round(qty / 100) / 10} ${unit === "g" ? "kg" : "L"}`;
+  return `${qty} ${unit}`;
+}
+
+import { NEW_INGREDIENTS, NEW_MEALS, WEEKS_5_8 } from "./recipesData";
+import { isoWeekNumber } from "./workouts";
