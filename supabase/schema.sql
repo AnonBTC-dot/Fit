@@ -1,3 +1,6 @@
+-- Esquema de Fit · IDEMPOTENTE: puedes ejecutarlo tantas veces como quieras
+-- sin que falle, aunque las tablas o políticas ya existan.
+
 -- Fit · Esquema de base de datos (Supabase, plan gratuito)
 -- Ejecutar en: Dashboard -> SQL Editor -> New query -> pegar todo -> Run.
 --
@@ -67,14 +70,22 @@ alter table public.workout_logs    enable row level security;
 alter table public.shopping_checks enable row level security;
 alter table public.couple_settings enable row level security;
 
+drop policy if exists "open profiles" on public.profiles;
 create policy "open profiles" on public.profiles        for all using (true) with check (true);
+drop policy if exists "open meas" on public.measurements;
 create policy "open meas"     on public.measurements    for all using (true) with check (true);
+drop policy if exists "open logs" on public.workout_logs;
 create policy "open logs"     on public.workout_logs    for all using (true) with check (true);
+drop policy if exists "open checks" on public.shopping_checks;
 create policy "open checks"   on public.shopping_checks for all using (true) with check (true);
+drop policy if exists "open settings" on public.couple_settings;
 create policy "open settings" on public.couple_settings for all using (true) with check (true);
 
 -- Realtime: el tick de la compra aparece en el otro móvil al momento.
-alter publication supabase_realtime add table public.shopping_checks;
+do $$ begin
+  alter publication supabase_realtime add table public.shopping_checks;
+exception when duplicate_object then null;
+end $$;
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- REGISTRO DE COMIDAS (conteo diario de calorías y macros)
@@ -120,4 +131,7 @@ alter table meal_swaps enable row level security;
 drop policy if exists "swaps abiertos" on meal_swaps;
 create policy "swaps abiertos" on meal_swaps for all using (true) with check (true);
 
-alter publication supabase_realtime add table meal_swaps;
+do $$ begin
+  alter publication supabase_realtime add table meal_swaps;
+exception when duplicate_object then null;
+end $$;
