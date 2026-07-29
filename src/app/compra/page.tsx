@@ -28,7 +28,7 @@ export default function ShoppingPage() {
   }, []);
 
   const items = useMemo(
-    () => buildShoppingList(profiles.map((p) => calcTargets(p).kcal)),
+    () => buildShoppingList(profiles.map((p) => ({ kcal: calcTargets(p).kcal, eatsBreakfast: p.eats_breakfast ?? true }))),
     [profiles]
   );
 

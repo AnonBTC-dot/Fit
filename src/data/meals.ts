@@ -105,7 +105,10 @@ export interface Meal {
   id: string;
   name: string;
   category: MealCategory;
-  kcal: number; // aprox a base 1800
+  /** @deprecated Referencia orientativa. Los macros REALES se calculan desde
+   *  los ingredientes con mealMacrosBase() / mealMacrosFor(). */
+  kcal: number;
+  /** @deprecated ver arriba */
   protein: number;
   items: MealItem[];
   prep: string; // 1-2 líneas
@@ -478,6 +481,91 @@ export const WEEK_MENU: DayMenu[] = [
 
 export const DAY_NAMES = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   MACROS REALES + REPARTO DE COMIDAS DEL DÍA
+   ───────────────────────────────────────────────────────────────────────────── */
+
+export type MealSlotKey = "breakfast" | "lunch" | "snack" | "dinner";
+
+export const MEAL_LABELS: Record<MealSlotKey, string> = {
+  breakfast: "Desayuno",
+  lunch: "Almuerzo",
+  snack: "Snack",
+  dinner: "Cena"
+};
+
+export const MEAL_EMOJI: Record<MealSlotKey, string> = {
+  breakfast: "🍳",
+  lunch: "🍛",
+  snack: "🍎",
+  dinner: "🌙"
+};
+
+/**
+ * Cómo se reparten las calorías del día entre comidas.
+ * Si no desayunas, ese 25% NO se pierde: se reparte en almuerzo y cena, que
+ * es justo lo que hace la gente que come por primera vez al mediodía.
+ */
+export const SPLIT_WITH_BREAKFAST: Record<MealSlotKey, number> = {
+  breakfast: 0.25,
+  lunch: 0.35,
+  snack: 0.1,
+  dinner: 0.3
+};
+
+export const SPLIT_NO_BREAKFAST: Record<MealSlotKey, number> = {
+  breakfast: 0,
+  lunch: 0.45,
+  snack: 0.15,
+  dinner: 0.4
+};
+
+export function splitFor(eatsBreakfast: boolean): Record<MealSlotKey, number> {
+  return eatsBreakfast ? SPLIT_WITH_BREAKFAST : SPLIT_NO_BREAKFAST;
+}
+
+export function activeSlots(eatsBreakfast: boolean): MealSlotKey[] {
+  return eatsBreakfast ? ["breakfast", "lunch", "snack", "dinner"] : ["lunch", "snack", "dinner"];
+}
+
+/** Macros de UNA ración base del plato, calculados desde sus ingredientes. */
+export function mealMacrosBase(mealId: string): Macros {
+  const meal = MEALS[mealId];
+  if (!meal) return { ...ZERO_MACROS };
+  let total: Macros = { ...ZERO_MACROS };
+  for (const item of meal.items) {
+    const ing = INGREDIENTS[item.ing];
+    if (!ing) continue;
+    total = addMacros(total, macrosOf(item.ing, item.qty, ing.unit));
+  }
+  return total;
+}
+
+/**
+ * Factor de ración de un plato para TI: ajusta la receta base para que aporte
+ * las kcal que te tocan en esa comida del día (según tu objetivo y si desayunas).
+ */
+export function servingFactor(mealId: string, slot: MealSlotKey, targetKcal: number, eatsBreakfast: boolean): number {
+  const base = mealMacrosBase(mealId);
+  if (base.kcal <= 0) return 1;
+  const share = splitFor(eatsBreakfast)[slot];
+  if (share <= 0) return 0;
+  return Math.min(2.2, Math.max(0.5, (targetKcal * share) / base.kcal));
+}
+
+/** Macros del plato ya ajustados a tu ración. */
+export function mealMacrosFor(mealId: string, slot: MealSlotKey, targetKcal: number, eatsBreakfast: boolean): Macros {
+  return roundMacros(scaleMacros(mealMacrosBase(mealId), servingFactor(mealId, slot, targetKcal, eatsBreakfast)));
+}
+
+/** Cantidad de un ingrediente ya ajustada a tu ración, con nota crudo/cocido. */
+export function itemQtyFor(item: MealItem, factor: number): { qty: number; unit: IngUnit; note: string } {
+  const ing = INGREDIENTS[item.ing];
+  const qty = scaleQty(item.qty, factor, ing.unit);
+  const n = NUTRITION[item.ing];
+  return { qty, unit: ing.unit, note: n ? WEIGH_LABEL[n.weighAs] : "" };
+}
+
 /* ---------- Ampliación: semanas 5-8 (recipesData.ts) ---------- */
 // Fusión automática: las nuevas recetas e ingredientes entran al recetario,
 // al buscador y a la lista de la compra sin tocar nada en Supabase.
@@ -517,12 +605,20 @@ export interface ShoppingItem {
 }
 
 /** Lista de la compra COMPARTIDA de la semana: suma los menús de ambos. */
-export function buildShoppingList(targetKcals: number[]): ShoppingItem[] {
+export function buildShoppingList(eaters: { kcal: number; eatsBreakfast: boolean }[]): ShoppingItem[] {
   const totals: Record<string, number> = {};
-  for (const kcal of targetKcals) {
-    const f = kcalFactor(kcal);
+  for (const eater of eaters) {
     for (const day of getCurrentWeekMenu()) {
-      for (const mealId of [day.breakfast, day.lunch, day.dinner, day.snack]) {
+      const slots: [MealSlotKey, string][] = [
+        ["breakfast", day.breakfast],
+        ["lunch", day.lunch],
+        ["snack", day.snack],
+        ["dinner", day.dinner]
+      ];
+      for (const [slotKey, mealId] of slots) {
+        // Si no desayuna, ese plato no se compra; el resto van con SU ración real
+        const f = servingFactor(mealId, slotKey, eater.kcal, eater.eatsBreakfast);
+        if (f <= 0) continue;
         for (const item of MEALS[mealId].items) {
           const unit = INGREDIENTS[item.ing].unit;
           totals[item.ing] = (totals[item.ing] ?? 0) + scaleQty(item.qty, f, unit);
@@ -548,5 +644,15 @@ export function formatQty(qty: number, unit: IngUnit): string {
   return `${qty} ${unit}`;
 }
 
+import {
+  NUTRITION,
+  WEIGH_LABEL,
+  ZERO_MACROS,
+  addMacros,
+  macrosOf,
+  roundMacros,
+  scaleMacros,
+  type Macros
+} from "./nutrition";
 import { NEW_INGREDIENTS, NEW_MEALS, WEEKS_5_8 } from "./recipesData";
 import { isoWeekNumber } from "./workouts";

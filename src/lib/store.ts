@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { currentWeekKey, getSupabase } from "./supabase";
-import type { CoupleSettings, Measurement, Profile, Slot, WorkoutLog } from "./types";
+import type { CoupleSettings, IntakeEntry, Measurement, Profile, Slot, WorkoutLog } from "./types";
 
 /**
  * Estado global con estrategia "local-first + write-through":
@@ -22,6 +22,7 @@ interface AppState {
   profiles: Profile[];
   measurements: Measurement[];
   logs: WorkoutLog[];
+  intake: IntakeEntry[]; // qué se ha comido (conteo diario)
   settings: CoupleSettings;
   checks: Record<string, boolean>; // lista de la compra de la semana actual
 
@@ -31,6 +32,8 @@ interface AppState {
   saveProfile: (p: Profile) => Promise<void>;
   addMeasurement: (m: Measurement) => Promise<void>;
   upsertLog: (l: WorkoutLog) => Promise<void>;
+  addIntake: (e: IntakeEntry) => Promise<void>;
+  removeIntake: (e: IntakeEntry) => Promise<void>;
   toggleCheck: (ingredientId: string) => Promise<void>;
   setWeddingDate: (date: string | null) => Promise<void>;
 }
@@ -44,6 +47,7 @@ export const useApp = create<AppState>()(
       profiles: [],
       measurements: [],
       logs: [],
+      intake: [],
       settings: { wedding_date: null },
       checks: {},
 
@@ -55,10 +59,11 @@ export const useApp = create<AppState>()(
         if (!sb) return;
         try {
           const week = currentWeekKey();
-          const [profiles, measurements, logs, settings, checks] = await Promise.all([
+          const [profiles, measurements, logs, intake, settings, checks] = await Promise.all([
             sb.from("profiles").select("*").order("slot"),
             sb.from("measurements").select("*").order("date"),
             sb.from("workout_logs").select("*").order("date"),
+            sb.from("intake_log").select("*").order("date"),
             sb.from("couple_settings").select("*").maybeSingle(),
             sb.from("shopping_checks").select("*").eq("week", week)
           ]);
@@ -68,6 +73,7 @@ export const useApp = create<AppState>()(
             profiles: (profiles.data as Profile[]) ?? [],
             measurements: (measurements.data as Measurement[]) ?? [],
             logs: (logs.data as WorkoutLog[]) ?? [],
+            intake: (intake.data as IntakeEntry[]) ?? [],
             settings: { wedding_date: settings.data?.wedding_date ?? null },
             checks: checkMap
           });
@@ -106,6 +112,19 @@ export const useApp = create<AppState>()(
         if (sb) await sb.from("workout_logs").upsert({ ...l, id: undefined }, { onConflict: "slot,date" });
       },
 
+      addIntake: async (e) => {
+        const entry: IntakeEntry = { ...e, id: e.id ?? `${e.slot}-${e.date}-${e.meal_id}-${Date.now()}` };
+        set({ intake: [...get().intake, entry] });
+        const sb = getSupabase();
+        if (sb) await sb.from("intake_log").insert(entry);
+      },
+
+      removeIntake: async (e) => {
+        set({ intake: get().intake.filter((x) => x.id !== e.id) });
+        const sb = getSupabase();
+        if (sb && e.id) await sb.from("intake_log").delete().eq("id", e.id);
+      },
+
       toggleCheck: async (ingredientId) => {
         const checked = !get().checks[ingredientId];
         set({ checks: { ...get().checks, [ingredientId]: checked } });
@@ -136,6 +155,7 @@ export const useApp = create<AppState>()(
         profiles: s.profiles,
         measurements: s.measurements,
         logs: s.logs,
+        intake: s.intake,
         settings: s.settings,
         checks: s.checks
       })

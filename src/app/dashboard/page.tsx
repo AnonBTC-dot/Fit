@@ -7,13 +7,13 @@ import { LineChart } from "@/components/LineChart";
 import { ProfileSwitcher } from "@/components/ProfileSwitcher";
 import { calcTargets, computeStreak, todayISO } from "@/lib/calculations";
 import { getPlan, todayDayIndex } from "@/data/workouts";
-import { MEALS, getCurrentWeekMenu } from "@/data/meals";
+import { MEALS, MEAL_EMOJI, activeSlots, getCurrentWeekMenu, mealMacrosFor } from "@/data/meals";
 import { useApp } from "@/lib/store";
 
 const SLOT_COLORS: Record<string, string> = { p1: "#22c55e", p2: "#8593aa" };
 
 export default function DashboardPage() {
-  const { profiles, mySlot, viewSlot, measurements, logs } = useApp();
+  const { profiles, mySlot, viewSlot, measurements, logs, intake } = useApp();
 
   const active = profiles.find((p) => p.slot === viewSlot) ?? profiles[0];
   if (!active) return null;
@@ -27,6 +27,16 @@ export default function DashboardPage() {
 
   const todayDow = (new Date().getDay() + 6) % 7;
   const todayMenu = getCurrentWeekMenu()[todayDow];
+  const eatsBreakfast = active.eats_breakfast ?? true;
+  const slots = activeSlots(eatsBreakfast);
+
+  // Conteo de hoy
+  const todayIntake = intake.filter((e) => e.slot === active.slot && e.date === today);
+  const eaten = todayIntake.reduce(
+    (a, e) => ({ kcal: a.kcal + e.kcal, protein: a.protein + e.protein, carbs: a.carbs + e.carbs, fat: a.fat + e.fat }),
+    { kcal: 0, protein: 0, carbs: 0, fat: 0 }
+  );
+  const kcalPct = Math.min(100, (eaten.kcal / targets.kcal) * 100);
 
   const streak = computeStreak(logs.filter((l) => l.slot === active.slot && l.completed).map((l) => l.date));
   const teamDates = new Set(logs.filter((l) => l.slot === "p1" && l.completed).map((l) => l.date));
@@ -72,18 +82,30 @@ export default function DashboardPage() {
           )}
         </div>
         <div className="flex items-center gap-4">
-          <Ring pct={100} label={`${targets.kcal}`} sub="kcal" color="#22c55e" size={84} />
-          <div className="grid flex-1 grid-cols-3 gap-2 text-center">
-            {[
-              { l: "Prot", v: targets.protein_g },
-              { l: "Carbs", v: targets.carbs_g },
-              { l: "Grasa", v: targets.fat_g }
-            ].map((m) => (
-              <div key={m.l} className="rounded-xl bg-ink-50 py-2">
-                <div className="text-base font-bold text-ink-800">{m.v}g</div>
-                <div className="text-[10px] font-medium uppercase text-ink-400">{m.l}</div>
-              </div>
-            ))}
+          <Ring
+            pct={kcalPct}
+            label={`${Math.max(0, targets.kcal - Math.round(eaten.kcal))}`}
+            sub="restantes"
+            color="#22c55e"
+            size={84}
+          />
+          <div className="flex-1">
+            <div className="mb-2 text-lg font-extrabold text-ink-900">
+              {Math.round(eaten.kcal)}
+              <span className="text-xs font-semibold text-ink-400"> / {targets.kcal} kcal</span>
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-center">
+              {[
+                { l: "Prot", v: `${Math.round(eaten.protein)}/${targets.protein_g}` },
+                { l: "Carbs", v: `${Math.round(eaten.carbs)}/${targets.carbs_g}` },
+                { l: "Grasa", v: `${Math.round(eaten.fat)}/${targets.fat_g}` }
+              ].map((m) => (
+                <div key={m.l} className="rounded-xl bg-ink-200 py-1.5">
+                  <div className="text-xs font-bold text-ink-800">{m.v}</div>
+                  <div className="text-[9px] font-medium uppercase text-ink-400">{m.l}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </Card>
@@ -124,14 +146,26 @@ export default function DashboardPage() {
             <UtensilsCrossed size={16} className="text-brand-400" /> Menú de hoy
           </h2>
           <Link href="/nutricion" className="text-xs font-semibold text-brand-400">
-            Ver recetas
+            Registrar comidas
           </Link>
         </div>
         <ul className="grid gap-1.5 text-sm text-ink-700">
-          <li>🍳 {MEALS[todayMenu.breakfast].name}</li>
-          <li>🍛 {MEALS[todayMenu.lunch].name}</li>
-          <li>🍎 {MEALS[todayMenu.snack].name}</li>
-          <li>🌙 {MEALS[todayMenu.dinner].name}</li>
+          {slots.map((k) => {
+            const mealId = todayMenu[k];
+            const done = todayIntake.some((e) => e.meal_id === mealId);
+            const mm = mealMacrosFor(mealId, k, targets.kcal, eatsBreakfast);
+            return (
+              <li key={k} className={`flex items-center justify-between gap-2 ${done ? "opacity-45" : ""}`}>
+                <span className="min-w-0 truncate">
+                  {MEAL_EMOJI[k]} {MEALS[mealId].name}
+                </span>
+                <span className="shrink-0 text-[10px] font-semibold text-ink-400">
+                  {done ? "✅ " : ""}
+                  {mm.kcal} kcal
+                </span>
+              </li>
+            );
+          })}
         </ul>
       </Card>
 

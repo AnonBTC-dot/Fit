@@ -32,7 +32,8 @@ function OnboardingInner() {
     activity: (existing?.activity ?? null) as Activity | null,
     goal: (existing?.goal ?? null) as Goal | null,
     venue: (existing?.venue ?? null) as Venue | null,
-    days_per_week: (existing?.days_per_week ?? 4) as DaysPerWeek
+    days_per_week: (existing?.days_per_week ?? 4) as DaysPerWeek,
+    eats_breakfast: existing?.eats_breakfast ?? true
   });
 
   const set = (k: string, v: unknown) => setForm((f) => ({ ...f, [k]: v }));
@@ -52,7 +53,8 @@ function OnboardingInner() {
       activity: form.activity,
       goal: form.goal,
       venue: form.venue,
-      days_per_week: form.days_per_week
+      days_per_week: form.days_per_week,
+      eats_breakfast: form.eats_breakfast
     };
   }, [form, slot]);
 
@@ -172,6 +174,16 @@ function OnboardingInner() {
               options={[
                 { value: "home", label: "En casa", sub: "Solo peso corporal, sesiones dinámicas de 7-25 min" },
                 { value: "gym", label: "Gimnasio", sub: "Material básico + finishers de cardio" }
+              ]}
+            />
+          </Field>
+          <Field label="¿Cuál es tu primera comida del día?" hint="Si no desayunas, repartimos esas calorías entre almuerzo y cena.">
+            <OptionGrid<string>
+              value={form.eats_breakfast ? "si" : "no"}
+              onChange={(v) => set("eats_breakfast", v === "si")}
+              options={[
+                { value: "si", label: "Desayuno por la mañana", sub: "4 comidas: desayuno, almuerzo, snack y cena" },
+                { value: "no", label: "Como al mediodía", sub: "3 comidas: almuerzo, snack y cena (ayuno matutino)" }
               ]}
             />
           </Field>

@@ -75,3 +75,29 @@ create policy "open settings" on public.couple_settings for all using (true) wit
 
 -- Realtime: el tick de la compra aparece en el otro móvil al momento.
 alter publication supabase_realtime add table public.shopping_checks;
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- REGISTRO DE COMIDAS (conteo diario de calorías y macros)
+-- Cada fila = un plato que alguien marcó como comido.
+-- ─────────────────────────────────────────────────────────────────────────────
+create table if not exists intake_log (
+  id          text primary key,
+  slot        text not null check (slot in ('p1','p2')),
+  date        date not null,
+  meal_id     text not null,
+  servings    numeric not null default 1,
+  kcal        numeric not null default 0,
+  protein     numeric not null default 0,
+  carbs       numeric not null default 0,
+  fat         numeric not null default 0,
+  created_at  timestamptz default now()
+);
+
+create index if not exists intake_log_slot_date_idx on intake_log (slot, date);
+
+alter table intake_log enable row level security;
+drop policy if exists "intake abierto" on intake_log;
+create policy "intake abierto" on intake_log for all using (true) with check (true);
+
+-- Perfiles: si desayunas o si tu primera comida es al mediodía
+alter table profiles add column if not exists eats_breakfast boolean default true;

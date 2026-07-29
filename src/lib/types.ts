@@ -19,6 +19,21 @@ export interface Profile {
   goal: Goal;
   venue: Venue;
   days_per_week: DaysPerWeek;
+  /** false = primera comida al mediodía (las kcal se reparten entre las que sí comes). */
+  eats_breakfast?: boolean;
+}
+
+/** Un plato registrado como comido (el conteo diario se construye con esto). */
+export interface IntakeEntry {
+  id?: string;
+  slot: Slot;
+  date: string; // YYYY-MM-DD
+  meal_id: string;
+  servings: number; // 0.5 = media ración, 1 = ración completa, 1.5...
+  kcal: number; // snapshot ya escalado
+  protein: number;
+  carbs: number;
+  fat: number;
 }
 
 export interface Measurement {

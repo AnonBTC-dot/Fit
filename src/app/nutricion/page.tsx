@@ -1,33 +1,48 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
-import { Card, Input } from "@/components/ui";
+import { Check, Plus, Search, Trash2 } from "lucide-react";
+import { Card, Input, Ring } from "@/components/ui";
 import { ProfileSwitcher } from "@/components/ProfileSwitcher";
-import { calcTargets } from "@/lib/calculations";
+import { calcTargets, todayISO } from "@/lib/calculations";
 import {
   CATEGORY_LABELS,
   DAY_NAMES,
   INGREDIENTS,
   MEALS,
-  getCurrentWeekMenu,
+  MEAL_EMOJI,
+  MEAL_LABELS,
+  activeSlots,
   currentCycleWeek,
   formatQty,
-  kcalFactor,
-  scaleQty,
+  getCurrentWeekMenu,
+  itemQtyFor,
+  mealMacrosBase,
+  mealMacrosFor,
+  servingFactor,
   type Meal,
-  type MealCategory
+  type MealCategory,
+  type MealSlotKey
 } from "@/data/meals";
+import { roundMacros, scaleMacros } from "@/data/nutrition";
 import { useApp } from "@/lib/store";
+import type { IntakeEntry } from "@/lib/types";
 
-const MEAL_LABELS = [
-  { key: "breakfast", label: "🍳 Desayuno" },
-  { key: "lunch", label: "🍛 Almuerzo" },
-  { key: "snack", label: "🍎 Snack" },
-  { key: "dinner", label: "🌙 Cena" }
-] as const;
+/* ── Tarjeta de plato: cantidades ya ajustadas a TU ración, con macros ── */
+function MealCard({
+  meal,
+  factor,
+  tag,
+  onEat
+}: {
+  meal: Meal;
+  factor: number;
+  tag?: string;
+  onEat?: (servings: number) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const m = roundMacros(scaleMacros(mealMacrosBase(meal.id), factor));
 
-function MealCard({ meal, factor, tag }: { meal: Meal; factor: number; tag?: string }) {
   return (
     <Card>
       <div className="mb-1 flex items-start justify-between gap-2">
@@ -35,37 +50,115 @@ function MealCard({ meal, factor, tag }: { meal: Meal; factor: number; tag?: str
           {tag && <div className="text-xs font-semibold uppercase tracking-wide text-brand-400">{tag}</div>}
           <h3 className="font-bold text-ink-800">{meal.name}</h3>
         </div>
-        <span className="shrink-0 rounded-full bg-ink-50 px-2 py-1 text-[10px] font-semibold text-ink-500">
-          ~{Math.round(meal.kcal * factor)} kcal · {Math.round(meal.protein * factor)}g prot
+        <span className="shrink-0 rounded-full bg-ink-200 px-2 py-1 text-[10px] font-semibold text-brand-400">
+          {m.kcal} kcal
         </span>
       </div>
-      <ul className="mt-2 grid gap-1">
+
+      {/* Macros del plato */}
+      <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+        {[
+          { l: "Proteína", v: `${m.protein} g` },
+          { l: "Carbos", v: `${m.carbs} g` },
+          { l: "Grasa", v: `${m.fat} g` }
+        ].map((x) => (
+          <div key={x.l} className="rounded-lg bg-ink-200 py-1.5">
+            <div className="text-sm font-bold text-ink-800">{x.v}</div>
+            <div className="text-[9px] font-medium uppercase tracking-wide text-ink-400">{x.l}</div>
+          </div>
+        ))}
+      </div>
+
+      <ul className="mt-3 grid gap-1">
         {meal.items.map((it) => {
           const ing = INGREDIENTS[it.ing];
+          const q = itemQtyFor(it, factor);
           return (
-            <li key={it.ing} className="flex justify-between text-sm text-ink-600">
+            <li key={it.ing} className="flex justify-between gap-2 text-sm text-ink-600">
               <span>{ing.name}</span>
-              <span className="font-medium text-ink-800">{formatQty(scaleQty(it.qty, factor, ing.unit), ing.unit)}</span>
+              <span className="shrink-0 font-medium text-ink-800">
+                {formatQty(q.qty, q.unit)}
+                {q.note && <span className="ml-1 text-[10px] font-normal text-ink-400">{q.note}</span>}
+              </span>
             </li>
           );
         })}
       </ul>
-      <p className="mt-2 rounded-lg bg-ink-50 p-2 text-xs text-ink-500">👨‍🍳 {meal.prep}</p>
+
+      <p className="mt-2 rounded-lg bg-ink-200 p-2 text-xs text-ink-500">👨‍🍳 {meal.prep}</p>
+
+      {onEat && (
+        <div className="mt-3">
+          {!open ? (
+            <button
+              onClick={() => setOpen(true)}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-500 px-4 py-2.5 text-sm font-semibold text-ink-950 active:scale-[0.98]"
+            >
+              <Check size={16} /> Me lo comí
+            </button>
+          ) : (
+            <div className="grid gap-2">
+              <p className="text-center text-xs text-ink-400">¿Cuánto comiste?</p>
+              <div className="flex gap-2">
+                {[0.5, 1, 1.5].map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => {
+                      onEat(s);
+                      setOpen(false);
+                    }}
+                    className="flex-1 rounded-xl bg-brand-500 px-2 py-2.5 text-sm font-bold text-ink-950 active:scale-[0.98]"
+                  >
+                    {s === 0.5 ? "½ ración" : s === 1 ? "Ración" : "1½"}
+                  </button>
+                ))}
+              </div>
+              <button onClick={() => setOpen(false)} className="text-xs font-medium text-ink-400">
+                Cancelar
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </Card>
   );
 }
 
+/* ── Barra de macro consumido vs objetivo ── */
+function MacroBar({ label, eaten, target, unit = "g" }: { label: string; eaten: number; target: number; unit?: string }) {
+  const pct = target > 0 ? Math.min(100, (eaten / target) * 100) : 0;
+  const over = eaten > target * 1.05;
+  return (
+    <div>
+      <div className="mb-1 flex justify-between text-xs">
+        <span className="font-medium text-ink-600">{label}</span>
+        <span className={over ? "font-semibold text-amber-400" : "text-ink-500"}>
+          {Math.round(eaten)} / {Math.round(target)} {unit}
+        </span>
+      </div>
+      <div className="h-2 overflow-hidden rounded-full bg-ink-200">
+        <div
+          className={`h-full rounded-full transition-all ${over ? "bg-amber-400" : "bg-brand-500"}`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function NutritionPage() {
-  const { profiles, viewSlot } = useApp();
+  const { profiles, mySlot, viewSlot, intake, addIntake, removeIntake } = useApp();
   const active = profiles.find((p) => p.slot === viewSlot) ?? profiles[0];
   const todayDow = (new Date().getDay() + 6) % 7; // 0 = lunes
-  const [tab, setTab] = useState<"menu" | "recetas">("menu");
+  const [tab, setTab] = useState<"hoy" | "menu" | "recetas">("hoy");
   const [dayIdx, setDayIdx] = useState(todayDow);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<MealCategory | "all">("all");
 
   const targets = active ? calcTargets(active) : null;
-  const factor = targets ? kcalFactor(targets.kcal) : 1;
+  const eatsBreakfast = active?.eats_breakfast ?? true;
+  const isMe = active?.slot === mySlot;
+  const today = todayISO();
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -79,18 +172,56 @@ export default function NutritionPage() {
     });
   }, [query, category]);
 
+  const todayEntries = useMemo(
+    () => intake.filter((e) => e.slot === active?.slot && e.date === today),
+    [intake, active?.slot, today]
+  );
+
+  const eaten = useMemo(
+    () =>
+      todayEntries.reduce(
+        (a, e) => ({
+          kcal: a.kcal + e.kcal,
+          protein: a.protein + e.protein,
+          carbs: a.carbs + e.carbs,
+          fat: a.fat + e.fat
+        }),
+        { kcal: 0, protein: 0, carbs: 0, fat: 0 }
+      ),
+    [todayEntries]
+  );
+
   if (!active || !targets) return null;
 
+  const slots = activeSlots(eatsBreakfast);
   const menu = getCurrentWeekMenu()[dayIdx];
-  const dayKcal = MEAL_LABELS.reduce((acc, m) => acc + MEALS[menu[m.key]].kcal, 0);
-  const dayProtein = MEAL_LABELS.reduce((acc, m) => acc + MEALS[menu[m.key]].protein, 0);
+  const todayMenu = getCurrentWeekMenu()[todayDow];
+
+  const remaining = Math.max(0, targets.kcal - eaten.kcal);
+  const pctKcal = Math.min(100, (eaten.kcal / targets.kcal) * 100);
+
+  function eat(mealId: string, slotKey: MealSlotKey, servings: number) {
+    const per = mealMacrosFor(mealId, slotKey, targets!.kcal, eatsBreakfast);
+    const e: IntakeEntry = {
+      slot: active!.slot,
+      date: today,
+      meal_id: mealId,
+      servings,
+      kcal: Math.round(per.kcal * servings),
+      protein: Math.round(per.protein * servings),
+      carbs: Math.round(per.carbs * servings),
+      fat: Math.round(per.fat * servings)
+    };
+    addIntake(e);
+  }
 
   return (
     <div className="grid gap-4 px-5 py-6">
       <header>
         <h1 className="text-xl font-extrabold">Nutrición</h1>
         <p className="text-sm text-ink-500">
-          Método del plato · raciones para {active.name} ({targets.kcal} kcal)
+          Método del plato · {targets.kcal} kcal para {active.name}
+          {!eatsBreakfast && " · sin desayuno"}
         </p>
       </header>
 
@@ -100,14 +231,15 @@ export default function NutritionPage() {
       <div className="flex rounded-full bg-ink-100 p-1">
         {(
           [
-            { key: "menu", label: "Menú semanal" },
+            { key: "hoy", label: "Hoy" },
+            { key: "menu", label: "Menú" },
             { key: "recetas", label: "Recetas" }
           ] as const
         ).map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`flex-1 rounded-full px-4 py-1.5 text-sm font-semibold transition-all ${
+            className={`flex-1 rounded-full px-3 py-1.5 text-sm font-semibold transition-all ${
               tab === t.key ? "bg-ink-200 text-brand-400 shadow-sm" : "text-ink-500"
             }`}
           >
@@ -116,6 +248,101 @@ export default function NutritionPage() {
         ))}
       </div>
 
+      {/* ─────────── HOY: conteo de calorías y macros ─────────── */}
+      {tab === "hoy" && (
+        <>
+          <Card>
+            <div className="flex items-center gap-4">
+              <Ring pct={pctKcal} label={`${remaining}`} sub="restantes" size={96} stroke={9} />
+              <div className="flex-1">
+                <div className="mb-1 text-2xl font-extrabold text-ink-900">
+                  {Math.round(eaten.kcal)}
+                  <span className="text-sm font-semibold text-ink-400"> / {targets.kcal} kcal</span>
+                </div>
+                <p className="text-xs text-ink-500">
+                  {eaten.kcal === 0
+                    ? "Aún no has registrado nada hoy."
+                    : remaining > 0
+                      ? `Te quedan ${remaining} kcal por comer.`
+                      : "Objetivo del día completado."}
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 grid gap-2.5">
+              <MacroBar label="Proteína" eaten={eaten.protein} target={targets.protein_g} />
+              <MacroBar label="Carbohidratos" eaten={eaten.carbs} target={targets.carbs_g} />
+              <MacroBar label="Grasas" eaten={eaten.fat} target={targets.fat_g} />
+            </div>
+          </Card>
+
+          {/* Registro del día */}
+          {todayEntries.length > 0 && (
+            <Card>
+              <h2 className="mb-2 text-sm font-bold text-ink-700">Lo que llevas hoy</h2>
+              <ul className="grid gap-1.5">
+                {todayEntries.map((e) => (
+                  <li key={e.id} className="flex items-center justify-between gap-2 border-b border-ink-200 pb-1.5 last:border-0">
+                    <div className="min-w-0">
+                      <div className="truncate text-sm text-ink-700">{MEALS[e.meal_id]?.name ?? e.meal_id}</div>
+                      <div className="text-[10px] text-ink-400">
+                        {e.servings === 0.5 ? "½ ración" : e.servings === 1 ? "1 ración" : `${e.servings} raciones`} ·{" "}
+                        {e.protein}P / {e.carbs}C / {e.fat}G
+                      </div>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <span className="text-sm font-bold text-brand-400">{e.kcal}</span>
+                      {isMe && (
+                        <button onClick={() => removeIntake(e)} className="text-ink-400" aria-label="Quitar">
+                          <Trash2 size={14} />
+                        </button>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+
+          {/* Menú de hoy con botón de registrar */}
+          <div>
+            <h2 className="mb-2 text-sm font-bold text-ink-700">
+              Tu menú de hoy · {DAY_NAMES[todayDow]}
+            </h2>
+            {!eatsBreakfast && (
+              <p className="mb-2 text-xs text-ink-400">
+                Tu primera comida es el almuerzo: las calorías del desayuno se reparten en almuerzo y cena.
+              </p>
+            )}
+            <div className="grid gap-3">
+              {slots.map((k) => {
+                const mealId = todayMenu[k];
+                const done = todayEntries.some((e) => e.meal_id === mealId);
+                return (
+                  <div key={k} className={done ? "opacity-50" : ""}>
+                    <MealCard
+                      meal={MEALS[mealId]}
+                      factor={servingFactor(mealId, k, targets.kcal, eatsBreakfast)}
+                      tag={`${MEAL_EMOJI[k]} ${MEAL_LABELS[k]}${done ? " · registrado" : ""}`}
+                      onEat={isMe && !done ? (s) => eat(mealId, k, s) : undefined}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {isMe && (
+            <button
+              onClick={() => setTab("recetas")}
+              className="flex items-center justify-center gap-2 rounded-xl border border-ink-300 py-3 text-sm font-semibold text-ink-600"
+            >
+              <Plus size={16} /> Comí otra cosa (buscar en recetas)
+            </button>
+          )}
+        </>
+      )}
+
+      {/* ─────────── MENÚ SEMANAL ─────────── */}
       {tab === "menu" && (
         <>
           <div className="flex gap-2 overflow-x-auto pb-1">
@@ -127,7 +354,7 @@ export default function NutritionPage() {
                   i === dayIdx
                     ? "bg-brand-500 text-ink-950"
                     : i === todayDow
-                      ? "border border-brand-300 bg-ink-200 text-brand-700"
+                      ? "border border-brand-500 bg-ink-200 text-brand-400"
                       : "border border-ink-300 bg-ink-200 text-ink-600"
                 }`}
               >
@@ -138,18 +365,26 @@ export default function NutritionPage() {
           </div>
 
           <Card className="flex items-center justify-between !py-3">
-            <span className="text-sm font-semibold text-ink-700">{DAY_NAMES[dayIdx]} · Semana {currentCycleWeek() + 1}/8</span>
+            <span className="text-sm font-semibold text-ink-700">
+              {DAY_NAMES[dayIdx]} · Semana {currentCycleWeek() + 1}/8
+            </span>
             <span className="text-xs text-ink-500">
-              ~{Math.round(dayKcal * factor)} kcal · {Math.round(dayProtein * factor)} g proteína
+              {slots.reduce((a, k) => a + mealMacrosFor(menu[k], k, targets.kcal, eatsBreakfast).kcal, 0)} kcal
             </span>
           </Card>
 
-          {MEAL_LABELS.map(({ key, label }) => (
-            <MealCard key={key} meal={MEALS[menu[key]]} factor={factor} tag={label} />
+          {slots.map((k) => (
+            <MealCard
+              key={k}
+              meal={MEALS[menu[k]]}
+              factor={servingFactor(menu[k], k, targets.kcal, eatsBreakfast)}
+              tag={`${MEAL_EMOJI[k]} ${MEAL_LABELS[k]}`}
+            />
           ))}
         </>
       )}
 
+      {/* ─────────── RECETARIO ─────────── */}
       {tab === "recetas" && (
         <>
           <div className="relative">
@@ -177,9 +412,19 @@ export default function NutritionPage() {
           {results.length === 0 && (
             <p className="py-8 text-center text-sm text-ink-400">Sin resultados para “{query}”.</p>
           )}
-          {results.map((m) => (
-            <MealCard key={m.id} meal={m} factor={factor} tag={CATEGORY_LABELS[m.category]} />
-          ))}
+          {results.map((m) => {
+            const slotKey: MealSlotKey = m.category === "dinner" ? "dinner" : (m.category as MealSlotKey);
+            const useSlot: MealSlotKey = slotKey === "breakfast" && !eatsBreakfast ? "lunch" : slotKey;
+            return (
+              <MealCard
+                key={m.id}
+                meal={m}
+                factor={servingFactor(m.id, useSlot, targets.kcal, eatsBreakfast)}
+                tag={CATEGORY_LABELS[m.category]}
+                onEat={isMe ? (s) => eat(m.id, useSlot, s) : undefined}
+              />
+            );
+          })}
         </>
       )}
     </div>
