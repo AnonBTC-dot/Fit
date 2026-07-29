@@ -747,10 +747,30 @@ export interface ShoppingItem {
 }
 
 /** Lista de la compra COMPARTIDA de la semana: suma los menús de ambos. */
-export function buildShoppingList(eaters: { kcal: number; eatsBreakfast: boolean }[]): ShoppingItem[] {
+export function buildShoppingList(
+  eaters: { kcal: number; eatsBreakfast: boolean }[],
+  /** Platos que habéis cambiado, por fecha: "YYYY-MM-DD|comida" -> plato. */
+  swaps: Record<string, string> = {},
+  /** Lunes de la semana que se compra (para casar los cambios con su día). */
+  weekStart?: Date
+): ShoppingItem[] {
   const totals: Record<string, number> = {};
+  const week = getCurrentWeekMenu();
+  // Aplica a cada día los platos que hayáis cambiado
+  const days = week.map((day, i) => {
+    if (!weekStart) return day;
+    const d = new Date(weekStart);
+    d.setDate(d.getDate() + i);
+    const iso = d.toISOString().slice(0, 10);
+    const out: DayMenu = { ...day };
+    for (const k of ["breakfast", "lunch", "snack", "dinner"] as MealSlotKey[]) {
+      const chosen = swaps[`${iso}|${k}`];
+      if (chosen && MEALS[chosen]) out[k] = chosen;
+    }
+    return out;
+  });
   for (const eater of eaters) {
-    for (const day of getCurrentWeekMenu()) {
+    for (const day of days) {
       const slots: [MealSlotKey, string][] = [
         ["breakfast", day.breakfast],
         ["lunch", day.lunch],

@@ -191,7 +191,9 @@ function SwapPicker({
       <div className="flex items-center justify-between border-b border-ink-200 px-5 py-4">
         <div>
           <h2 className="font-bold text-ink-900">Cambiar {MEAL_LABELS[slotKey].toLowerCase()}</h2>
-          <p className="text-xs text-ink-400">Ordenadas por calorías parecidas. Elige la que te apetezca.</p>
+          <p className="text-xs text-ink-400">
+            El cambio vale para los dos · cada uno con su ración
+          </p>
         </div>
         <button onClick={onClose} className="rounded-full bg-ink-200 p-2 text-ink-600">
           <X size={16} />
@@ -287,9 +289,10 @@ export default function NutritionPage() {
 
   const cheatOn = active.cheat_day ?? true;
   // Cambios manuales guardados para hoy
+  // Los platos son COMPARTIDOS (coméis juntos); las raciones, de cada uno
   const mySwaps: Partial<Record<MealSlotKey, string>> = {};
   for (const k of ["breakfast", "lunch", "snack", "dinner"] as MealSlotKey[]) {
-    const v = swaps[`${active.slot}|${today}|${k}`];
+    const v = swaps[`${today}|${k}`];
     if (v) mySwaps[k] = v;
   }
   // Plan del día: comida libre del finde + tus cambios + snack que cuadra macros
@@ -327,7 +330,7 @@ export default function NutritionPage() {
           eatsBreakfast={eatsBreakfast}
           canReset={Boolean(mySwaps[swapping])}
           onPick={(id) => {
-            swapMeal(active.slot, today, swapping, id);
+            swapMeal(today, swapping, id, active.slot);
             setSwapping(null);
           }}
           onClose={() => setSwapping(null)}
@@ -336,8 +339,8 @@ export default function NutritionPage() {
       <header>
         <h1 className="text-xl font-extrabold">Nutrición</h1>
         <p className="text-sm text-ink-500">
-          {targets.kcal} kcal para {active.name}
-          {!eatsBreakfast && " · sin desayuno"} · el menú es una sugerencia, cámbialo a tu gusto
+          {targets.kcal} kcal · raciones de {active.name}
+          {!eatsBreakfast && " · sin desayuno"}
         </p>
       </header>
 

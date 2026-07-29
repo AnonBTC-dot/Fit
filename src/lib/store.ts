@@ -23,7 +23,7 @@ interface AppState {
   measurements: Measurement[];
   logs: WorkoutLog[];
   intake: IntakeEntry[]; // qué se ha comido (conteo diario)
-  swaps: Record<string, string>; // "slot|fecha|comida" -> id del plato elegido
+  swaps: Record<string, string>; // "fecha|comida" -> plato elegido (COMPARTIDO por los dos)
   settings: CoupleSettings;
   checks: Record<string, boolean>; // lista de la compra de la semana actual
 
@@ -33,7 +33,7 @@ interface AppState {
   saveProfile: (p: Profile) => Promise<void>;
   addMeasurement: (m: Measurement) => Promise<void>;
   upsertLog: (l: WorkoutLog) => Promise<void>;
-  swapMeal: (slot: Slot, date: string, mealSlot: string, mealId: string | null) => void;
+  swapMeal: (date: string, mealSlot: string, mealId: string | null, by: Slot) => Promise<void>;
   addIntake: (e: IntakeEntry) => Promise<void>;
   removeIntake: (e: IntakeEntry) => Promise<void>;
   toggleCheck: (ingredientId: string) => Promise<void>;
@@ -62,11 +62,12 @@ export const useApp = create<AppState>()(
         if (!sb) return;
         try {
           const week = currentWeekKey();
-          const [profiles, measurements, logs, intake, settings, checks] = await Promise.all([
+          const [profiles, measurements, logs, intake, mealSwaps, settings, checks] = await Promise.all([
             sb.from("profiles").select("*").order("slot"),
             sb.from("measurements").select("*").order("date"),
             sb.from("workout_logs").select("*").order("date"),
             sb.from("intake_log").select("*").order("date"),
+            sb.from("meal_swaps").select("*"),
             sb.from("couple_settings").select("*").maybeSingle(),
             sb.from("shopping_checks").select("*").eq("week", week)
           ]);
@@ -77,6 +78,12 @@ export const useApp = create<AppState>()(
             measurements: (measurements.data as Measurement[]) ?? [],
             logs: (logs.data as WorkoutLog[]) ?? [],
             intake: (intake.data as IntakeEntry[]) ?? [],
+            swaps: Object.fromEntries(
+              ((mealSwaps.data as { date: string; meal_slot: string; meal_id: string }[]) ?? []).map((r) => [
+                `${r.date}|${r.meal_slot}`,
+                r.meal_id
+              ])
+            ),
             settings: { wedding_date: settings.data?.wedding_date ?? null },
             checks: checkMap
           });
@@ -115,12 +122,29 @@ export const useApp = create<AppState>()(
         if (sb) await sb.from("workout_logs").upsert({ ...l, id: undefined }, { onConflict: "slot,date" });
       },
 
-      swapMeal: (slot, date, mealSlot, mealId) => {
-        const key = `${slot}|${date}|${mealSlot}`;
+      /**
+       * Cambiar el plato de una comida. Es COMPARTIDO: coméis juntos, así que
+       * el plato es el mismo para los dos y se sincroniza al otro móvil al
+       * instante. Lo que NO se comparte son las raciones: cada uno ve las suyas
+       * calculadas con sus propias calorías y macros.
+       */
+      swapMeal: async (date, mealSlot, mealId, by) => {
+        const key = `${date}|${mealSlot}`;
         const next = { ...get().swaps };
         if (mealId) next[key] = mealId;
         else delete next[key];
         set({ swaps: next });
+
+        const sb = getSupabase();
+        if (!sb) return;
+        if (mealId) {
+          await sb.from("meal_swaps").upsert(
+            { date, meal_slot: mealSlot, meal_id: mealId, changed_by: by, updated_at: new Date().toISOString() },
+            { onConflict: "date,meal_slot" }
+          );
+        } else {
+          await sb.from("meal_swaps").delete().eq("date", date).eq("meal_slot", mealSlot);
+        }
       },
 
       addIntake: async (e) => {
@@ -180,7 +204,7 @@ export function subscribeShoppingRealtime(): () => void {
   const sb = getSupabase();
   if (!sb) return () => {};
   const channel = sb
-    .channel("shopping-sync")
+    .channel("couple-sync")
     .on(
       "postgres_changes",
       { event: "*", schema: "public", table: "shopping_checks" },
@@ -188,6 +212,32 @@ export function subscribeShoppingRealtime(): () => void {
         const row = payload.new;
         if (row?.ingredient_id && row.week === currentWeekKey()) {
           useApp.setState((s) => ({ checks: { ...s.checks, [row.ingredient_id!]: Boolean(row.checked) } }));
+        }
+      }
+    )
+    // Si uno cambia el plato, al otro le cambia al instante (coméis lo mismo)
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "meal_swaps" },
+      (payload: {
+        eventType?: string;
+        new?: { date?: string; meal_slot?: string; meal_id?: string };
+        old?: { date?: string; meal_slot?: string };
+      }) => {
+        const row = payload.new;
+        if (payload.eventType === "DELETE") {
+          const old = payload.old;
+          if (old?.date && old.meal_slot) {
+            useApp.setState((s) => {
+              const next = { ...s.swaps };
+              delete next[`${old.date}|${old.meal_slot}`];
+              return { swaps: next };
+            });
+          }
+          return;
+        }
+        if (row?.date && row.meal_slot && row.meal_id) {
+          useApp.setState((s) => ({ swaps: { ...s.swaps, [`${row.date}|${row.meal_slot}`]: row.meal_id! } }));
         }
       }
     )

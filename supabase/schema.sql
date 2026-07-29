@@ -101,3 +101,23 @@ create policy "intake abierto" on intake_log for all using (true) with check (tr
 
 -- Perfiles: si desayunas o si tu primera comida es al mediodía
 alter table profiles add column if not exists eats_breakfast boolean default true;
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- PLATOS CAMBIADOS (compartidos por la pareja)
+-- Coméis lo mismo: el plato es común. Las raciones y macros los calcula cada
+-- móvil según el onboarding de cada uno.
+-- ─────────────────────────────────────────────────────────────────────────────
+create table if not exists meal_swaps (
+  date       date not null,
+  meal_slot  text not null check (meal_slot in ('breakfast','lunch','snack','dinner')),
+  meal_id    text not null,
+  changed_by text,
+  updated_at timestamptz not null default now(),
+  primary key (date, meal_slot)
+);
+
+alter table meal_swaps enable row level security;
+drop policy if exists "swaps abiertos" on meal_swaps;
+create policy "swaps abiertos" on meal_swaps for all using (true) with check (true);
+
+alter publication supabase_realtime add table meal_swaps;

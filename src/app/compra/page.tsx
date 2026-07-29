@@ -15,12 +15,22 @@ const SECTION_EMOJI: Record<string, string> = {
   Despensa: "🛒"
 };
 
+/** Lunes de esta semana (para casar los platos cambiados con su día). */
+function mondayOfThisWeek(): Date {
+  const d = new Date();
+  const dow = (d.getDay() + 6) % 7; // 0 = lunes
+  d.setDate(d.getDate() - dow);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
 /**
- * Lista de la compra COMPARTIDA: suma la semana de ambos y sincroniza los
- * ticks en la nube en tiempo real (si Pamela marca, a Leo se le tacha).
+ * Lista de la compra COMPARTIDA: mismos platos para los dos, pero sumando la
+ * ración de CADA UNO según su onboarding. Los ticks se sincronizan en tiempo
+ * real (si Pamela marca, a Leo se le tacha).
  */
 export default function ShoppingPage() {
-  const { profiles, checks, toggleCheck } = useApp();
+  const { swaps, profiles, checks, toggleCheck } = useApp();
 
   useEffect(() => {
     const unsubscribe = subscribeShoppingRealtime();
@@ -28,8 +38,12 @@ export default function ShoppingPage() {
   }, []);
 
   const items = useMemo(
-    () => buildShoppingList(profiles.map((p) => ({ kcal: calcTargets(p).kcal, eatsBreakfast: p.eats_breakfast ?? true }))),
-    [profiles]
+    () => buildShoppingList(
+        profiles.map((p) => ({ kcal: calcTargets(p).kcal, eatsBreakfast: p.eats_breakfast ?? true })),
+        swaps,
+        mondayOfThisWeek()
+      ),
+    [profiles, swaps]
   );
 
   if (profiles.length === 0) return null;
