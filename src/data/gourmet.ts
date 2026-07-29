@@ -275,6 +275,195 @@ export const GOURMET_MEALS: Record<string, Meal> = {
     prep: "Empana con huevo y avena molida especiada, horno 200° 20 min sobre rejilla. Salsa de Skyr con ajo y limón."
   },
 
+
+  /* ═══════════ CAMARONES ═══════════ */
+  c_pastacamarones: {
+    id: "c_pastacamarones",
+    name: "Pasta con camarones al ajillo y espinacas",
+    category: "lunch",
+    kcal: 580,
+    protein: 42,
+    items: [
+      { ing: "gambas", qty: 180 },
+      { ing: "pasta", qty: 85 },
+      { ing: "espinacas", qty: 100 },
+      { ing: "tomate", qty: 1 },
+      { ing: "ajo", qty: 3 },
+      { ing: "aove", qty: 10 }
+    ],
+    prep: "Ajo laminado en el aceite, camarones 2 min (más se ponen chiclosos). Espinacas, la pasta y un cazo de su agua."
+  },
+  c_arrozcamarones: {
+    id: "c_arrozcamarones",
+    name: "Arroz con camarones y verduras al wok",
+    category: "lunch",
+    kcal: 570,
+    protein: 40,
+    items: [
+      { ing: "gambas", qty: 180 },
+      { ing: "arroz", qty: 70 },
+      { ing: "pimiento", qty: 0.5 },
+      { ing: "zanahoria", qty: 1 },
+      { ing: "huevo", qty: 1 },
+      { ing: "salsasoja", qty: 15 },
+      { ing: "ajo", qty: 2 }
+    ],
+    prep: "Arroz del día anterior al wok bien caliente, huevo revuelto aparte, verduras y camarones al final. Soja y listo."
+  },
+  c_camaronesboniato: {
+    id: "c_camaronesboniato",
+    name: "Camarones a la plancha con boniato y ensalada",
+    category: "lunch",
+    kcal: 540,
+    protein: 42,
+    items: [
+      { ing: "gambas", qty: 190 },
+      { ing: "boniato", qty: 190 },
+      { ing: "ensalada", qty: 1 },
+      { ing: "limon", qty: 0.5 },
+      { ing: "ajo", qty: 2 },
+      { ing: "aove", qty: 10 }
+    ],
+    prep: "Camarones a la plancha fuerte con ajo y limón, 90 segundos por lado. Boniato asado y ensalada generosa."
+  },
+  n_camaronesajillo: {
+    id: "n_camaronesajillo",
+    name: "Camarones al ajillo con pan y ensalada",
+    category: "dinner",
+    kcal: 460,
+    protein: 40,
+    items: [
+      { ing: "gambas", qty: 190 },
+      { ing: "pan", qty: 45 },
+      { ing: "ensalada", qty: 0.5 },
+      { ing: "ajo", qty: 4 },
+      { ing: "aove", qty: 12 }
+    ],
+    prep: "Cazuela con aceite, ajo y guindilla. Camarones 2 min, perejil y fuera. El pan es obligatorio para la salsa."
+  },
+  n_camaronesbrocoli: {
+    id: "n_camaronesbrocoli",
+    name: "Salteado de camarones con brócoli y arroz",
+    category: "dinner",
+    kcal: 480,
+    protein: 42,
+    items: [
+      { ing: "gambas", qty: 185 },
+      { ing: "brocoli", qty: 150 },
+      { ing: "arroz", qty: 50 },
+      { ing: "salsasoja", qty: 15 },
+      { ing: "ajo", qty: 3 },
+      { ing: "aove", qty: 8 }
+    ],
+    prep: "Brócoli al wok 3 min con un chorro de agua para que se haga al vapor. Camarones, ajo y soja al final."
+  },
+
+  /* ═══════════ HUEVO A DIARIO ═══════════ */
+  c_arrozhuevores: {
+    id: "c_arrozhuevores",
+    name: "Arroz frito con res y huevo",
+    category: "lunch",
+    kcal: 620,
+    protein: 46,
+    items: [
+      { ing: "ternerapicada", qty: 150 },
+      { ing: "arroz", qty: 70 },
+      { ing: "huevo", qty: 2 },
+      { ing: "zanahoria", qty: 1 },
+      { ing: "pimiento", qty: 0.5 },
+      { ing: "salsasoja", qty: 15 }
+    ],
+    prep: "Huevo revuelto y retira. Carne a fuego fuerte, verduras, el arroz y devuelve el huevo. Soja al final."
+  },
+  c_resconhuevo: {
+    id: "c_resconhuevo",
+    name: "Bistec a caballo: res con huevo frito y patatas",
+    category: "lunch",
+    kcal: 640,
+    protein: 48,
+    items: [
+      { ing: "ternerafilete", qty: 165 },
+      { ing: "huevo", qty: 2 },
+      { ing: "patata", qty: 180 },
+      { ing: "ensalada", qty: 0.5 },
+      { ing: "aove", qty: 10 }
+    ],
+    prep: "Filete a la plancha y los huevos fritos con la puntilla encima. Patatas al horno y ensalada al lado."
+  },
+  n_huevoscerdo: {
+    id: "n_huevoscerdo",
+    name: "Revuelto de huevo con cerdo y pimientos",
+    category: "dinner",
+    kcal: 490,
+    protein: 42,
+    items: [
+      { ing: "huevo", qty: 3 },
+      { ing: "cerdolomo", qty: 120 },
+      { ing: "pimiento", qty: 1 },
+      { ing: "cebolla", qty: 0.5 },
+      { ing: "pan", qty: 35 },
+      { ing: "aove", qty: 8 }
+    ],
+    prep: "Cerdo en tiras dorado, pimientos y cebolla pochados, y los huevos al final removiendo a fuego suave."
+  },
+  n_tortillacamarones: {
+    id: "n_tortillacamarones",
+    name: "Tortilla de camarones y espinacas",
+    category: "dinner",
+    kcal: 450,
+    protein: 40,
+    items: [
+      { ing: "huevo", qty: 3 },
+      { ing: "gambas", qty: 120 },
+      { ing: "espinacas", qty: 100 },
+      { ing: "pan", qty: 35 },
+      { ing: "aove", qty: 8 }
+    ],
+    prep: "Saltea camarones con ajo y espinacas, añade el huevo batido y cuaja jugosa por dentro."
+  },
+  n_huevosalhorno: {
+    id: "n_huevosalhorno",
+    name: "Huevos al horno con carne y queso gratinado",
+    category: "dinner",
+    kcal: 510,
+    protein: 44,
+    items: [
+      { ing: "huevo", qty: 3 },
+      { ing: "ternerapicada", qty: 120 },
+      { ing: "tomatetrit", qty: 120 },
+      { ing: "quesofresco", qty: 40 },
+      { ing: "espinacas", qty: 80 },
+      { ing: "pan", qty: 30 }
+    ],
+    prep: "Carne con tomate en una fuente, haz huecos, casca los huevos, queso encima y horno 12 min a 200°."
+  },
+  s_huevoaguacate: {
+    id: "s_huevoaguacate",
+    name: "Huevos cocidos con aguacate y pimentón",
+    category: "snack",
+    kcal: 240,
+    protein: 15,
+    items: [
+      { ing: "huevo", qty: 2 },
+      { ing: "aguacate", qty: 0.5 },
+      { ing: "especias", qty: 1 }
+    ],
+    prep: "Huevos cocidos partidos por la mitad con aguacate machacado encima, sal y pimentón. Sacia muchísimo."
+  },
+  s_tortillamini: {
+    id: "s_tortillamini",
+    name: "Mini tortilla francesa con queso",
+    category: "snack",
+    kcal: 230,
+    protein: 20,
+    items: [
+      { ing: "huevo", qty: 2 },
+      { ing: "quesofresco", qty: 30 },
+      { ing: "aove", qty: 4 }
+    ],
+    prep: "Dos huevos batidos con el queso dentro. Tres minutos y tienes 20 g de proteína."
+  },
+
   /* ═══════════ COMIDA LIBRE CONTROLADA (finde) ═══════════ */
   n_pizzaproteica: {
     id: "n_pizzaproteica",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, Plus, Search, Trash2 } from "lucide-react";
+import { Check, Plus, RefreshCw, Search, Trash2, X } from "lucide-react";
 import { Card, Input, Ring } from "@/components/ui";
 import { ProfileSwitcher } from "@/components/ProfileSwitcher";
 import { calcTargets, todayISO } from "@/lib/calculations";
@@ -13,6 +13,7 @@ import {
   MEAL_EMOJI,
   MEAL_LABELS,
   activeSlots,
+  alternativesFor,
   buildDayPlan,
   currentCycleWeek,
   formatQty,
@@ -34,12 +35,16 @@ function MealCard({
   meal,
   factor,
   tag,
-  onEat
+  onEat,
+  onSwap,
+  swapped
 }: {
   meal: Meal;
   factor: number;
   tag?: string;
   onEat?: (servings: number) => void;
+  onSwap?: () => void;
+  swapped?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const m = roundMacros(scaleMacros(mealMacrosBase(meal.id), factor));
@@ -87,6 +92,15 @@ function MealCard({
       </ul>
 
       <p className="mt-2 rounded-lg bg-ink-200 p-2 text-xs text-ink-500">👨‍🍳 {meal.prep}</p>
+
+      {onSwap && (
+        <button
+          onClick={onSwap}
+          className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-xl border border-ink-300 py-2 text-xs font-semibold text-ink-600"
+        >
+          <RefreshCw size={13} /> {swapped ? "Cambiar de nuevo · volver al sugerido" : "No me apetece, cambiar plato"}
+        </button>
+      )}
 
       {onEat && (
         <div className="mt-3">
@@ -147,8 +161,85 @@ function MacroBar({ label, eaten, target, unit = "g" }: { label: string; eaten: 
   );
 }
 
+/* ── Selector de alternativas: nada es obligatorio ── */
+function SwapPicker({
+  slotKey,
+  currentId,
+  targetKcal,
+  eatsBreakfast,
+  onPick,
+  onClose,
+  canReset
+}: {
+  slotKey: MealSlotKey;
+  currentId: string;
+  targetKcal: number;
+  eatsBreakfast: boolean;
+  onPick: (id: string | null) => void;
+  onClose: () => void;
+  canReset: boolean;
+}) {
+  const [q, setQ] = useState("");
+  const alts = useMemo(() => {
+    const list = alternativesFor(slotKey, currentId);
+    const s = q.trim().toLowerCase();
+    return s ? list.filter((m) => m.name.toLowerCase().includes(s)) : list;
+  }, [slotKey, currentId, q]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col bg-ink-50">
+      <div className="flex items-center justify-between border-b border-ink-200 px-5 py-4">
+        <div>
+          <h2 className="font-bold text-ink-900">Cambiar {MEAL_LABELS[slotKey].toLowerCase()}</h2>
+          <p className="text-xs text-ink-400">Ordenadas por calorías parecidas. Elige la que te apetezca.</p>
+        </div>
+        <button onClick={onClose} className="rounded-full bg-ink-200 p-2 text-ink-600">
+          <X size={16} />
+        </button>
+      </div>
+
+      <div className="px-5 py-3">
+        <div className="relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
+          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar..." style={{ paddingLeft: "2.25rem" }} />
+        </div>
+        {canReset && (
+          <button
+            onClick={() => onPick(null)}
+            className="mt-2 w-full rounded-xl border border-ink-300 py-2 text-xs font-semibold text-ink-500"
+          >
+            Volver al plato sugerido
+          </button>
+        )}
+      </div>
+
+      <div className="flex-1 overflow-y-auto px-5 pb-8">
+        <div className="grid gap-2">
+          {alts.map((m) => {
+            const mm = mealMacrosFor(m.id, slotKey, targetKcal, eatsBreakfast);
+            return (
+              <button
+                key={m.id}
+                onClick={() => onPick(m.id)}
+                className="flex items-center justify-between gap-3 rounded-xl border border-ink-200 bg-ink-100 p-3 text-left active:scale-[0.98]"
+              >
+                <span className="min-w-0 text-sm font-semibold text-ink-800">{m.name}</span>
+                <span className="shrink-0 text-right">
+                  <span className="block text-sm font-bold text-brand-400">{mm.kcal}</span>
+                  <span className="block text-[10px] text-ink-400">{mm.protein}g prot</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function NutritionPage() {
-  const { profiles, mySlot, viewSlot, intake, addIntake, removeIntake } = useApp();
+  const { profiles, mySlot, viewSlot, intake, swaps, swapMeal, addIntake, removeIntake } = useApp();
+  const [swapping, setSwapping] = useState<MealSlotKey | null>(null);
   const active = profiles.find((p) => p.slot === viewSlot) ?? profiles[0];
   const todayDow = (new Date().getDay() + 6) % 7; // 0 = lunes
   const [tab, setTab] = useState<"hoy" | "menu" | "recetas">("hoy");
@@ -195,9 +286,15 @@ export default function NutritionPage() {
   if (!active || !targets) return null;
 
   const cheatOn = active.cheat_day ?? true;
-  // Plan del día: comida libre del finde + snack que cuadra los macros
-  const todayPlan = buildDayPlan(todayDow, targets, eatsBreakfast, cheatOn);
-  const viewPlan = buildDayPlan(dayIdx, targets, eatsBreakfast, cheatOn);
+  // Cambios manuales guardados para hoy
+  const mySwaps: Partial<Record<MealSlotKey, string>> = {};
+  for (const k of ["breakfast", "lunch", "snack", "dinner"] as MealSlotKey[]) {
+    const v = swaps[`${active.slot}|${today}|${k}`];
+    if (v) mySwaps[k] = v;
+  }
+  // Plan del día: comida libre del finde + tus cambios + snack que cuadra macros
+  const todayPlan = buildDayPlan(todayDow, targets, eatsBreakfast, cheatOn, mySwaps);
+  const viewPlan = buildDayPlan(dayIdx, targets, eatsBreakfast, cheatOn, dayIdx === todayDow ? mySwaps : {});
   const slots = viewPlan.slots;
   const menu = viewPlan.menu;
   const todayMenu = todayPlan.menu;
@@ -222,11 +319,25 @@ export default function NutritionPage() {
 
   return (
     <div className="grid gap-4 px-5 py-6">
+      {swapping && (
+        <SwapPicker
+          slotKey={swapping}
+          currentId={todayPlan.menu[swapping]}
+          targetKcal={targets.kcal}
+          eatsBreakfast={eatsBreakfast}
+          canReset={Boolean(mySwaps[swapping])}
+          onPick={(id) => {
+            swapMeal(active.slot, today, swapping, id);
+            setSwapping(null);
+          }}
+          onClose={() => setSwapping(null)}
+        />
+      )}
       <header>
         <h1 className="text-xl font-extrabold">Nutrición</h1>
         <p className="text-sm text-ink-500">
-          Método del plato · {targets.kcal} kcal para {active.name}
-          {!eatsBreakfast && " · sin desayuno"}
+          {targets.kcal} kcal para {active.name}
+          {!eatsBreakfast && " · sin desayuno"} · el menú es una sugerencia, cámbialo a tu gusto
         </p>
       </header>
 
@@ -329,6 +440,8 @@ export default function NutritionPage() {
                       factor={servingFactor(mealId, k, targets.kcal, eatsBreakfast)}
                       tag={`${MEAL_EMOJI[k]} ${MEAL_LABELS[k]}${todayPlan.cheatSlot === k ? " · 🔥 comida libre" : ""}${done ? " · registrado" : ""}`}
                       onEat={isMe && !done ? (s) => eat(mealId, k, s) : undefined}
+                      onSwap={isMe && !done ? () => setSwapping(k) : undefined}
+                      swapped={Boolean(mySwaps[k])}
                     />
                   </div>
                 );

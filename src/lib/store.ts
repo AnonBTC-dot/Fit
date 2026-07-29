@@ -23,6 +23,7 @@ interface AppState {
   measurements: Measurement[];
   logs: WorkoutLog[];
   intake: IntakeEntry[]; // qué se ha comido (conteo diario)
+  swaps: Record<string, string>; // "slot|fecha|comida" -> id del plato elegido
   settings: CoupleSettings;
   checks: Record<string, boolean>; // lista de la compra de la semana actual
 
@@ -32,6 +33,7 @@ interface AppState {
   saveProfile: (p: Profile) => Promise<void>;
   addMeasurement: (m: Measurement) => Promise<void>;
   upsertLog: (l: WorkoutLog) => Promise<void>;
+  swapMeal: (slot: Slot, date: string, mealSlot: string, mealId: string | null) => void;
   addIntake: (e: IntakeEntry) => Promise<void>;
   removeIntake: (e: IntakeEntry) => Promise<void>;
   toggleCheck: (ingredientId: string) => Promise<void>;
@@ -48,6 +50,7 @@ export const useApp = create<AppState>()(
       measurements: [],
       logs: [],
       intake: [],
+      swaps: {},
       settings: { wedding_date: null },
       checks: {},
 
@@ -112,6 +115,14 @@ export const useApp = create<AppState>()(
         if (sb) await sb.from("workout_logs").upsert({ ...l, id: undefined }, { onConflict: "slot,date" });
       },
 
+      swapMeal: (slot, date, mealSlot, mealId) => {
+        const key = `${slot}|${date}|${mealSlot}`;
+        const next = { ...get().swaps };
+        if (mealId) next[key] = mealId;
+        else delete next[key];
+        set({ swaps: next });
+      },
+
       addIntake: async (e) => {
         const entry: IntakeEntry = { ...e, id: e.id ?? `${e.slot}-${e.date}-${e.meal_id}-${Date.now()}` };
         set({ intake: [...get().intake, entry] });
@@ -156,6 +167,7 @@ export const useApp = create<AppState>()(
         measurements: s.measurements,
         logs: s.logs,
         intake: s.intake,
+        swaps: s.swaps,
         settings: s.settings,
         checks: s.checks
       })

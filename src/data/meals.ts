@@ -83,7 +83,7 @@ export const INGREDIENTS: Record<string, Ingredient> = {
 
   /* Congelados */
   frutosrojos: { id: "frutosrojos", name: "Frutos rojos congelados", unit: "g", section: "Congelados", packLabel: "bolsa 300 g", packSize: 300, packPrice: 2.5 },
-  gambas: { id: "gambas", name: "Gambas peladas congeladas", unit: "g", section: "Congelados", packLabel: "bolsa 500 g", packSize: 500, packPrice: 6.0 },
+  gambas: { id: "gambas", name: "Camarones / gambas peladas", unit: "g", section: "Congelados", packLabel: "bolsa 500 g", packSize: 500, packPrice: 6.0 },
   espinacas: { id: "espinacas", name: "Espinacas (congeladas o frescas)", unit: "g", section: "Congelados", packLabel: "bolsa 400 g", packSize: 400, packPrice: 1.5 }
 };
 
@@ -599,7 +599,9 @@ export function buildDayPlan(
   dayIdx: number,
   targets: { kcal: number; protein_g: number; carbs_g: number; fat_g: number },
   eatsBreakfast: boolean,
-  cheatEnabled = false
+  cheatEnabled = false,
+  /** Platos que has cambiado tú a mano: mandan sobre la sugerencia. */
+  swaps: Partial<Record<MealSlotKey, string>> = {}
 ): DayPlan {
   const base = MENU_CYCLE[currentCycleWeek()][dayIdx];
   const slots = activeSlots(eatsBreakfast);
@@ -611,6 +613,15 @@ export function buildDayPlan(
     cheatSlot = dayIdx === 6 ? "lunch" : "dinner";
     const pool = CHEAT_MEALS[cheatSlot as "lunch" | "dinner"];
     menu[cheatSlot] = pool[dayIdx % pool.length];
+  }
+
+  // Tus cambios manuales tienen la última palabra
+  for (const k of slots) {
+    const chosen = swaps[k];
+    if (chosen && MEALS[chosen]) {
+      menu[k] = chosen;
+      if (cheatSlot === k) cheatSlot = null;
+    }
   }
 
   // Factores base de las comidas principales
@@ -629,7 +640,9 @@ export function buildDayPlan(
    * ración que deja el día lo más cerca posible del objetivo. Prioriza
    * proteína (lo crítico en recomposición) y calorías.
    */
-  const snackPool = Object.values(MEALS).filter((m) => m.category === "snack");
+  const snackPool = swaps.snack && MEALS[swaps.snack]
+    ? [MEALS[swaps.snack]] // si tú elegiste el snack, solo se ajusta su ración
+    : Object.values(MEALS).filter((m) => m.category === "snack");
   let bestId = menu.snack;
   let bestFactor = 1;
   let bestScore = Infinity;
@@ -668,6 +681,23 @@ export function buildDayPlan(
       fat: pct(totals.fat, targets.fat_g)
     }
   };
+}
+
+/**
+ * Alternativas para cambiar una comida. Devuelve el recetario de esa categoría
+ * ordenado por parecido calórico al plato sugerido, para que el cambio no te
+ * descuadre el día. Nada es obligatorio: puedes elegir cualquiera.
+ */
+export function alternativesFor(slot: MealSlotKey, currentId: string): Meal[] {
+  const cat: MealCategory = slot === "snack" ? "snack" : (slot as MealCategory);
+  const current = mealMacrosBase(currentId);
+  return Object.values(MEALS)
+    .filter((m) => m.category === cat && m.id !== currentId)
+    .sort((a, b) => {
+      const da = Math.abs(mealMacrosBase(a.id).kcal - current.kcal);
+      const db = Math.abs(mealMacrosBase(b.id).kcal - current.kcal);
+      return da - db;
+    });
 }
 
 /** Cantidad de un ingrediente ya ajustada a tu ración, con nota crudo/cocido. */
