@@ -21,6 +21,8 @@ export interface Profile {
   days_per_week: DaysPerWeek;
   /** false = primera comida al mediodía (las kcal se reparten entre las que sí comes). */
   eats_breakfast?: boolean;
+  /** Comida libre controlada el fin de semana. */
+  cheat_day?: boolean;
 }
 
 /** Un plato registrado como comido (el conteo diario se construye con esto). */

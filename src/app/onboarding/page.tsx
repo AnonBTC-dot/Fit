@@ -33,7 +33,8 @@ function OnboardingInner() {
     goal: (existing?.goal ?? null) as Goal | null,
     venue: (existing?.venue ?? null) as Venue | null,
     days_per_week: (existing?.days_per_week ?? 4) as DaysPerWeek,
-    eats_breakfast: existing?.eats_breakfast ?? true
+    eats_breakfast: existing?.eats_breakfast ?? true,
+    cheat_day: existing?.cheat_day ?? true
   });
 
   const set = (k: string, v: unknown) => setForm((f) => ({ ...f, [k]: v }));
@@ -54,7 +55,8 @@ function OnboardingInner() {
       goal: form.goal,
       venue: form.venue,
       days_per_week: form.days_per_week,
-      eats_breakfast: form.eats_breakfast
+      eats_breakfast: form.eats_breakfast,
+      cheat_day: form.cheat_day
     };
   }, [form, slot]);
 
@@ -184,6 +186,16 @@ function OnboardingInner() {
               options={[
                 { value: "si", label: "Desayuno por la mañana", sub: "4 comidas: desayuno, almuerzo, snack y cena" },
                 { value: "no", label: "Como al mediodía", sub: "3 comidas: almuerzo, snack y cena (ayuno matutino)" }
+              ]}
+            />
+          </Field>
+          <Field label="¿Comida libre el fin de semana?" hint="Una comida principal del sábado o domingo se cambia por una versión libre pero controlada.">
+            <OptionGrid<string>
+              value={form.cheat_day ? "si" : "no"}
+              onChange={(v) => set("cheat_day", v === "si")}
+              options={[
+                { value: "si", label: "Sí, con capricho el finde", sub: "Pizza proteica, hamburguesa doble, costillas BBQ o parrillada" },
+                { value: "no", label: "No, estructura limpia siempre", sub: "Mismo tipo de menú los 7 días" }
               ]}
             />
           </Field>

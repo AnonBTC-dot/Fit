@@ -7,7 +7,7 @@ import { LineChart } from "@/components/LineChart";
 import { ProfileSwitcher } from "@/components/ProfileSwitcher";
 import { calcTargets, computeStreak, todayISO } from "@/lib/calculations";
 import { getPlan, todayDayIndex } from "@/data/workouts";
-import { MEALS, MEAL_EMOJI, activeSlots, getCurrentWeekMenu, mealMacrosFor } from "@/data/meals";
+import { MEALS, MEAL_EMOJI, buildDayPlan, mealMacrosFor } from "@/data/meals";
 import { useApp } from "@/lib/store";
 
 const SLOT_COLORS: Record<string, string> = { p1: "#22c55e", p2: "#8593aa" };
@@ -26,9 +26,10 @@ export default function DashboardPage() {
   const todayLog = logs.find((l) => l.slot === active.slot && l.date === today);
 
   const todayDow = (new Date().getDay() + 6) % 7;
-  const todayMenu = getCurrentWeekMenu()[todayDow];
   const eatsBreakfast = active.eats_breakfast ?? true;
-  const slots = activeSlots(eatsBreakfast);
+  const dayPlan = buildDayPlan(todayDow, targets, eatsBreakfast, active.cheat_day ?? true);
+  const todayMenu = dayPlan.menu;
+  const slots = dayPlan.slots;
 
   // Conteo de hoy
   const todayIntake = intake.filter((e) => e.slot === active.slot && e.date === today);
@@ -158,6 +159,7 @@ export default function DashboardPage() {
               <li key={k} className={`flex items-center justify-between gap-2 ${done ? "opacity-45" : ""}`}>
                 <span className="min-w-0 truncate">
                   {MEAL_EMOJI[k]} {MEALS[mealId].name}
+                  {dayPlan.cheatSlot === k && " 🔥"}
                 </span>
                 <span className="shrink-0 text-[10px] font-semibold text-ink-400">
                   {done ? "✅ " : ""}

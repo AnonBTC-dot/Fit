@@ -13,6 +13,7 @@ import {
   MEAL_EMOJI,
   MEAL_LABELS,
   activeSlots,
+  buildDayPlan,
   currentCycleWeek,
   formatQty,
   getCurrentWeekMenu,
@@ -193,9 +194,13 @@ export default function NutritionPage() {
 
   if (!active || !targets) return null;
 
-  const slots = activeSlots(eatsBreakfast);
-  const menu = getCurrentWeekMenu()[dayIdx];
-  const todayMenu = getCurrentWeekMenu()[todayDow];
+  const cheatOn = active.cheat_day ?? true;
+  // Plan del día: comida libre del finde + snack que cuadra los macros
+  const todayPlan = buildDayPlan(todayDow, targets, eatsBreakfast, cheatOn);
+  const viewPlan = buildDayPlan(dayIdx, targets, eatsBreakfast, cheatOn);
+  const slots = viewPlan.slots;
+  const menu = viewPlan.menu;
+  const todayMenu = todayPlan.menu;
 
   const remaining = Math.max(0, targets.kcal - eaten.kcal);
   const pctKcal = Math.min(100, (eaten.kcal / targets.kcal) * 100);
@@ -314,7 +319,7 @@ export default function NutritionPage() {
               </p>
             )}
             <div className="grid gap-3">
-              {slots.map((k) => {
+              {todayPlan.slots.map((k) => {
                 const mealId = todayMenu[k];
                 const done = todayEntries.some((e) => e.meal_id === mealId);
                 return (
@@ -322,7 +327,7 @@ export default function NutritionPage() {
                     <MealCard
                       meal={MEALS[mealId]}
                       factor={servingFactor(mealId, k, targets.kcal, eatsBreakfast)}
-                      tag={`${MEAL_EMOJI[k]} ${MEAL_LABELS[k]}${done ? " · registrado" : ""}`}
+                      tag={`${MEAL_EMOJI[k]} ${MEAL_LABELS[k]}${todayPlan.cheatSlot === k ? " · 🔥 comida libre" : ""}${done ? " · registrado" : ""}`}
                       onEat={isMe && !done ? (s) => eat(mealId, k, s) : undefined}
                     />
                   </div>
@@ -369,16 +374,22 @@ export default function NutritionPage() {
               {DAY_NAMES[dayIdx]} · Semana {currentCycleWeek() + 1}/8
             </span>
             <span className="text-xs text-ink-500">
-              {slots.reduce((a, k) => a + mealMacrosFor(menu[k], k, targets.kcal, eatsBreakfast).kcal, 0)} kcal
+              {viewPlan.totals.kcal} kcal · {viewPlan.totals.protein}P / {viewPlan.totals.carbs}C / {viewPlan.totals.fat}G
             </span>
           </Card>
+
+          {viewPlan.cheatSlot && (
+            <p className="-mt-2 text-center text-xs font-semibold text-brand-400">
+              🔥 Hoy toca comida libre controlada en {MEAL_LABELS[viewPlan.cheatSlot].toLowerCase()}
+            </p>
+          )}
 
           {slots.map((k) => (
             <MealCard
               key={k}
               meal={MEALS[menu[k]]}
               factor={servingFactor(menu[k], k, targets.kcal, eatsBreakfast)}
-              tag={`${MEAL_EMOJI[k]} ${MEAL_LABELS[k]}`}
+              tag={`${MEAL_EMOJI[k]} ${MEAL_LABELS[k]}${viewPlan.cheatSlot === k ? " · 🔥 libre" : ""}`}
             />
           ))}
         </>

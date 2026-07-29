@@ -86,7 +86,8 @@ export const NUTRITION: Record<string, Nutrients> = {
 
 /* Los ingredientes de la expansión carnívora se fusionan al cargar. */
 import { CARN_NUTRITION } from "./carnivoro";
-Object.assign(NUTRITION, CARN_NUTRITION);
+import { GOURMET_NUTRITION } from "./gourmet";
+Object.assign(NUTRITION, CARN_NUTRITION, GOURMET_NUTRITION);
 
 export interface Macros {
   kcal: number;

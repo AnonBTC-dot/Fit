@@ -512,16 +512,16 @@ export const MEAL_EMOJI: Record<MealSlotKey, string> = {
  * es justo lo que hace la gente que come por primera vez al mediodía.
  */
 export const SPLIT_WITH_BREAKFAST: Record<MealSlotKey, number> = {
-  breakfast: 0.25,
+  breakfast: 0.2,
   lunch: 0.35,
-  snack: 0.1,
+  snack: 0.15,
   dinner: 0.3
 };
 
 export const SPLIT_NO_BREAKFAST: Record<MealSlotKey, number> = {
   breakfast: 0,
-  lunch: 0.45,
-  snack: 0.15,
+  lunch: 0.4,
+  snack: 0.2,
   dinner: 0.4
 };
 
@@ -563,6 +563,113 @@ export function mealMacrosFor(mealId: string, slot: MealSlotKey, targetKcal: num
   return roundMacros(scaleMacros(mealMacrosBase(mealId), servingFactor(mealId, slot, targetKcal, eatsBreakfast)));
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   MENÚ DEL DÍA: comida libre del finde + snack que cuadra los macros
+   ───────────────────────────────────────────────────────────────────────────── */
+
+export interface DayPlan {
+  menu: DayMenu;
+  slots: MealSlotKey[];
+  cheatSlot: MealSlotKey | null; // qué comida es la libre (si aplica)
+  /** Factor de ración de cada comida (el del snack se ajusta para cuadrar macros). */
+  factors: Record<MealSlotKey, number>;
+  totals: Macros;
+  deviation: { kcal: number; protein: number; carbs: number; fat: number }; // % vs objetivo
+}
+
+/** ¿Toca comida libre? Solo sábado/domingo y si está activada. */
+export function isCheatDay(dayIdx: number, cheatEnabled: boolean): boolean {
+  return cheatEnabled && (dayIdx === 5 || dayIdx === 6); // 5 = sábado, 6 = domingo
+}
+
+function macrosOfDay(menu: DayMenu, slots: MealSlotKey[], kcal: number, eatsBreakfast: boolean): Macros {
+  let t: Macros = { ...ZERO_MACROS };
+  for (const k of slots) t = addMacros(t, mealMacrosFor(menu[k], k, kcal, eatsBreakfast));
+  return t;
+}
+
+/**
+ * Construye el menú del día:
+ * 1. Si es finde con cheat day activo, cambia una comida principal por una
+ *    comida libre controlada (pizza proteica, hamburguesa doble, costillas BBQ).
+ * 2. Elige el SNACK que deja los macros del día lo más cerca posible del
+ *    objetivo (esa es su función: cuadrar la cuenta, no rellenar).
+ */
+export function buildDayPlan(
+  dayIdx: number,
+  targets: { kcal: number; protein_g: number; carbs_g: number; fat_g: number },
+  eatsBreakfast: boolean,
+  cheatEnabled = false
+): DayPlan {
+  const base = MENU_CYCLE[currentCycleWeek()][dayIdx];
+  const slots = activeSlots(eatsBreakfast);
+  const menu: DayMenu = { ...base };
+  let cheatSlot: MealSlotKey | null = null;
+
+  if (isCheatDay(dayIdx, cheatEnabled)) {
+    // Domingo -> almuerzo libre; sábado -> cena libre
+    cheatSlot = dayIdx === 6 ? "lunch" : "dinner";
+    const pool = CHEAT_MEALS[cheatSlot as "lunch" | "dinner"];
+    menu[cheatSlot] = pool[dayIdx % pool.length];
+  }
+
+  // Factores base de las comidas principales
+  const factors = {} as Record<MealSlotKey, number>;
+  for (const k of slots) factors[k] = servingFactor(menu[k], k, targets.kcal, eatsBreakfast);
+
+  // Macros de todo menos el snack (eso es lo que el snack tiene que compensar)
+  let fixed: Macros = { ...ZERO_MACROS };
+  for (const k of slots) {
+    if (k === "snack") continue;
+    fixed = addMacros(fixed, scaleMacros(mealMacrosBase(menu[k]), factors[k]));
+  }
+
+  /**
+   * El snack cierra la cuenta: se busca la combinación de plato + tamaño de
+   * ración que deja el día lo más cerca posible del objetivo. Prioriza
+   * proteína (lo crítico en recomposición) y calorías.
+   */
+  const snackPool = Object.values(MEALS).filter((m) => m.category === "snack");
+  let bestId = menu.snack;
+  let bestFactor = 1;
+  let bestScore = Infinity;
+  for (const cand of snackPool) {
+    const base = mealMacrosBase(cand.id);
+    if (base.kcal <= 0) continue;
+    for (let f = 0.5; f <= 2.01; f += 0.1) {
+      const t = addMacros(fixed, scaleMacros(base, f));
+      const score =
+        4 * Math.abs(t.protein - targets.protein_g) / Math.max(1, targets.protein_g) +
+        3 * Math.abs(t.kcal - targets.kcal) / Math.max(1, targets.kcal) +
+        Math.abs(t.carbs - targets.carbs_g) / Math.max(1, targets.carbs_g) +
+        Math.abs(t.fat - targets.fat_g) / Math.max(1, targets.fat_g);
+      if (score < bestScore) {
+        bestScore = score;
+        bestId = cand.id;
+        bestFactor = Math.round(f * 10) / 10;
+      }
+    }
+  }
+  menu.snack = bestId;
+  factors.snack = bestFactor;
+
+  const totals = roundMacros(addMacros(fixed, scaleMacros(mealMacrosBase(bestId), bestFactor)));
+  const pct = (a: number, b: number) => Math.round(((a - b) / Math.max(1, b)) * 1000) / 10;
+  return {
+    menu,
+    slots,
+    cheatSlot,
+    factors,
+    totals,
+    deviation: {
+      kcal: pct(totals.kcal, targets.kcal),
+      protein: pct(totals.protein, targets.protein_g),
+      carbs: pct(totals.carbs, targets.carbs_g),
+      fat: pct(totals.fat, targets.fat_g)
+    }
+  };
+}
+
 /** Cantidad de un ingrediente ya ajustada a tu ración, con nota crudo/cocido. */
 export function itemQtyFor(item: MealItem, factor: number): { qty: number; unit: IngUnit; note: string } {
   const ing = INGREDIENTS[item.ing];
@@ -574,8 +681,8 @@ export function itemQtyFor(item: MealItem, factor: number): { qty: number; unit:
 /* ---------- Ampliación: semanas 5-8 (recipesData.ts) ---------- */
 // Fusión automática: las nuevas recetas e ingredientes entran al recetario,
 // al buscador y a la lista de la compra sin tocar nada en Supabase.
-Object.assign(INGREDIENTS, NEW_INGREDIENTS, CARN_INGREDIENTS);
-Object.assign(MEALS, NEW_MEALS, CARN_MEALS);
+Object.assign(INGREDIENTS, NEW_INGREDIENTS, CARN_INGREDIENTS, GOURMET_INGREDIENTS);
+Object.assign(MEALS, NEW_MEALS, CARN_MEALS, GOURMET_MEALS);
 
 /** Ciclo de 8 semanas equilibradas (ternera/pollo de base, pescado ocasional). */
 export const MENU_CYCLE: DayMenu[][] = MENU_WEEKS;
@@ -660,6 +767,7 @@ import {
   type Macros
 } from "./nutrition";
 import { CARN_INGREDIENTS, CARN_MEALS } from "./carnivoro";
+import { CHEAT_MEALS, GOURMET_INGREDIENTS, GOURMET_MEALS } from "./gourmet";
 import { MENU_WEEKS } from "./menus";
 import { NEW_INGREDIENTS, NEW_MEALS } from "./recipesData";
 import { isoWeekNumber } from "./workouts";
