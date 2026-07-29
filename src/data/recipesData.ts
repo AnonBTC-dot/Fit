@@ -89,11 +89,12 @@ export const NEW_MEALS: Record<string, Meal> = {
   },
   c_ensaladatemplada: {
     id: "c_ensaladatemplada",
-    name: "Ensalada templada de quinoa, verduras asadas y huevo",
+    name: "Quinoa templada con pollo, huevo y verduras asadas",
     category: "lunch",
     kcal: 520,
     protein: 25,
     items: [
+      { ing: "pollo", qty: 120 },
       { ing: "quinoa", qty: 70 },
       { ing: "calabacin", qty: 0.5 },
       { ing: "pimiento", qty: 0.5 },
@@ -104,18 +105,19 @@ export const NEW_MEALS: Record<string, Meal> = {
   },
   c_albondigas: {
     id: "c_albondigas",
-    name: "Albóndigas caseras de pavo en salsa con arroz",
+    name: "Albóndigas de pavo en salsa con arroz y ensalada",
     category: "lunch",
     kcal: 560,
     protein: 40,
     items: [
+      { ing: "ensalada", qty: 0.5 },
       { ing: "pavopicado", qty: 150 },
       { ing: "tomatetrit", qty: 150 },
       { ing: "arroz", qty: 70 },
       { ing: "cebolla", qty: 0.5 },
       { ing: "aove", qty: 6 }
     ],
-    prep: "Bolitas de pavo especiado doradas en sartén; cuece 8 min en el tomate con cebolla. Sirve con arroz."
+    prep: "Bolitas de pavo especiado doradas en sartén; cuece 8 min en el tomate con cebolla. Arroz y ensalada aliñada al lado."
   },
   c_pastapollo: {
     id: "c_pastapollo",
@@ -181,11 +183,13 @@ export const NEW_MEALS: Record<string, Meal> = {
   },
   n_tortillapatata: {
     id: "n_tortillapatata",
-    name: "Tortilla de patata light con ensalada",
+    name: "Tortilla de patata con atún y ensalada",
     category: "dinner",
     kcal: 430,
     protein: 22,
     items: [
+      { ing: "huevo", qty: 1 },
+      { ing: "atun", qty: 56 },
       { ing: "patata", qty: 200 },
       { ing: "huevo", qty: 2 },
       { ing: "cebolla", qty: 0.5 },

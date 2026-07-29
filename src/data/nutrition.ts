@@ -84,6 +84,10 @@ export const NUTRITION: Record<string, Nutrients> = {
   espinacas: { kcal: 25, protein: 3, carbs: 1.5, fat: 0.4, weighAs: "crudo" }
 };
 
+/* Los ingredientes de la expansión carnívora se fusionan al cargar. */
+import { CARN_NUTRITION } from "./carnivoro";
+Object.assign(NUTRITION, CARN_NUTRITION);
+
 export interface Macros {
   kcal: number;
   protein: number;

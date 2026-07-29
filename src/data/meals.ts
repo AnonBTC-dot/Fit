@@ -177,11 +177,12 @@ export const MEALS: Record<string, Meal> = {
   /* ---------- Almuerzos ---------- */
   c_curry: {
     id: "c_curry",
-    name: "Pollo al curry cremoso con puré de patata",
+    name: "Pollo al curry cremoso con puré y brócoli",
     category: "lunch",
     kcal: 560,
     protein: 45,
     items: [
+      { ing: "brocoli", qty: 120 },
       { ing: "pollo", qty: 150 },
       { ing: "patata", qty: 250 },
       { ing: "leche", qty: 50 },
@@ -229,6 +230,8 @@ export const MEALS: Record<string, Meal> = {
     kcal: 570,
     protein: 40,
     items: [
+      { ing: "calabacin", qty: 0.5 },
+      { ing: "zanahoria", qty: 1 },
       { ing: "pasta", qty: 90 },
       { ing: "pavopicado", qty: 130 },
       { ing: "tomatetrit", qty: 150 },
@@ -364,11 +367,12 @@ export const MEALS: Record<string, Meal> = {
   },
   n_tortillaverde: {
     id: "n_tortillaverde",
-    name: "Tortilla de espinacas y champiñones con pan",
+    name: "Tortilla de espinacas, champiñones y queso con pan",
     category: "dinner",
     kcal: 420,
     protein: 26,
     items: [
+      { ing: "quesofresco", qty: 50 },
       { ing: "huevo", qty: 2 },
       { ing: "espinacas", qty: 100 },
       { ing: "champinones", qty: 100 },
@@ -394,11 +398,12 @@ export const MEALS: Record<string, Meal> = {
   },
   n_cremacalabaza: {
     id: "n_cremacalabaza",
-    name: "Crema de calabaza con toppings crujientes y huevo",
+    name: "Crema de calabaza con pollo, huevo y toppings crujientes",
     category: "dinner",
     kcal: 400,
     protein: 20,
     items: [
+      { ing: "pollo", qty: 110 },
       { ing: "calabaza", qty: 300 },
       { ing: "patata", qty: 100 },
       { ing: "huevo", qty: 2 },
@@ -569,11 +574,11 @@ export function itemQtyFor(item: MealItem, factor: number): { qty: number; unit:
 /* ---------- Ampliación: semanas 5-8 (recipesData.ts) ---------- */
 // Fusión automática: las nuevas recetas e ingredientes entran al recetario,
 // al buscador y a la lista de la compra sin tocar nada en Supabase.
-Object.assign(INGREDIENTS, NEW_INGREDIENTS);
-Object.assign(MEALS, NEW_MEALS);
+Object.assign(INGREDIENTS, NEW_INGREDIENTS, CARN_INGREDIENTS);
+Object.assign(MEALS, NEW_MEALS, CARN_MEALS);
 
-/** Ciclo de 8 semanas: 1-4 = menú base · 5-8 = menús nuevos. */
-export const MENU_CYCLE: DayMenu[][] = [WEEK_MENU, WEEK_MENU, WEEK_MENU, WEEK_MENU, ...WEEKS_5_8];
+/** Ciclo de 8 semanas equilibradas (ternera/pollo de base, pescado ocasional). */
+export const MENU_CYCLE: DayMenu[][] = MENU_WEEKS;
 
 export function currentCycleWeek(): number {
   return isoWeekNumber() % MENU_CYCLE.length; // 0..7
@@ -654,5 +659,7 @@ import {
   scaleMacros,
   type Macros
 } from "./nutrition";
-import { NEW_INGREDIENTS, NEW_MEALS, WEEKS_5_8 } from "./recipesData";
+import { CARN_INGREDIENTS, CARN_MEALS } from "./carnivoro";
+import { MENU_WEEKS } from "./menus";
+import { NEW_INGREDIENTS, NEW_MEALS } from "./recipesData";
 import { isoWeekNumber } from "./workouts";
