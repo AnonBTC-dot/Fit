@@ -61,7 +61,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const showNav = myProfileReady && !isSetup;
 
   return (
-    <div className="mx-auto min-h-dvh max-w-md">
+    <div className="mx-auto min-h-dvh w-full max-w-md overflow-x-hidden">
       <main className={showNav ? "pb-24" : ""}>{children}</main>
       {showNav && (
         <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-md border-t border-ink-100 bg-ink-100/95 backdrop-blur">

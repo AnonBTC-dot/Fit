@@ -15,23 +15,23 @@ import type { Nutrients } from "./nutrition";
 /* ── Ingredientes nuevos ── */
 
 export const CARN_INGREDIENTS: Record<string, Ingredient> = {
-  ternerafilete: { id: "ternerafilete", name: "Filete de ternera (entrecot/babilla)", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 8.5 },
-  ternerapicada: { id: "ternerapicada", name: "Carne picada de ternera", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 5.5 },
-  cerdolomo: { id: "cerdolomo", name: "Lomo/solomillo de cerdo", unit: "g", section: "Proteínas", packLabel: "pieza 500 g", packSize: 500, packPrice: 4.5 },
-  ternerafalda: { id: "ternerafalda", name: "Falda / churrasco de res", unit: "g", section: "Proteínas", packLabel: "bandeja 600 g", packSize: 600, packPrice: 7.0 },
-  cerdocostilla: { id: "cerdocostilla", name: "Costillas de cerdo", unit: "g", section: "Proteínas", packLabel: "costillar ~800 g", packSize: 800, packPrice: 5.5 },
-  cerdoaguja: { id: "cerdoaguja", name: "Aguja / paleta de cerdo", unit: "g", section: "Proteínas", packLabel: "pieza 800 g", packSize: 800, packPrice: 4.8 },
-  cerdochuleta: { id: "cerdochuleta", name: "Chuletas de cerdo", unit: "g", section: "Proteínas", packLabel: "bandeja 600 g", packSize: 600, packPrice: 4.5 },
-  pollomuslo: { id: "pollomuslo", name: "Contramuslos de pollo sin piel", unit: "g", section: "Proteínas", packLabel: "bandeja 700 g", packSize: 700, packPrice: 4.5 },
-  quesofresco: { id: "quesofresco", name: "Queso fresco (feta/mozzarella)", unit: "g", section: "Lácteos y huevos", packLabel: "tarrina 200 g", packSize: 200, packPrice: 2.3 },
-  boniato: { id: "boniato", name: "Boniato", unit: "g", section: "Frescos", packLabel: "malla 1 kg", packSize: 1000, packPrice: 2.2 },
-  limon: { id: "limon", name: "Limón", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 0.3 },
-  ajo: { id: "ajo", name: "Ajo (dientes)", unit: "ud", section: "Frescos", packLabel: "cabeza (~10 dientes)", packSize: 10, packPrice: 0.6 },
-  alubiasrojas: { id: "alubiasrojas", name: "Alubias rojas cocidas (bote)", unit: "g", section: "Despensa", packLabel: "bote 400 g escurrido", packSize: 400, packPrice: 1.0 },
-  salsasoja: { id: "salsasoja", name: "Salsa de soja", unit: "ml", section: "Despensa", packLabel: "botella 250 ml", packSize: 250, packPrice: 1.8 },
-  mostaza: { id: "mostaza", name: "Mostaza de Dijon", unit: "g", section: "Despensa", packLabel: "bote 200 g", packSize: 200, packPrice: 1.5 },
-  aceitunas: { id: "aceitunas", name: "Aceitunas", unit: "g", section: "Despensa", packLabel: "bote 200 g escurrido", packSize: 200, packPrice: 1.6 },
-  especias: { id: "especias", name: "Especias (pimentón, comino, orégano)", unit: "g", section: "Despensa", packLabel: "bote 50 g", packSize: 50, packPrice: 1.2 }
+  ternerafilete: { id: "ternerafilete", name: "Filete de ternera (entrecot/babilla)", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 29000 },
+  ternerapicada: { id: "ternerapicada", name: "Carne picada de ternera", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 21000 },
+  cerdolomo: { id: "cerdolomo", name: "Lomo/solomillo de cerdo", unit: "g", section: "Proteínas", packLabel: "pieza 500 g", packSize: 500, packPrice: 19000 },
+  ternerafalda: { id: "ternerafalda", name: "Falda / churrasco de res", unit: "g", section: "Proteínas", packLabel: "bandeja 600 g", packSize: 600, packPrice: 29000 },
+  cerdocostilla: { id: "cerdocostilla", name: "Costillas de cerdo", unit: "g", section: "Proteínas", packLabel: "costillar ~800 g", packSize: 800, packPrice: 28000 },
+  cerdoaguja: { id: "cerdoaguja", name: "Aguja / paleta de cerdo", unit: "g", section: "Proteínas", packLabel: "pieza 800 g", packSize: 800, packPrice: 26000 },
+  cerdochuleta: { id: "cerdochuleta", name: "Chuletas de cerdo", unit: "g", section: "Proteínas", packLabel: "bandeja 600 g", packSize: 600, packPrice: 22000 },
+  pollomuslo: { id: "pollomuslo", name: "Contramuslos de pollo sin piel", unit: "g", section: "Proteínas", packLabel: "bandeja 700 g", packSize: 700, packPrice: 15000 },
+  quesofresco: { id: "quesofresco", name: "Queso fresco (feta/mozzarella)", unit: "g", section: "Lácteos y huevos", packLabel: "tarrina 200 g", packSize: 200, packPrice: 12000 },
+  boniato: { id: "boniato", name: "Boniato", unit: "g", section: "Frescos", packLabel: "malla 1 kg", packSize: 1000, packPrice: 9000 },
+  limon: { id: "limon", name: "Limón", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 800 },
+  ajo: { id: "ajo", name: "Ajo (dientes)", unit: "ud", section: "Frescos", packLabel: "cabeza (~10 dientes)", packSize: 10, packPrice: 4000 },
+  alubiasrojas: { id: "alubiasrojas", name: "Alubias rojas cocidas (bote)", unit: "g", section: "Despensa", packLabel: "bote 400 g escurrido", packSize: 400, packPrice: 10000 },
+  salsasoja: { id: "salsasoja", name: "Salsa de soja", unit: "ml", section: "Despensa", packLabel: "botella 250 ml", packSize: 250, packPrice: 15000 },
+  mostaza: { id: "mostaza", name: "Mostaza de Dijon", unit: "g", section: "Despensa", packLabel: "bote 200 g", packSize: 200, packPrice: 14000 },
+  aceitunas: { id: "aceitunas", name: "Aceitunas", unit: "g", section: "Despensa", packLabel: "bote 200 g escurrido", packSize: 200, packPrice: 15000 },
+  especias: { id: "especias", name: "Especias (pimentón, comino, orégano)", unit: "g", section: "Despensa", packLabel: "bote 50 g", packSize: 50, packPrice: 10000 }
 };
 
 /* ── Datos nutricionales (por 100 g/ml, o por unidad en los "ud") ── */

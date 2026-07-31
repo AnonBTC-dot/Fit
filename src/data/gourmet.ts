@@ -16,14 +16,14 @@ import type { Nutrients } from "./nutrition";
 /* ── Ingredientes nuevos ── */
 
 export const GOURMET_INGREDIENTS: Record<string, Ingredient> = {
-  skyr: { id: "skyr", name: "Skyr / Quark / yogur proteico 0%", unit: "g", section: "Lácteos y huevos", packLabel: "tarrina 450 g", packSize: 450, packPrice: 2.4 },
-  whey: { id: "whey", name: "Proteína en polvo (whey)", unit: "g", section: "Despensa", packLabel: "bote 1 kg", packSize: 1000, packPrice: 22.0 },
-  quesocrema: { id: "quesocrema", name: "Queso crema light", unit: "g", section: "Lácteos y huevos", packLabel: "tarrina 250 g", packSize: 250, packPrice: 1.9 },
-  berenjena: { id: "berenjena", name: "Berenjena", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 0.8 },
-  chocolatenegro: { id: "chocolatenegro", name: "Chocolate negro 85%", unit: "g", section: "Despensa", packLabel: "tableta 100 g", packSize: 100, packPrice: 1.8 },
-  panmasamadre: { id: "panmasamadre", name: "Pan artesanal de masa madre", unit: "g", section: "Despensa", packLabel: "hogaza 500 g", packSize: 500, packPrice: 2.8 },
-  tortillamaiz: { id: "tortillamaiz", name: "Tortillas de maíz", unit: "ud", section: "Despensa", packLabel: "paquete 12 uds", packSize: 12, packPrice: 1.6 },
-  levadura: { id: "levadura", name: "Levadura química", unit: "g", section: "Despensa", packLabel: "sobre 100 g", packSize: 100, packPrice: 1.0 }
+  skyr: { id: "skyr", name: "Skyr / Quark / yogur proteico 0%", unit: "g", section: "Lácteos y huevos", packLabel: "tarrina 450 g", packSize: 450, packPrice: 25000 },
+  whey: { id: "whey", name: "Proteína en polvo (whey)", unit: "g", section: "Despensa", packLabel: "bote 1 kg", packSize: 1000, packPrice: 250000 },
+  quesocrema: { id: "quesocrema", name: "Queso crema light", unit: "g", section: "Lácteos y huevos", packLabel: "tarrina 250 g", packSize: 250, packPrice: 15000 },
+  berenjena: { id: "berenjena", name: "Berenjena", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 4000 },
+  chocolatenegro: { id: "chocolatenegro", name: "Chocolate negro 85%", unit: "g", section: "Despensa", packLabel: "tableta 100 g", packSize: 100, packPrice: 18000 },
+  panmasamadre: { id: "panmasamadre", name: "Pan artesanal de masa madre", unit: "g", section: "Despensa", packLabel: "hogaza 500 g", packSize: 500, packPrice: 22000 },
+  tortillamaiz: { id: "tortillamaiz", name: "Tortillas de maíz", unit: "ud", section: "Despensa", packLabel: "paquete 12 uds", packSize: 12, packPrice: 12000 },
+  levadura: { id: "levadura", name: "Levadura química", unit: "g", section: "Despensa", packLabel: "sobre 100 g", packSize: 100, packPrice: 8000 }
 };
 
 export const GOURMET_NUTRITION: Record<string, Nutrients> = {

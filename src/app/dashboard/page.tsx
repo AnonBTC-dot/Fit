@@ -74,15 +74,15 @@ export default function DashboardPage() {
 
       {/* Objetivo nutricional del día */}
       <Card>
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-bold">{isMe ? "Tu objetivo de hoy" : `Objetivo de ${active.name}`}</h2>
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <h2 className="min-w-0 truncate font-bold">{isMe ? "Tu objetivo de hoy" : `Objetivo de ${active.name}`}</h2>
           {isMe && (
             <Link href={`/onboarding?slot=${active.slot}`} className="text-xs font-semibold text-brand-400">
               Editar perfil
             </Link>
           )}
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <Ring
             pct={kcalPct}
             label={`${Math.max(0, targets.kcal - Math.round(eaten.kcal))}`}
@@ -90,7 +90,7 @@ export default function DashboardPage() {
             color="#22c55e"
             size={84}
           />
-          <div className="flex-1">
+          <div className="min-w-0 flex-1">
             <div className="mb-2 text-lg font-extrabold text-ink-900">
               {Math.round(eaten.kcal)}
               <span className="text-xs font-semibold text-ink-400"> / {targets.kcal} kcal</span>
@@ -101,8 +101,8 @@ export default function DashboardPage() {
                 { l: "Carbs", v: `${Math.round(eaten.carbs)}/${targets.carbs_g}` },
                 { l: "Grasa", v: `${Math.round(eaten.fat)}/${targets.fat_g}` }
               ].map((m) => (
-                <div key={m.l} className="rounded-xl bg-ink-200 py-1.5">
-                  <div className="text-xs font-bold text-ink-800">{m.v}</div>
+                <div key={m.l} className="min-w-0 rounded-xl bg-ink-200 px-1 py-1.5">
+                  <div className="truncate text-[11px] font-bold text-ink-800">{m.v}</div>
                   <div className="text-[9px] font-medium uppercase text-ink-400">{m.l}</div>
                 </div>
               ))}
@@ -113,14 +113,14 @@ export default function DashboardPage() {
 
       {/* Sesión de hoy */}
       <Card>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-ink-200 text-brand-400">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-ink-200 text-brand-400">
               <Dumbbell size={22} />
             </div>
-            <div>
-              <div className="font-bold">{dayIdx >= 0 ? plan[dayIdx].title : "Descanso activo 🧘"}</div>
-              <div className="flex items-center gap-1 text-xs text-ink-500">
+            <div className="min-w-0">
+              <div className="truncate font-bold">{dayIdx >= 0 ? plan[dayIdx].title : "Descanso activo 🧘"}</div>
+              <div className="flex min-w-0 items-center gap-1 truncate text-xs text-ink-500">
                 {dayIdx >= 0 ? (
                   <>
                     <Clock size={12} /> {plan[dayIdx].minutes} min · {plan[dayIdx].focus}
@@ -133,7 +133,7 @@ export default function DashboardPage() {
             </div>
           </div>
           {dayIdx >= 0 && (
-            <Link href="/entrenamiento">
+            <Link href="/entrenamiento" className="shrink-0">
               <Button className="!px-3 !py-2 text-xs">{todayLog?.completed ? "Ver" : "Ir"}</Button>
             </Link>
           )}
@@ -142,11 +142,11 @@ export default function DashboardPage() {
 
       {/* Menú de hoy */}
       <Card>
-        <div className="mb-2 flex items-center justify-between">
-          <h2 className="flex items-center gap-2 font-bold">
-            <UtensilsCrossed size={16} className="text-brand-400" /> Menú de hoy
+        <div className="mb-2 flex items-center justify-between gap-2">
+          <h2 className="flex min-w-0 items-center gap-2 font-bold">
+            <UtensilsCrossed size={16} className="shrink-0 text-brand-400" /> Menú de hoy
           </h2>
-          <Link href="/nutricion" className="text-xs font-semibold text-brand-400">
+          <Link href="/nutricion" className="shrink-0 text-xs font-semibold text-brand-400">
             Registrar comidas
           </Link>
         </div>
@@ -191,9 +191,9 @@ export default function DashboardPage() {
 
       {/* Progreso de peso de ambos */}
       <Card>
-        <div className="mb-2 flex items-center justify-between">
+        <div className="mb-2 flex items-center justify-between gap-2">
           <h2 className="font-bold">Evolución del peso</h2>
-          <Link href="/progreso" className="text-xs font-semibold text-brand-400">
+          <Link href="/progreso" className="shrink-0 text-xs font-semibold text-brand-400">
             Registrar medidas
           </Link>
         </div>

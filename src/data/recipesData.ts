@@ -13,11 +13,11 @@ import type { DayMenu, Ingredient, Meal } from "./meals";
 /* ---------- Nuevos ingredientes (categorizados para la lista) ---------- */
 
 export const NEW_INGREDIENTS: Record<string, Ingredient> = {
-  ternera: { id: "ternera", name: "Ternera magra en tiras", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 5.9 },
-  pepino: { id: "pepino", name: "Pepino", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 0.6 },
-  zanahoria: { id: "zanahoria", name: "Zanahoria", unit: "ud", section: "Frescos", packLabel: "bolsa 1 kg (~10 ud)", packSize: 10, packPrice: 1.0 },
-  maiz: { id: "maiz", name: "Maíz dulce (lata)", unit: "g", section: "Despensa", packLabel: "lata 140 g escurrido", packSize: 140, packPrice: 0.9 },
-  palomitasmaiz: { id: "palomitasmaiz", name: "Maíz para palomitas", unit: "g", section: "Despensa", packLabel: "bolsa 250 g", packSize: 250, packPrice: 1.2 }
+  ternera: { id: "ternera", name: "Ternera magra en tiras", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 27000 },
+  pepino: { id: "pepino", name: "Pepino", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 3000 },
+  zanahoria: { id: "zanahoria", name: "Zanahoria", unit: "ud", section: "Frescos", packLabel: "bolsa 1 kg (~10 ud)", packSize: 10, packPrice: 8000 },
+  maiz: { id: "maiz", name: "Maíz dulce (lata)", unit: "g", section: "Despensa", packLabel: "lata 140 g escurrido", packSize: 140, packPrice: 7000 },
+  palomitasmaiz: { id: "palomitasmaiz", name: "Maíz para palomitas", unit: "g", section: "Despensa", packLabel: "bolsa 250 g", packSize: 250, packPrice: 8000 }
 };
 
 /* ---------- Nuevas recetas ---------- */

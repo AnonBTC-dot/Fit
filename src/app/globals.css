@@ -2,8 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
+html,
+body {
   -webkit-tap-highlight-color: transparent;
+  /* Nada puede desbordar a lo ancho: evita que la vista quede desplazada */
+  overflow-x: hidden;
+  width: 100%;
 }
 
 body {

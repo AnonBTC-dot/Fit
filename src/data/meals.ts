@@ -32,59 +32,59 @@ export interface Ingredient {
   section: MarketSection; // sección del supermercado
   packLabel: string; // formato de compra habitual
   packSize: number; // cuánto contiene un pack, en `unit`
-  packPrice: number; // € estimado por pack
+  packPrice: number; // guaraníes (Gs) estimados por pack · precios de Asunción
 }
 
 export const INGREDIENTS: Record<string, Ingredient> = {
   /* Despensa */
-  avena: { id: "avena", name: "Copos de avena", unit: "g", section: "Despensa", packLabel: "paquete 1 kg", packSize: 1000, packPrice: 1.6 },
-  nueces: { id: "nueces", name: "Nueces peladas", unit: "g", section: "Despensa", packLabel: "bolsa 200 g", packSize: 200, packPrice: 2.8 },
-  cremacacahuete: { id: "cremacacahuete", name: "Crema de cacahuete 100%", unit: "g", section: "Despensa", packLabel: "bote 340 g", packSize: 340, packPrice: 2.5 },
-  cacao: { id: "cacao", name: "Cacao puro en polvo", unit: "g", section: "Despensa", packLabel: "lata 250 g", packSize: 250, packPrice: 3.0 },
-  miel: { id: "miel", name: "Miel", unit: "g", section: "Despensa", packLabel: "bote 500 g", packSize: 500, packPrice: 3.5 },
-  pan: { id: "pan", name: "Pan integral", unit: "g", section: "Despensa", packLabel: "barra/paquete 500 g", packSize: 500, packPrice: 1.4 },
-  tortillawrap: { id: "tortillawrap", name: "Tortillas integrales (wrap/fajita)", unit: "ud", section: "Despensa", packLabel: "pack 6 uds", packSize: 6, packPrice: 1.8 },
-  arroz: { id: "arroz", name: "Arroz", unit: "g", section: "Despensa", packLabel: "paquete 1 kg", packSize: 1000, packPrice: 1.2 },
-  pasta: { id: "pasta", name: "Pasta integral/proteica", unit: "g", section: "Despensa", packLabel: "paquete 500 g", packSize: 500, packPrice: 1.6 },
-  quinoa: { id: "quinoa", name: "Quinoa", unit: "g", section: "Despensa", packLabel: "paquete 500 g", packSize: 500, packPrice: 2.8 },
-  lentejas: { id: "lentejas", name: "Lentejas cocidas (bote)", unit: "g", section: "Despensa", packLabel: "bote 400 g escurrido", packSize: 400, packPrice: 0.95 },
-  garbanzos: { id: "garbanzos", name: "Garbanzos cocidos (bote)", unit: "g", section: "Despensa", packLabel: "bote 400 g escurrido", packSize: 400, packPrice: 0.95 },
-  tomatetrit: { id: "tomatetrit", name: "Tomate triturado", unit: "g", section: "Despensa", packLabel: "brik 400 g", packSize: 400, packPrice: 0.8 },
-  atun: { id: "atun", name: "Atún al natural (lata)", unit: "g", section: "Despensa", packLabel: "pack 3 latas (3x56 g)", packSize: 168, packPrice: 2.7 },
-  aove: { id: "aove", name: "Aceite de oliva virgen extra", unit: "ml", section: "Despensa", packLabel: "botella 1 L", packSize: 1000, packPrice: 8.5 },
-  curry: { id: "curry", name: "Curry en polvo", unit: "g", section: "Despensa", packLabel: "bote 50 g", packSize: 50, packPrice: 1.2 },
+  avena: { id: "avena", name: "Copos de avena", unit: "g", section: "Despensa", packLabel: "paquete 1 kg", packSize: 1000, packPrice: 18000 },
+  nueces: { id: "nueces", name: "Nueces peladas", unit: "g", section: "Despensa", packLabel: "bolsa 200 g", packSize: 200, packPrice: 30000 },
+  cremacacahuete: { id: "cremacacahuete", name: "Crema de cacahuete 100%", unit: "g", section: "Despensa", packLabel: "bote 340 g", packSize: 340, packPrice: 28000 },
+  cacao: { id: "cacao", name: "Cacao puro en polvo", unit: "g", section: "Despensa", packLabel: "lata 250 g", packSize: 250, packPrice: 25000 },
+  miel: { id: "miel", name: "Miel", unit: "g", section: "Despensa", packLabel: "bote 500 g", packSize: 500, packPrice: 30000 },
+  pan: { id: "pan", name: "Pan integral", unit: "g", section: "Despensa", packLabel: "barra/paquete 500 g", packSize: 500, packPrice: 9000 },
+  tortillawrap: { id: "tortillawrap", name: "Tortillas integrales (wrap/fajita)", unit: "ud", section: "Despensa", packLabel: "pack 6 uds", packSize: 6, packPrice: 15000 },
+  arroz: { id: "arroz", name: "Arroz", unit: "g", section: "Despensa", packLabel: "paquete 1 kg", packSize: 1000, packPrice: 7500 },
+  pasta: { id: "pasta", name: "Pasta integral/proteica", unit: "g", section: "Despensa", packLabel: "paquete 500 g", packSize: 500, packPrice: 8000 },
+  quinoa: { id: "quinoa", name: "Quinoa", unit: "g", section: "Despensa", packLabel: "paquete 500 g", packSize: 500, packPrice: 30000 },
+  lentejas: { id: "lentejas", name: "Lentejas cocidas (bote)", unit: "g", section: "Despensa", packLabel: "bote 400 g escurrido", packSize: 400, packPrice: 10000 },
+  garbanzos: { id: "garbanzos", name: "Garbanzos cocidos (bote)", unit: "g", section: "Despensa", packLabel: "bote 400 g escurrido", packSize: 400, packPrice: 10000 },
+  tomatetrit: { id: "tomatetrit", name: "Tomate triturado", unit: "g", section: "Despensa", packLabel: "brik 400 g", packSize: 400, packPrice: 6000 },
+  atun: { id: "atun", name: "Atún al natural (lata)", unit: "g", section: "Despensa", packLabel: "pack 3 latas (3x56 g)", packSize: 168, packPrice: 24000 },
+  aove: { id: "aove", name: "Aceite de oliva virgen extra", unit: "ml", section: "Despensa", packLabel: "botella 1 L", packSize: 1000, packPrice: 45000 },
+  curry: { id: "curry", name: "Curry en polvo", unit: "g", section: "Despensa", packLabel: "bote 50 g", packSize: 50, packPrice: 12000 },
 
   /* Frescos */
-  platano: { id: "platano", name: "Plátano", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 0.35 },
-  manzana: { id: "manzana", name: "Manzana", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 0.4 },
-  aguacate: { id: "aguacate", name: "Aguacate", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 1.1 },
-  tomate: { id: "tomate", name: "Tomate fresco", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 0.45 },
-  cebolla: { id: "cebolla", name: "Cebolla", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 0.3 },
-  pimiento: { id: "pimiento", name: "Pimiento", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 0.7 },
-  calabacin: { id: "calabacin", name: "Calabacín", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 0.6 },
-  brocoli: { id: "brocoli", name: "Brócoli", unit: "g", section: "Frescos", packLabel: "pieza ~500 g", packSize: 500, packPrice: 1.5 },
-  calabaza: { id: "calabaza", name: "Calabaza", unit: "g", section: "Frescos", packLabel: "trozo ~1 kg", packSize: 1000, packPrice: 1.5 },
-  champinones: { id: "champinones", name: "Champiñones", unit: "g", section: "Frescos", packLabel: "bandeja 250 g", packSize: 250, packPrice: 1.4 },
-  ensalada: { id: "ensalada", name: "Ensalada variada (bolsa)", unit: "ud", section: "Frescos", packLabel: "bolsa", packSize: 1, packPrice: 1.1 },
-  patata: { id: "patata", name: "Patatas", unit: "g", section: "Frescos", packLabel: "malla 3 kg", packSize: 3000, packPrice: 3.5 },
+  platano: { id: "platano", name: "Plátano", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 1000 },
+  manzana: { id: "manzana", name: "Manzana", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 3000 },
+  aguacate: { id: "aguacate", name: "Aguacate", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 6000 },
+  tomate: { id: "tomate", name: "Tomate fresco", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 1800 },
+  cebolla: { id: "cebolla", name: "Cebolla", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 900 },
+  pimiento: { id: "pimiento", name: "Pimiento", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 4000 },
+  calabacin: { id: "calabacin", name: "Calabacín", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 4000 },
+  brocoli: { id: "brocoli", name: "Brócoli", unit: "g", section: "Frescos", packLabel: "pieza ~500 g", packSize: 500, packPrice: 12000 },
+  calabaza: { id: "calabaza", name: "Calabaza", unit: "g", section: "Frescos", packLabel: "trozo ~1 kg", packSize: 1000, packPrice: 8000 },
+  champinones: { id: "champinones", name: "Champiñones", unit: "g", section: "Frescos", packLabel: "bandeja 250 g", packSize: 250, packPrice: 15000 },
+  ensalada: { id: "ensalada", name: "Ensalada variada (bolsa)", unit: "ud", section: "Frescos", packLabel: "bolsa", packSize: 1, packPrice: 8000 },
+  patata: { id: "patata", name: "Patatas", unit: "g", section: "Frescos", packLabel: "malla 3 kg", packSize: 3000, packPrice: 22000 },
 
   /* Proteínas */
-  pollo: { id: "pollo", name: "Pechuga de pollo", unit: "g", section: "Proteínas", packLabel: "bandeja 1 kg", packSize: 1000, packPrice: 6.5 },
-  pavopicado: { id: "pavopicado", name: "Carne picada de pavo/pollo", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 4.2 },
-  salmon: { id: "salmon", name: "Lomos de salmón", unit: "g", section: "Proteínas", packLabel: "bandeja 2 lomos (500 g)", packSize: 500, packPrice: 7.5 },
-  merluza: { id: "merluza", name: "Filetes de merluza", unit: "g", section: "Proteínas", packLabel: "bandeja 400 g", packSize: 400, packPrice: 5.5 },
+  pollo: { id: "pollo", name: "Pechuga de pollo", unit: "g", section: "Proteínas", packLabel: "bandeja 1 kg", packSize: 1000, packPrice: 28000 },
+  pavopicado: { id: "pavopicado", name: "Carne picada de pavo/pollo", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 20000 },
+  salmon: { id: "salmon", name: "Lomos de salmón", unit: "g", section: "Proteínas", packLabel: "bandeja 2 lomos (500 g)", packSize: 500, packPrice: 65000 },
+  merluza: { id: "merluza", name: "Filetes de merluza", unit: "g", section: "Proteínas", packLabel: "bandeja 400 g", packSize: 400, packPrice: 20000 },
 
   /* Lácteos y huevos */
-  leche: { id: "leche", name: "Leche semidesnatada", unit: "ml", section: "Lácteos y huevos", packLabel: "brik 1 L", packSize: 1000, packPrice: 0.95 },
-  huevo: { id: "huevo", name: "Huevos", unit: "ud", section: "Lácteos y huevos", packLabel: "docena", packSize: 12, packPrice: 2.6 },
-  yogurgriego: { id: "yogurgriego", name: "Yogur griego natural", unit: "ud", section: "Lácteos y huevos", packLabel: "pack 4 x 125 g", packSize: 4, packPrice: 2.2 },
-  quesobatido: { id: "quesobatido", name: "Queso fresco batido 0%", unit: "g", section: "Lácteos y huevos", packLabel: "tarrina 500 g", packSize: 500, packPrice: 1.5 },
-  quesorallado: { id: "quesorallado", name: "Queso rallado light", unit: "g", section: "Lácteos y huevos", packLabel: "bolsa 200 g", packSize: 200, packPrice: 2.2 },
+  leche: { id: "leche", name: "Leche semidesnatada", unit: "ml", section: "Lácteos y huevos", packLabel: "brik 1 L", packSize: 1000, packPrice: 7000 },
+  huevo: { id: "huevo", name: "Huevos", unit: "ud", section: "Lácteos y huevos", packLabel: "docena", packSize: 12, packPrice: 14000 },
+  yogurgriego: { id: "yogurgriego", name: "Yogur griego natural", unit: "ud", section: "Lácteos y huevos", packLabel: "pack 4 x 125 g", packSize: 4, packPrice: 18000 },
+  quesobatido: { id: "quesobatido", name: "Queso fresco batido 0%", unit: "g", section: "Lácteos y huevos", packLabel: "tarrina 500 g", packSize: 500, packPrice: 15000 },
+  quesorallado: { id: "quesorallado", name: "Queso rallado light", unit: "g", section: "Lácteos y huevos", packLabel: "bolsa 200 g", packSize: 200, packPrice: 20000 },
 
   /* Congelados */
-  frutosrojos: { id: "frutosrojos", name: "Frutos rojos congelados", unit: "g", section: "Congelados", packLabel: "bolsa 300 g", packSize: 300, packPrice: 2.5 },
-  gambas: { id: "gambas", name: "Camarones / gambas peladas", unit: "g", section: "Congelados", packLabel: "bolsa 500 g", packSize: 500, packPrice: 6.0 },
-  espinacas: { id: "espinacas", name: "Espinacas (congeladas o frescas)", unit: "g", section: "Congelados", packLabel: "bolsa 400 g", packSize: 400, packPrice: 1.5 }
+  frutosrojos: { id: "frutosrojos", name: "Frutos rojos congelados", unit: "g", section: "Congelados", packLabel: "bolsa 300 g", packSize: 300, packPrice: 25000 },
+  gambas: { id: "gambas", name: "Camarones / gambas peladas", unit: "g", section: "Congelados", packLabel: "bolsa 500 g", packSize: 500, packPrice: 40000 },
+  espinacas: { id: "espinacas", name: "Espinacas (congeladas o frescas)", unit: "g", section: "Congelados", packLabel: "bolsa 400 g", packSize: 400, packPrice: 12000 }
 };
 
 export type MealCategory = "breakfast" | "lunch" | "dinner" | "snack";
@@ -795,9 +795,20 @@ export function buildShoppingList(
       ingredient,
       totalQty: Math.round(totalQty * 10) / 10,
       packs,
-      estPrice: Math.round(packs * ingredient.packPrice * 100) / 100
+      /**
+       * Coste de lo que REALMENTE consumís esa semana, no del pack entero:
+       * el aceite, las especias o la proteína en polvo duran meses, así que
+       * cobrar el bote completo cada semana infla el total sin sentido.
+       * `packs` sigue indicando cuántos envases llevar del súper.
+       */
+      estPrice: Math.round(((totalQty / ingredient.packSize) * ingredient.packPrice) / 100) * 100
     };
   });
+}
+
+/** Guaraníes con separador de miles: 1.234.500 Gs */
+export function formatGs(v: number): string {
+  return `${Math.round(v).toLocaleString("es-PY")} Gs`;
 }
 
 export function formatQty(qty: number, unit: IngUnit): string {

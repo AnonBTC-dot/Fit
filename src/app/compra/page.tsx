@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react";
 import { CheckCircle2, Circle, Cloud, ShoppingCart } from "lucide-react";
 import { Card } from "@/components/ui";
 import { calcTargets } from "@/lib/calculations";
-import { SECTION_ORDER, buildShoppingList, formatQty } from "@/data/meals";
+import { SECTION_ORDER, buildShoppingList, formatGs, formatQty } from "@/data/meals";
 import { subscribeShoppingRealtime, useApp } from "@/lib/store";
 
 const SECTION_EMOJI: Record<string, string> = {
@@ -65,7 +65,7 @@ export default function ShoppingPage() {
         <div className="flex items-center gap-2 text-sm font-semibold text-brand-800">
           <ShoppingCart size={18} /> {doneCount}/{items.length} en el carro
         </div>
-        <span className="text-lg font-extrabold text-brand-700">~{Math.round(total)} €</span>
+        <span className="text-lg font-extrabold text-brand-400">~{formatGs(total)}</span>
       </Card>
 
       {SECTION_ORDER.map((section) => {
@@ -108,7 +108,7 @@ export default function ShoppingPage() {
                       <span className="block text-sm font-semibold text-ink-700">
                         {formatQty(item.totalQty, item.ingredient.unit)}
                       </span>
-                      <span className="block text-xs text-ink-400">~{item.estPrice.toFixed(2)} €</span>
+                      <span className="block text-xs text-ink-400">~{formatGs(item.estPrice)}</span>
                     </span>
                   </button>
                 );
