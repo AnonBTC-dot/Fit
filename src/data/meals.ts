@@ -4,8 +4,8 @@
  * siguiendo el MÉTODO DEL PLATO (½ verduras/hortalizas + ¼ proteína de
  * calidad + ¼ carbohidrato complejo, con grasas saludables).
  *
- * Recetario: gachas de avena con fruta y frutos secos, fajitas saludables,
- * pollo al curry con puré, salmón al horno, raviolis de calabacín,
+ * Recetario: avena cocida con fruta y frutos secos, fajitas saludables,
+ * pollo al curry con puré, salmón al horno, raviolis de zapallito,
  * hamburguesa casera fit, pasta proteica con verduras, crema de verduras
  * con toppings crujientes, mugcake fit de chocolate...
  *
@@ -39,7 +39,7 @@ export const INGREDIENTS: Record<string, Ingredient> = {
   /* Despensa */
   avena: { id: "avena", name: "Copos de avena", unit: "g", section: "Despensa", packLabel: "paquete 1 kg", packSize: 1000, packPrice: 18000 },
   nueces: { id: "nueces", name: "Nueces peladas", unit: "g", section: "Despensa", packLabel: "bolsa 200 g", packSize: 200, packPrice: 30000 },
-  cremacacahuete: { id: "cremacacahuete", name: "Crema de cacahuete 100%", unit: "g", section: "Despensa", packLabel: "bote 340 g", packSize: 340, packPrice: 28000 },
+  cremacacahuete: { id: "cremacacahuete", name: "Mantequilla de maní 100%", unit: "g", section: "Despensa", packLabel: "bote 340 g", packSize: 340, packPrice: 28000 },
   cacao: { id: "cacao", name: "Cacao puro en polvo", unit: "g", section: "Despensa", packLabel: "lata 250 g", packSize: 250, packPrice: 25000 },
   miel: { id: "miel", name: "Miel", unit: "g", section: "Despensa", packLabel: "bote 500 g", packSize: 500, packPrice: 30000 },
   pan: { id: "pan", name: "Pan integral", unit: "g", section: "Despensa", packLabel: "barra/paquete 500 g", packSize: 500, packPrice: 9000 },
@@ -55,35 +55,35 @@ export const INGREDIENTS: Record<string, Ingredient> = {
   curry: { id: "curry", name: "Curry en polvo", unit: "g", section: "Despensa", packLabel: "bote 50 g", packSize: 50, packPrice: 12000 },
 
   /* Frescos */
-  platano: { id: "platano", name: "Plátano", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 1000 },
+  platano: { id: "platano", name: "Banana", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 1000 },
   manzana: { id: "manzana", name: "Manzana", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 3000 },
-  aguacate: { id: "aguacate", name: "Aguacate", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 6000 },
+  aguacate: { id: "aguacate", name: "Aguacate (palta)", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 6000 },
   tomate: { id: "tomate", name: "Tomate fresco", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 1800 },
   cebolla: { id: "cebolla", name: "Cebolla", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 900 },
-  pimiento: { id: "pimiento", name: "Pimiento", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 4000 },
-  calabacin: { id: "calabacin", name: "Calabacín", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 4000 },
+  pimiento: { id: "pimiento", name: "Locote", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 4000 },
+  calabacin: { id: "calabacin", name: "Zapallito", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 4000 },
   brocoli: { id: "brocoli", name: "Brócoli", unit: "g", section: "Frescos", packLabel: "pieza ~500 g", packSize: 500, packPrice: 12000 },
-  calabaza: { id: "calabaza", name: "Calabaza", unit: "g", section: "Frescos", packLabel: "trozo ~1 kg", packSize: 1000, packPrice: 8000 },
+  calabaza: { id: "calabaza", name: "Zapallo", unit: "g", section: "Frescos", packLabel: "trozo ~1 kg", packSize: 1000, packPrice: 8000 },
   champinones: { id: "champinones", name: "Champiñones", unit: "g", section: "Frescos", packLabel: "bandeja 250 g", packSize: 250, packPrice: 15000 },
   ensalada: { id: "ensalada", name: "Ensalada variada (bolsa)", unit: "ud", section: "Frescos", packLabel: "bolsa", packSize: 1, packPrice: 8000 },
-  patata: { id: "patata", name: "Patatas", unit: "g", section: "Frescos", packLabel: "malla 3 kg", packSize: 3000, packPrice: 22000 },
+  patata: { id: "patata", name: "Papas", unit: "g", section: "Frescos", packLabel: "malla 3 kg", packSize: 3000, packPrice: 22000 },
 
   /* Proteínas */
-  pollo: { id: "pollo", name: "Pechuga de pollo", unit: "g", section: "Proteínas", packLabel: "bandeja 1 kg", packSize: 1000, packPrice: 28000 },
-  pavopicado: { id: "pavopicado", name: "Carne picada de pavo/pollo", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 20000 },
-  salmon: { id: "salmon", name: "Lomos de salmón", unit: "g", section: "Proteínas", packLabel: "bandeja 2 lomos (500 g)", packSize: 500, packPrice: 65000 },
-  merluza: { id: "merluza", name: "Filetes de merluza", unit: "g", section: "Proteínas", packLabel: "bandeja 400 g", packSize: 400, packPrice: 20000 },
+  pollo: { id: "pollo", name: "Pechuga de pollo", unit: "g", section: "Proteínas", packLabel: "bandeja 1 kg", packSize: 1000, packPrice: 25000 },
+  pavopicado: { id: "pavopicado", name: "Carne molida de pavo/pollo", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 13000 },
+  salmon: { id: "salmon", name: "Lomos de salmón", unit: "g", section: "Proteínas", packLabel: "bandeja 2 lomos (500 g)", packSize: 500, packPrice: 70000 },
+  merluza: { id: "merluza", name: "Filetes de merluza", unit: "g", section: "Proteínas", packLabel: "bandeja 400 g", packSize: 400, packPrice: 22000 },
 
   /* Lácteos y huevos */
-  leche: { id: "leche", name: "Leche semidesnatada", unit: "ml", section: "Lácteos y huevos", packLabel: "brik 1 L", packSize: 1000, packPrice: 7000 },
+  leche: { id: "leche", name: "Leche descremada", unit: "ml", section: "Lácteos y huevos", packLabel: "brik 1 L", packSize: 1000, packPrice: 6300 },
   huevo: { id: "huevo", name: "Huevos", unit: "ud", section: "Lácteos y huevos", packLabel: "docena", packSize: 12, packPrice: 14000 },
   yogurgriego: { id: "yogurgriego", name: "Yogur griego natural", unit: "ud", section: "Lácteos y huevos", packLabel: "pack 4 x 125 g", packSize: 4, packPrice: 18000 },
-  quesobatido: { id: "quesobatido", name: "Queso fresco batido 0%", unit: "g", section: "Lácteos y huevos", packLabel: "tarrina 500 g", packSize: 500, packPrice: 15000 },
+  quesobatido: { id: "quesobatido", name: "Yogur natural sin azúcar", unit: "g", section: "Lácteos y huevos", packLabel: "tarrina 500 g", packSize: 500, packPrice: 15000 },
   quesorallado: { id: "quesorallado", name: "Queso rallado light", unit: "g", section: "Lácteos y huevos", packLabel: "bolsa 200 g", packSize: 200, packPrice: 20000 },
 
   /* Congelados */
   frutosrojos: { id: "frutosrojos", name: "Frutos rojos congelados", unit: "g", section: "Congelados", packLabel: "bolsa 300 g", packSize: 300, packPrice: 25000 },
-  gambas: { id: "gambas", name: "Camarones / gambas peladas", unit: "g", section: "Congelados", packLabel: "bolsa 500 g", packSize: 500, packPrice: 40000 },
+  gambas: { id: "gambas", name: "Camarones pelados", unit: "g", section: "Congelados", packLabel: "bolsa 500 g", packSize: 500, packPrice: 45000 },
   espinacas: { id: "espinacas", name: "Espinacas (congeladas o frescas)", unit: "g", section: "Congelados", packLabel: "bolsa 400 g", packSize: 400, packPrice: 12000 }
 };
 
@@ -118,7 +118,7 @@ export const MEALS: Record<string, Meal> = {
   /* ---------- Desayunos ---------- */
   d_gachas: {
     id: "d_gachas",
-    name: "Gachas de avena con plátano, frutos rojos y nueces",
+    name: "Avena cocida con banana, frutos rojos y nueces",
     category: "breakfast",
     kcal: 430,
     protein: 15,
@@ -129,7 +129,7 @@ export const MEALS: Record<string, Meal> = {
       { ing: "frutosrojos", qty: 50 },
       { ing: "nueces", qty: 15 }
     ],
-    prep: "Cuece la avena con la leche 3 min (fuego o micro). Corona con plátano, frutos rojos y nueces. Canela al gusto."
+    prep: "Cuece la avena con la leche 3 min (fuego o micro). Corona con banana, frutos rojos y nueces. Canela al gusto."
   },
   d_tostavo: {
     id: "d_tostavo",
@@ -161,7 +161,7 @@ export const MEALS: Record<string, Meal> = {
   },
   d_tortitas: {
     id: "d_tortitas",
-    name: "Tortitas de avena y plátano con crema de cacahuete",
+    name: "Panqueques de avena y banana con mantequilla de maní",
     category: "breakfast",
     kcal: 470,
     protein: 22,
@@ -171,7 +171,7 @@ export const MEALS: Record<string, Meal> = {
       { ing: "platano", qty: 1 },
       { ing: "cremacacahuete", qty: 15 }
     ],
-    prep: "Tritura avena + huevos + ½ plátano. Cuaja las tortitas en sartén y sirve con el resto del plátano y la crema de cacahuete."
+    prep: "Tritura avena + huevos + ½ banana. Cuaja las panqueques en sartén y sirve con el resto del banana y la mantequilla de maní."
   },
 
   /* ---------- Almuerzos ---------- */
@@ -191,11 +191,11 @@ export const MEALS: Record<string, Meal> = {
       { ing: "curry", qty: 4 },
       { ing: "aove", qty: 8 }
     ],
-    prep: "Sofríe cebolla, añade el pollo en dados y el curry; liga con el yogur (salsa cremosa sin nata). Puré: patata cocida machacada con leche."
+    prep: "Sofríe cebolla, añade el pollo en dados y el curry; liga con el yogur (salsa cremosa sin crema). Puré: papa cocida machacada con leche."
   },
   c_salmon: {
     id: "c_salmon",
-    name: "Salmón al horno con patata y brócoli",
+    name: "Salmón al horno con papa y brócoli",
     category: "lunch",
     kcal: 580,
     protein: 38,
@@ -205,7 +205,7 @@ export const MEALS: Record<string, Meal> = {
       { ing: "brocoli", qty: 150 },
       { ing: "aove", qty: 8 }
     ],
-    prep: "Todo a la bandeja: patata en rodajas 15 min, luego añade salmón y brócoli 12-15 min más a 200 ºC. Limón por encima."
+    prep: "Todo a la bandeja: papa en rodajas 15 min, luego añade salmón y brócoli 12-15 min más a 200 ºC. Limón por encima."
   },
   c_fajitas: {
     id: "c_fajitas",
@@ -221,7 +221,7 @@ export const MEALS: Record<string, Meal> = {
       { ing: "yogurgriego", qty: 0.5 },
       { ing: "aove", qty: 8 }
     ],
-    prep: "Tiras de pollo con pimiento y cebolla a fuego fuerte con especias fajita. Rellena las tortillas y remata con salsa de yogur y limón."
+    prep: "Tiras de pollo con locote y cebolla a fuego fuerte con especias fajita. Rellena las tortillas y remata con salsa de yogur y limón."
   },
   c_bolonesa: {
     id: "c_bolonesa",
@@ -254,7 +254,7 @@ export const MEALS: Record<string, Meal> = {
       { ing: "tomatetrit", qty: 100 },
       { ing: "aove", qty: 8 }
     ],
-    prep: "Sofrito de cebolla, pimiento y tomate; añade lentejas de bote y patata cocida. 10 min y plato de cuchara listo."
+    prep: "Sofrito de cebolla, locote y tomate; añade lentejas de bote y papa cocida. 10 min y plato de cuchara listo."
   },
   c_ensaladagarb: {
     id: "c_ensaladagarb",
@@ -306,7 +306,7 @@ export const MEALS: Record<string, Meal> = {
   /* ---------- Cenas ---------- */
   n_raviolis: {
     id: "n_raviolis",
-    name: "Raviolis de calabacín rellenos de pavo y queso",
+    name: "Raviolis de zapallito rellenos de pavo y queso",
     category: "dinner",
     kcal: 400,
     protein: 33,
@@ -317,7 +317,7 @@ export const MEALS: Record<string, Meal> = {
       { ing: "tomatetrit", qty: 100 },
       { ing: "cebolla", qty: 0.25 }
     ],
-    prep: "Láminas finas de calabacín (pelador), rellena con pavo salteado, cierra en paquetitos, tomate y queso por encima y gratina 10 min."
+    prep: "Láminas finas de zapallito (pelador), rellena con pavo salteado, cierra en paquetitos, tomate y queso por encima y gratina 10 min."
   },
   n_burger: {
     id: "n_burger",
@@ -337,7 +337,7 @@ export const MEALS: Record<string, Meal> = {
   },
   n_merluza: {
     id: "n_merluza",
-    name: "Merluza en papillote con verduras y patata",
+    name: "Merluza en papillote con verduras y papa",
     category: "dinner",
     kcal: 420,
     protein: 33,
@@ -348,11 +348,11 @@ export const MEALS: Record<string, Meal> = {
       { ing: "patata", qty: 150 },
       { ing: "aove", qty: 8 }
     ],
-    prep: "Papel de horno: merluza + verduras en juliana + patata en rodajas finas, cierra el paquete y 15 min a 200 ºC."
+    prep: "Papel de horno: merluza + verduras en juliana + papa en rodajas finas, cierra el paquete y 15 min a 200 ºC."
   },
   n_gambas: {
     id: "n_gambas",
-    name: "Salteado de gambas con arroz y verduras",
+    name: "Salteado de camarones con arroz y verduras",
     category: "dinner",
     kcal: 430,
     protein: 30,
@@ -363,7 +363,7 @@ export const MEALS: Record<string, Meal> = {
       { ing: "pimiento", qty: 0.5 },
       { ing: "aove", qty: 8 }
     ],
-    prep: "Wok: gambas con ajo, añade verduras y el arroz cocido. Toque de soja y listo en 10 min."
+    prep: "Wok: camarones con ajo, añade verduras y el arroz cocido. Toque de soja y listo en 10 min."
   },
   n_tortillaverde: {
     id: "n_tortillaverde",
@@ -398,7 +398,7 @@ export const MEALS: Record<string, Meal> = {
   },
   n_cremacalabaza: {
     id: "n_cremacalabaza",
-    name: "Crema de calabaza con pollo, huevo y toppings crujientes",
+    name: "Crema de zapallo con pollo, huevo y toppings crujientes",
     category: "dinner",
     kcal: 400,
     protein: 20,
@@ -410,13 +410,13 @@ export const MEALS: Record<string, Meal> = {
       { ing: "pan", qty: 30 },
       { ing: "aove", qty: 8 }
     ],
-    prep: "Cuece calabaza y patata, tritura con un chorrito de aceite. Toppings: huevo duro troceado y picatostes dorados en sartén."
+    prep: "Cuece zapallo y papa, tritura con un chorrito de aceite. Toppings: huevo duro troceado y picatostes dorados en sartén."
   },
 
   /* ---------- Snacks ---------- */
   s_mugcake: {
     id: "s_mugcake",
-    name: "Mugcake fit de chocolate y plátano",
+    name: "Mugcake fit de chocolate y banana",
     category: "snack",
     kcal: 240,
     protein: 12,
@@ -443,7 +443,7 @@ export const MEALS: Record<string, Meal> = {
   },
   s_manzanacacahuete: {
     id: "s_manzanacacahuete",
-    name: "Manzana con crema de cacahuete",
+    name: "Manzana con mantequilla de maní",
     category: "snack",
     kcal: 180,
     protein: 6,
@@ -451,7 +451,7 @@ export const MEALS: Record<string, Meal> = {
       { ing: "manzana", qty: 1 },
       { ing: "cremacacahuete", qty: 15 }
     ],
-    prep: "Manzana en gajos para mojar en la crema de cacahuete."
+    prep: "Manzana en gajos para mojar en la mantequilla de maní."
   },
   s_batidorojo: {
     id: "s_batidorojo",
@@ -714,7 +714,7 @@ export function itemQtyFor(item: MealItem, factor: number): { qty: number; unit:
 Object.assign(INGREDIENTS, NEW_INGREDIENTS, CARN_INGREDIENTS, GOURMET_INGREDIENTS);
 Object.assign(MEALS, NEW_MEALS, CARN_MEALS, GOURMET_MEALS);
 
-/** Ciclo de 8 semanas equilibradas (ternera/pollo de base, pescado ocasional). */
+/** Ciclo de 8 semanas equilibradas (res/pollo de base, pescado ocasional). */
 export const MENU_CYCLE: DayMenu[][] = MENU_WEEKS;
 
 export function currentCycleWeek(): number {
@@ -749,18 +749,26 @@ export interface ShoppingItem {
 /** Lista de la compra COMPARTIDA de la semana: suma los menús de ambos. */
 export function buildShoppingList(
   eaters: { kcal: number; eatsBreakfast: boolean }[],
-  /** Platos que habéis cambiado, por fecha: "YYYY-MM-DD|comida" -> plato. */
+  /** Platos que han cambiado, por fecha: "YYYY-MM-DD|comida" -> plato. */
   swaps: Record<string, string> = {},
   /** Lunes de la semana que se compra (para casar los cambios con su día). */
-  weekStart?: Date
+  weekStart?: Date,
+  /** Cuántas semanas se compran de una vez (1 a 4), para no ir cada semana. */
+  semanas = 1
 ): ShoppingItem[] {
   const totals: Record<string, number> = {};
-  const week = getCurrentWeekMenu();
-  // Aplica a cada día los platos que hayáis cambiado
+  // Varias semanas: se encadenan los menús siguientes del ciclo, así compras lo
+  // que de verdad vas a cocinar cada semana y no cuatro veces lo mismo.
+  const inicio = currentCycleWeek();
+  const week: DayMenu[] = [];
+  for (let w = 0; w < Math.max(1, semanas); w++) {
+    week.push(...MENU_CYCLE[(inicio + w) % MENU_CYCLE.length]);
+  }
+  // Aplica a cada día los platos que hayan cambiado
   const days = week.map((day, i) => {
     if (!weekStart) return day;
     const d = new Date(weekStart);
-    d.setDate(d.getDate() + i);
+    d.setDate(d.getDate() + i);  // i avanza también entre semanas
     const iso = d.toISOString().slice(0, 10);
     const out: DayMenu = { ...day };
     for (const k of ["breakfast", "lunch", "snack", "dinner"] as MealSlotKey[]) {

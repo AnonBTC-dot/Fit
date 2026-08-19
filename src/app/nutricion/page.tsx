@@ -289,7 +289,7 @@ export default function NutritionPage() {
 
   const cheatOn = active.cheat_day ?? true;
   // Cambios manuales guardados para hoy
-  // Los platos son COMPARTIDOS (coméis juntos); las raciones, de cada uno
+  // Los platos son COMPARTIDOS (comen juntos); las raciones, de cada uno
   const mySwaps: Partial<Record<MealSlotKey, string>> = {};
   for (const k of ["breakfast", "lunch", "snack", "dinner"] as MealSlotKey[]) {
     const v = swaps[`${today}|${k}`];

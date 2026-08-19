@@ -4,7 +4,7 @@ import type { Nutrients } from "./nutrition";
 /**
  * EXPANSIÓN CARNÍVORA — comida de verdad, con sabor.
  *
- * Criterio: ternera y pollo como columna vertebral, huevos en platos
+ * Criterio: res y pollo como columna vertebral, huevos en platos
  * protagonistas (no de acompañante), ensaladas que llenan de verdad y
  * pescado ocasional. Todo con método del plato y cero platos tristes.
  *
@@ -15,19 +15,19 @@ import type { Nutrients } from "./nutrition";
 /* ── Ingredientes nuevos ── */
 
 export const CARN_INGREDIENTS: Record<string, Ingredient> = {
-  ternerafilete: { id: "ternerafilete", name: "Filete de ternera (entrecot/babilla)", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 29000 },
-  ternerapicada: { id: "ternerapicada", name: "Carne picada de ternera", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 21000 },
-  cerdolomo: { id: "cerdolomo", name: "Lomo/solomillo de cerdo", unit: "g", section: "Proteínas", packLabel: "pieza 500 g", packSize: 500, packPrice: 19000 },
-  ternerafalda: { id: "ternerafalda", name: "Falda / churrasco de res", unit: "g", section: "Proteínas", packLabel: "bandeja 600 g", packSize: 600, packPrice: 29000 },
-  cerdocostilla: { id: "cerdocostilla", name: "Costillas de cerdo", unit: "g", section: "Proteínas", packLabel: "costillar ~800 g", packSize: 800, packPrice: 28000 },
-  cerdoaguja: { id: "cerdoaguja", name: "Aguja / paleta de cerdo", unit: "g", section: "Proteínas", packLabel: "pieza 800 g", packSize: 800, packPrice: 26000 },
-  cerdochuleta: { id: "cerdochuleta", name: "Chuletas de cerdo", unit: "g", section: "Proteínas", packLabel: "bandeja 600 g", packSize: 600, packPrice: 22000 },
-  pollomuslo: { id: "pollomuslo", name: "Contramuslos de pollo sin piel", unit: "g", section: "Proteínas", packLabel: "bandeja 700 g", packSize: 700, packPrice: 15000 },
+  ternerafilete: { id: "ternerafilete", name: "Bife de res (bife ancho / bola de lomo)", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 32000 },
+  ternerapicada: { id: "ternerapicada", name: "Carne molida de res", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 23000 },
+  cerdolomo: { id: "cerdolomo", name: "Lomo de cerdo", unit: "g", section: "Proteínas", packLabel: "pieza 500 g", packSize: 500, packPrice: 22000 },
+  ternerafalda: { id: "ternerafalda", name: "Vacío / falda de res", unit: "g", section: "Proteínas", packLabel: "bandeja 600 g", packSize: 600, packPrice: 33000 },
+  cerdocostilla: { id: "cerdocostilla", name: "Costillas de cerdo", unit: "g", section: "Proteínas", packLabel: "costillar ~800 g", packSize: 800, packPrice: 32000 },
+  cerdoaguja: { id: "cerdoaguja", name: "Aguja / paleta de cerdo", unit: "g", section: "Proteínas", packLabel: "pieza 800 g", packSize: 800, packPrice: 29000 },
+  cerdochuleta: { id: "cerdochuleta", name: "Chuletas de cerdo", unit: "g", section: "Proteínas", packLabel: "bandeja 600 g", packSize: 600, packPrice: 25000 },
+  pollomuslo: { id: "pollomuslo", name: "Contramuslos de pollo sin piel", unit: "g", section: "Proteínas", packLabel: "bandeja 700 g", packSize: 700, packPrice: 11000 },
   quesofresco: { id: "quesofresco", name: "Queso fresco (feta/mozzarella)", unit: "g", section: "Lácteos y huevos", packLabel: "tarrina 200 g", packSize: 200, packPrice: 12000 },
-  boniato: { id: "boniato", name: "Boniato", unit: "g", section: "Frescos", packLabel: "malla 1 kg", packSize: 1000, packPrice: 9000 },
+  boniato: { id: "boniato", name: "Batata", unit: "g", section: "Frescos", packLabel: "malla 1 kg", packSize: 1000, packPrice: 9000 },
   limon: { id: "limon", name: "Limón", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 800 },
   ajo: { id: "ajo", name: "Ajo (dientes)", unit: "ud", section: "Frescos", packLabel: "cabeza (~10 dientes)", packSize: 10, packPrice: 4000 },
-  alubiasrojas: { id: "alubiasrojas", name: "Alubias rojas cocidas (bote)", unit: "g", section: "Despensa", packLabel: "bote 400 g escurrido", packSize: 400, packPrice: 10000 },
+  alubiasrojas: { id: "alubiasrojas", name: "Porotos rojas cocidas (bote)", unit: "g", section: "Despensa", packLabel: "bote 400 g escurrido", packSize: 400, packPrice: 10000 },
   salsasoja: { id: "salsasoja", name: "Salsa de soja", unit: "ml", section: "Despensa", packLabel: "botella 250 ml", packSize: 250, packPrice: 15000 },
   mostaza: { id: "mostaza", name: "Mostaza de Dijon", unit: "g", section: "Despensa", packLabel: "bote 200 g", packSize: 200, packPrice: 14000 },
   aceitunas: { id: "aceitunas", name: "Aceitunas", unit: "g", section: "Despensa", packLabel: "bote 200 g escurrido", packSize: 200, packPrice: 15000 },
@@ -62,7 +62,7 @@ export const CARN_MEALS: Record<string, Meal> = {
   /* ════════ DESAYUNOS con huevo (para quien sí desayuna) ════════ */
   d_huevosrancheros: {
     id: "d_huevosrancheros",
-    name: "Huevos rancheros con alubias y aguacate",
+    name: "Huevos rancheros con porotos y aguacate",
     category: "breakfast",
     kcal: 480,
     protein: 26,
@@ -74,11 +74,11 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "aguacate", qty: 0.5 },
       { ing: "especias", qty: 2 }
     ],
-    prep: "Sofríe tomate con especias, añade las alubias. Huevos a la plancha encima, todo sobre la tortilla y aguacate al lado."
+    prep: "Sofríe tomate con especias, añade las porotos. Huevos a la plancha encima, todo sobre la tortilla y aguacate al lado."
   },
   d_revueltoternera: {
     id: "d_revueltoternera",
-    name: "Revuelto de huevo con ternera y pan tostado",
+    name: "Revuelto de huevo con res y pan tostado",
     category: "breakfast",
     kcal: 470,
     protein: 38,
@@ -107,10 +107,10 @@ export const CARN_MEALS: Record<string, Meal> = {
     prep: "Tortilla francesa jugosa con el queso dentro para que funda. Tomate en rodajas con sal y aceite al lado."
   },
 
-  /* ════════ ALMUERZOS — TERNERA ════════ */
+  /* ════════ ALMUERZOS — CARNE DE RES ════════ */
   c_entrecot: {
     id: "c_entrecot",
-    name: "Filete de ternera a la plancha con patatas y ensalada",
+    name: "Filete de res a la plancha con papas y ensalada",
     category: "lunch",
     kcal: 620,
     protein: 48,
@@ -121,11 +121,11 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "ajo", qty: 2 },
       { ing: "aove", qty: 10 }
     ],
-    prep: "Plancha muy caliente: 2-3 min por lado y reposa 3 min (esto lo deja jugoso). Patatas al horno con ajo y romero."
+    prep: "Plancha muy caliente: 2-3 min por lado y reposa 3 min (esto lo deja jugoso). Papas al horno con ajo y romero."
   },
   c_chili: {
     id: "c_chili",
-    name: "Chili con carne de ternera y arroz",
+    name: "Chili con carne de res y arroz",
     category: "lunch",
     kcal: 640,
     protein: 45,
@@ -138,11 +138,11 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "pimiento", qty: 0.5 },
       { ing: "especias", qty: 4 }
     ],
-    prep: "Dora la carne, añade cebolla y pimiento, luego tomate, alubias, comino y pimentón. 15 min a fuego lento. Arroz al lado."
+    prep: "Dora la carne, añade cebolla y locote, luego tomate, porotos, comino y pimentón. 15 min a fuego lento. Arroz al lado."
   },
   c_carneasada: {
     id: "c_carneasada",
-    name: "Carne asada con chimichurri, boniato y verduras",
+    name: "Carne asada con chimichurri, batata y verduras",
     category: "lunch",
     kcal: 630,
     protein: 44,
@@ -154,11 +154,11 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "ajo", qty: 2 },
       { ing: "aove", qty: 12 }
     ],
-    prep: "Chimichurri: ajo, perejil, orégano, aceite y vinagre. Carne a la plancha, boniato y verduras al horno 25 min."
+    prep: "Chimichurri: ajo, perejil, orégano, aceite y vinagre. Carne a la plancha, batata y verduras al horno 25 min."
   },
   c_estofado: {
     id: "c_estofado",
-    name: "Estofado de ternera con patata y zanahoria",
+    name: "Estofado de res con papa y zanahoria",
     category: "lunch",
     kcal: 610,
     protein: 42,
@@ -170,11 +170,11 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "tomatetrit", qty: 100 },
       { ing: "aove", qty: 8 }
     ],
-    prep: "Sella la carne, sofríe cebolla y zanahoria, añade tomate y patata en cachelos. Cubre con agua y 25 min tapado."
+    prep: "Sella la carne, sofríe cebolla y zanahoria, añade tomate y papa en cachelos. Cubre con agua y 25 min tapado."
   },
   c_tacos: {
     id: "c_tacos",
-    name: "Tacos de ternera con pico de gallo y aguacate",
+    name: "Tacos de res con pico de gallo y aguacate",
     category: "lunch",
     kcal: 620,
     protein: 40,
@@ -192,7 +192,7 @@ export const CARN_MEALS: Record<string, Meal> = {
   },
   c_lomocerdo: {
     id: "c_lomocerdo",
-    name: "Solomillo de cerdo a la mostaza con puré y verduras",
+    name: "Lomo de cerdo a la mostaza con puré y verduras",
     category: "lunch",
     kcal: 580,
     protein: 45,
@@ -204,13 +204,13 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "leche", qty: 50 },
       { ing: "aove", qty: 8 }
     ],
-    prep: "Sella el solomillo, salsea con mostaza y un chorro de nata ligera. Puré de patata con leche y brócoli al vapor."
+    prep: "Sella el lomo, salsea con mostaza y un chorro de crema ligera. Puré de papa con leche y brócoli al vapor."
   },
 
   /* ════════ ALMUERZOS — POLLO con sabor ════════ */
   c_polloasado: {
     id: "c_polloasado",
-    name: "Contramuslos de pollo asados con boniato y verduras",
+    name: "Contramuslos de pollo asados con batata y verduras",
     category: "lunch",
     kcal: 600,
     protein: 42,
@@ -224,7 +224,7 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "especias", qty: 3 },
       { ing: "aove", qty: 10 }
     ],
-    prep: "Todo en una bandeja: pollo adobado con pimentón y ajo, boniato en cubos, pimiento y calabacín. Horno 200° 30 min. Una sola bandeja que lavar."
+    prep: "Todo en una bandeja: pollo adobado con pimentón y ajo, batata en cubos, locote y zapallito. Horno 200° 30 min. Una sola bandeja que lavar."
   },
   c_pollolimon: {
     id: "c_pollolimon",
@@ -240,7 +240,7 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "ajo", qty: 2 },
       { ing: "aove", qty: 8 }
     ],
-    prep: "Pollo en tiras a fuego fuerte con ajo, deglasa con zumo de limón y una cucharada de agua: sale una salsa brillante."
+    prep: "Pollo en tiras a fuego fuerte con ajo, deglasa con jugo de limón y una cucharada de agua: sale una salsa brillante."
   },
   c_brochetas: {
     id: "c_brochetas",
@@ -262,7 +262,7 @@ export const CARN_MEALS: Record<string, Meal> = {
   /* ════════ ENSALADAS QUE LLENAN (plato principal) ════════ */
   c_ensaladaternera: {
     id: "c_ensaladaternera",
-    name: "Ternera a la plancha con ensalada de aguacate y queso",
+    name: "Res a la plancha con ensalada de aguacate y queso",
     category: "lunch",
     kcal: 560,
     protein: 42,
@@ -275,7 +275,7 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "aceitunas", qty: 25 },
       { ing: "aove", qty: 10 }
     ],
-    prep: "Ternera a la plancha en tiras, aún templada sobre la ensalada. Aliño de aceite, limón y mostaza."
+    prep: "Res a la plancha en tiras, aún templada sobre la ensalada. Aliño de aceite, limón y mostaza."
   },
   c_ensaladapollo: {
     id: "c_ensaladapollo",
@@ -313,7 +313,7 @@ export const CARN_MEALS: Record<string, Meal> = {
   /* ════════ CENAS ════════ */
   n_burgerternera: {
     id: "n_burgerternera",
-    name: "Hamburguesa casera de ternera con boniato al horno",
+    name: "Hamburguesa casera de res con batata al horno",
     category: "dinner",
     kcal: 560,
     protein: 40,
@@ -326,11 +326,11 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "boniato", qty: 150 },
       { ing: "mostaza", qty: 8 }
     ],
-    prep: "Forma la burger sin apretar (queda jugosa), 3 min por lado. Boniato en bastones al horno 25 min a 200°."
+    prep: "Forma la burger sin apretar (queda jugosa), 3 min por lado. Batata en bastones al horno 25 min a 200°."
   },
   n_huevosrotos: {
     id: "n_huevosrotos",
-    name: "Huevos rotos con patata, pimientos y ensalada",
+    name: "Huevos rotos con papa, locotes y ensalada",
     category: "dinner",
     kcal: 490,
     protein: 32,
@@ -343,11 +343,11 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "aove", qty: 12 },
       { ing: "especias", qty: 2 }
     ],
-    prep: "Patata en dados al horno con pimientos hasta dorar. Huevos fritos encima, rómpelos y mezcla. Ensalada al lado."
+    prep: "Papa en dados al horno con locotes hasta dorar. Huevos fritos encima, rómpelos y mezcla. Ensalada al lado."
   },
   n_shakshuka: {
     id: "n_shakshuka",
-    name: "Shakshuka: huevos escalfados con queso y pimiento",
+    name: "Shakshuka: huevos escalfados con queso y locote",
     category: "dinner",
     kcal: 460,
     protein: 28,
@@ -361,11 +361,11 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "especias", qty: 3 },
       { ing: "aove", qty: 8 }
     ],
-    prep: "Sofríe pimiento y cebolla, añade tomate y comino. Haz huecos, casca los huevos dentro y tapa 5 min. Pan para mojar."
+    prep: "Sofríe locote y cebolla, añade tomate y comino. Haz huecos, casca los huevos dentro y tapa 5 min. Pan para mojar."
   },
   n_terneraplancha: {
     id: "n_terneraplancha",
-    name: "Ternera a la plancha con ensalada y queso fresco",
+    name: "Res a la plancha con ensalada y queso fresco",
     category: "dinner",
     kcal: 480,
     protein: 44,
@@ -395,7 +395,7 @@ export const CARN_MEALS: Record<string, Meal> = {
   },
   n_wokternera: {
     id: "n_wokterneraverde",
-    name: "Wok de ternera con brócoli y salsa de soja",
+    name: "Wok de res con brócoli y salsa de soja",
     category: "dinner",
     kcal: 490,
     protein: 42,
@@ -407,11 +407,11 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "salsasoja", qty: 15 },
       { ing: "ajo", qty: 2 }
     ],
-    prep: "Sartén al máximo: ternera 90 segundos y fuera. Verduras 3 min, devuelve la carne con soja y ajo. Arroz al lado."
+    prep: "Sartén al máximo: res 90 segundos y fuera. Verduras 3 min, devuelve la carne con soja y ajo. Arroz al lado."
   },
   n_pimientosrellenos: {
     id: "n_pimientosrellenos",
-    name: "Pimientos rellenos de ternera y arroz",
+    name: "Locotes rellenos de res y arroz",
     category: "dinner",
     kcal: 500,
     protein: 38,
@@ -423,7 +423,7 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "quesorallado", qty: 25 },
       { ing: "cebolla", qty: 0.5 }
     ],
-    prep: "Rellena los pimientos con la carne salteada, arroz y tomate. Queso encima y horno 25 min a 190°."
+    prep: "Rellena los locotes con la carne salteada, arroz y tomate. Queso encima y horno 25 min a 190°."
   },
   n_atunplancha: {
     id: "n_atunplancha",
@@ -439,14 +439,14 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "ajo", qty: 2 },
       { ing: "aove", qty: 10 }
     ],
-    prep: "Merluza a la plancha 3 min por lado con ajo y limón. Patata cocida templada sobre la ensalada."
+    prep: "Merluza a la plancha 3 min por lado con ajo y limón. Papa cocida templada sobre la ensalada."
   },
 
 
   /* ════════ CERDO ════════ */
   c_costillas: {
     id: "c_costillas",
-    name: "Costillas de cerdo al horno con boniato y ensalada",
+    name: "Costillas de cerdo al horno con batata y ensalada",
     category: "lunch",
     kcal: 680,
     protein: 40,
@@ -477,7 +477,7 @@ export const CARN_MEALS: Record<string, Meal> = {
   },
   c_chuletacerdo: {
     id: "c_chuletacerdo",
-    name: "Chuleta de cerdo a la plancha con patatas y pimientos",
+    name: "Chuleta de cerdo a la plancha con papas y locotes",
     category: "lunch",
     kcal: 610,
     protein: 46,
@@ -488,7 +488,7 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "ajo", qty: 2 },
       { ing: "aove", qty: 10 }
     ],
-    prep: "Chuleta a fuego fuerte 3 min por lado, sal al final. Pimientos asados y patatas panadera al horno."
+    prep: "Chuleta a fuego fuerte 3 min por lado, sal al final. Locotes asados y papas panadera al horno."
   },
   c_cerdoagridulce: {
     id: "c_cerdoagridulce",
@@ -542,7 +542,7 @@ export const CARN_MEALS: Record<string, Meal> = {
   /* ════════ MÁS RES ════════ */
   c_churrasco: {
     id: "c_churrasco",
-    name: "Churrasco de res con chimichurri, patata y ensalada",
+    name: "Churrasco de res con chimichurri, papa y ensalada",
     category: "lunch",
     kcal: 670,
     protein: 46,
@@ -572,7 +572,7 @@ export const CARN_MEALS: Record<string, Meal> = {
   },
   n_ropavieja: {
     id: "n_ropavieja",
-    name: "Ropa vieja de res con pimientos y arroz",
+    name: "Ropa vieja de res con locotes y arroz",
     category: "dinner",
     kcal: 530,
     protein: 42,
@@ -584,11 +584,11 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "arroz", qty: 45 },
       { ing: "especias", qty: 3 }
     ],
-    prep: "Cuece y desmecha la falda. Sofríe pimiento y cebolla, añade tomate y la carne. 10 min juntos."
+    prep: "Cuece y desmecha la falda. Sofríe locote y cebolla, añade tomate y la carne. 10 min juntos."
   },
   n_milanesa: {
     id: "n_milanesa",
-    name: "Milanesa de res al horno con ensalada y patata",
+    name: "Milanesa de res al horno con ensalada y papa",
     category: "dinner",
     kcal: 560,
     protein: 45,

@@ -123,7 +123,7 @@ export const useApp = create<AppState>()(
       },
 
       /**
-       * Cambiar el plato de una comida. Es COMPARTIDO: coméis juntos, así que
+       * Cambiar el plato de una comida. Es COMPARTIDO: comen juntos, así que
        * el plato es el mismo para los dos y se sincroniza al otro móvil al
        * instante. Lo que NO se comparte son las raciones: cada uno ve las suyas
        * calculadas con sus propias calorías y macros.
@@ -215,7 +215,7 @@ export function subscribeShoppingRealtime(): () => void {
         }
       }
     )
-    // Si uno cambia el plato, al otro le cambia al instante (coméis lo mismo)
+    // Si uno cambia el plato, al otro le cambia al instante (comen lo mismo)
     .on(
       "postgres_changes",
       { event: "*", schema: "public", table: "meal_swaps" },

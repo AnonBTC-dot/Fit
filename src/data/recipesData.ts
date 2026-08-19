@@ -13,10 +13,10 @@ import type { DayMenu, Ingredient, Meal } from "./meals";
 /* ---------- Nuevos ingredientes (categorizados para la lista) ---------- */
 
 export const NEW_INGREDIENTS: Record<string, Ingredient> = {
-  ternera: { id: "ternera", name: "Ternera magra en tiras", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 27000 },
+  ternera: { id: "ternera", name: "Carne de res en tiras", unit: "g", section: "Proteínas", packLabel: "bandeja 500 g", packSize: 500, packPrice: 25000 },
   pepino: { id: "pepino", name: "Pepino", unit: "ud", section: "Frescos", packLabel: "unidad", packSize: 1, packPrice: 3000 },
   zanahoria: { id: "zanahoria", name: "Zanahoria", unit: "ud", section: "Frescos", packLabel: "bolsa 1 kg (~10 ud)", packSize: 10, packPrice: 8000 },
-  maiz: { id: "maiz", name: "Maíz dulce (lata)", unit: "g", section: "Despensa", packLabel: "lata 140 g escurrido", packSize: 140, packPrice: 7000 },
+  maiz: { id: "maiz", name: "Choclo (lata)", unit: "g", section: "Despensa", packLabel: "lata 140 g escurrido", packSize: 140, packPrice: 7000 },
   palomitasmaiz: { id: "palomitasmaiz", name: "Maíz para palomitas", unit: "g", section: "Despensa", packLabel: "bolsa 250 g", packSize: 250, packPrice: 8000 }
 };
 
@@ -26,7 +26,7 @@ export const NEW_MEALS: Record<string, Meal> = {
   /* Desayunos */
   d_tortillaavena: {
     id: "d_tortillaavena",
-    name: "Tortilla de avena dulce con plátano y canela",
+    name: "Tortilla de avena dulce con banana y canela",
     category: "breakfast",
     kcal: 410,
     protein: 20,
@@ -37,11 +37,11 @@ export const NEW_MEALS: Record<string, Meal> = {
       { ing: "platano", qty: 0.5 },
       { ing: "miel", qty: 5 }
     ],
-    prep: "Bate avena + huevos + leche y cuaja como tortilla. Dobla con plátano dentro, canela y un hilo de miel."
+    prep: "Bate avena + huevos + leche y cuaja como tortilla. Dobla con banana dentro, canela y un hilo de miel."
   },
   d_overnight: {
     id: "d_overnight",
-    name: "Overnight oats de frutos rojos y cacahuete",
+    name: "Overnight oats de frutos rojos y maní",
     category: "breakfast",
     kcal: 430,
     protein: 16,
@@ -51,7 +51,7 @@ export const NEW_MEALS: Record<string, Meal> = {
       { ing: "frutosrojos", qty: 75 },
       { ing: "cremacacahuete", qty: 12 }
     ],
-    prep: "La noche antes: avena + leche + frutos rojos al bote. Por la mañana, remueve y corona con la crema de cacahuete."
+    prep: "La noche antes: avena + leche + frutos rojos al bote. Por la mañana, remueve y corona con la mantequilla de maní."
   },
 
   /* Almuerzos */
@@ -73,7 +73,7 @@ export const NEW_MEALS: Record<string, Meal> = {
   },
   c_wokternera: {
     id: "c_wokternera",
-    name: "Wok de ternera con verduras y arroz",
+    name: "Wok de res con verduras y arroz",
     category: "lunch",
     kcal: 560,
     protein: 36,
@@ -85,7 +85,7 @@ export const NEW_MEALS: Record<string, Meal> = {
       { ing: "zanahoria", qty: 1 },
       { ing: "aove", qty: 8 }
     ],
-    prep: "Sartén muy caliente: ternera 2 min, retira. Saltea verduras, vuelve a añadir carne y arroz cocido con soja."
+    prep: "Sartén muy caliente: res 2 min, retira. Saltea verduras, vuelve a añadir carne y arroz cocido con soja."
   },
   c_ensaladatemplada: {
     id: "c_ensaladatemplada",
@@ -121,7 +121,7 @@ export const NEW_MEALS: Record<string, Meal> = {
   },
   c_pastapollo: {
     id: "c_pastapollo",
-    name: "Pasta integral con pollo, champiñones y calabacín al ajillo",
+    name: "Pasta integral con pollo, champiñones y zapallito al ajillo",
     category: "lunch",
     kcal: 570,
     protein: 45,
@@ -168,7 +168,7 @@ export const NEW_MEALS: Record<string, Meal> = {
   },
   n_revueltogambas: {
     id: "n_revueltogambas",
-    name: "Revuelto de gambas y espinacas con pan tostado",
+    name: "Revuelto de camarones y espinacas con pan tostado",
     category: "dinner",
     kcal: 420,
     protein: 34,
@@ -179,11 +179,11 @@ export const NEW_MEALS: Record<string, Meal> = {
       { ing: "pan", qty: 40 },
       { ing: "aove", qty: 8 }
     ],
-    prep: "Gambas con ajo, añade espinacas y después los huevos; revuelve a fuego suave. Pan tostado para acompañar."
+    prep: "Camarones con ajo, añade espinacas y después los huevos; revuelve a fuego suave. Pan tostado para acompañar."
   },
   n_tortillapatata: {
     id: "n_tortillapatata",
-    name: "Tortilla de patata con atún y ensalada",
+    name: "Tortilla de papa con atún y ensalada",
     category: "dinner",
     kcal: 430,
     protein: 22,
@@ -196,7 +196,7 @@ export const NEW_MEALS: Record<string, Meal> = {
       { ing: "ensalada", qty: 0.5 },
       { ing: "aove", qty: 10 }
     ],
-    prep: "Patata al micro 8 min en vez de frita, mezcla con huevo y cebolla pochada y cuaja. Ensalada aliñada al lado."
+    prep: "Papa al micro 8 min en vez de frita, mezcla con huevo y cebolla pochada y cuaja. Ensalada aliñada al lado."
   },
 
   /* Snacks */
@@ -214,7 +214,7 @@ export const NEW_MEALS: Record<string, Meal> = {
   },
   s_platanonueces: {
     id: "s_platanonueces",
-    name: "Plátano con puñadito de nueces",
+    name: "Banana con puñadito de nueces",
     category: "snack",
     kcal: 180,
     protein: 4,

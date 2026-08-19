@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, Circle, Cloud, ShoppingCart } from "lucide-react";
 import { Card } from "@/components/ui";
 import { calcTargets } from "@/lib/calculations";
@@ -31,6 +31,8 @@ function mondayOfThisWeek(): Date {
  */
 export default function ShoppingPage() {
   const { swaps, profiles, checks, toggleCheck } = useApp();
+  // Cuántas semanas se compran de una vez: para no ir al súper cada semana
+  const [semanas, setSemanas] = useState(1);
 
   useEffect(() => {
     const unsubscribe = subscribeShoppingRealtime();
@@ -41,9 +43,10 @@ export default function ShoppingPage() {
     () => buildShoppingList(
         profiles.map((p) => ({ kcal: calcTargets(p).kcal, eatsBreakfast: p.eats_breakfast ?? true })),
         swaps,
-        mondayOfThisWeek()
+        mondayOfThisWeek(),
+        semanas
       ),
-    [profiles, swaps]
+    [profiles, swaps, semanas]
   );
 
   if (profiles.length === 0) return null;
@@ -57,13 +60,42 @@ export default function ShoppingPage() {
       <header>
         <h1 className="text-xl font-extrabold">Lista de la compra</h1>
         <p className="flex items-center gap-1 text-sm text-ink-500">
-          Semana completa para {names} <Cloud size={13} className="text-brand-500" /> sincronizada
+          Para {names} <Cloud size={13} className="text-brand-500" /> sincronizada
         </p>
       </header>
+
+      {/* Cuántas semanas comprar de una vez */}
+      <div>
+        <p className="mb-2 text-xs font-medium text-ink-500">¿Para cuánto tiempo compras?</p>
+        <div className="flex gap-2">
+          {[1, 2, 3, 4].map((n) => (
+            <button
+              key={n}
+              onClick={() => setSemanas(n)}
+              className={`flex-1 rounded-xl px-2 py-2.5 text-xs font-bold transition-all ${
+                semanas === n
+                  ? "bg-brand-500 text-ink-950"
+                  : "border border-ink-300 bg-ink-200 text-ink-600"
+              }`}
+            >
+              {n === 1 ? "1 semana" : n === 4 ? "1 mes" : `${n} semanas`}
+            </button>
+          ))}
+        </div>
+        {semanas > 1 && (
+          <p className="mt-2 text-xs text-ink-400">
+            Suma los menús de las próximas {semanas} semanas. Ojo con lo fresco: la carne se
+            congela sin problema, pero verduras y frutas conviene comprarlas más seguido.
+          </p>
+        )}
+      </div>
 
       <Card className="flex items-center justify-between bg-ink-200 !border-brand-100 !py-3">
         <div className="flex items-center gap-2 text-sm font-semibold text-brand-800">
           <ShoppingCart size={18} /> {doneCount}/{items.length} en el carro
+          <span className="text-xs font-normal text-ink-500">
+            · {semanas === 1 ? "1 semana" : semanas === 4 ? "1 mes" : `${semanas} semanas`}
+          </span>
         </div>
         <span className="text-lg font-extrabold text-brand-400">~{formatGs(total)}</span>
       </Card>

@@ -53,11 +53,11 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "cacao", qty: 8 },
       { ing: "miel", qty: 8 }
     ],
-    prep: "Bate el Skyr con la proteína, el cacao y la miel hasta que quede aireado. 30 min en la nevera y textura de mousse."
+    prep: "Bate el Skyr con la proteína, el cacao y la miel hasta que quede aireado. 30 min en la heladera y textura de mousse."
   },
   s_skyrbowl: {
     id: "s_skyrbowl",
-    name: "Bowl de Skyr con frutos rojos y crema de cacahuete",
+    name: "Bowl de Skyr con frutos rojos y mantequilla de maní",
     category: "snack",
     kcal: 250,
     protein: 24,
@@ -67,7 +67,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "cremacacahuete", qty: 12 },
       { ing: "avena", qty: 15 }
     ],
-    prep: "Skyr de base, frutos rojos encima, hilo de crema de cacahuete y avena por encima para el crujiente."
+    prep: "Skyr de base, frutos rojos encima, hilo de mantequilla de maní y avena por encima para el crujiente."
   },
   s_mugcakewhey: {
     id: "s_mugcakewhey",
@@ -87,7 +87,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
   },
   s_tartaqueso: {
     id: "s_tartaqueso",
-    name: "Tarta de queso proteica individual",
+    name: "Cheesecake proteica individual",
     category: "snack",
     kcal: 270,
     protein: 25,
@@ -102,7 +102,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
   },
   s_heladoplatano: {
     id: "s_heladoplatano",
-    name: "Helado proteico de plátano y cacao",
+    name: "Helado proteico de banana y cacao",
     category: "snack",
     kcal: 240,
     protein: 22,
@@ -112,7 +112,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "whey", qty: 15 },
       { ing: "cacao", qty: 5 }
     ],
-    prep: "Congela el plátano en rodajas. Tritúralo con el Skyr, la proteína y el cacao: sale un helado cremoso de verdad."
+    prep: "Congela el banana en rodajas. Tritúralo con el Skyr, la proteína y el cacao: sale un helado cremoso de verdad."
   },
   s_yogurchoco: {
     id: "s_yogurchoco",
@@ -129,7 +129,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
   },
   s_batidoproteico: {
     id: "s_batidoproteico",
-    name: "Batido proteico de fresas y avena",
+    name: "Batido proteico de frutillas y avena",
     category: "snack",
     kcal: 260,
     protein: 30,
@@ -145,7 +145,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
   /* ═══════════ GOURMET FIT — principales ═══════════ */
   c_lasagna: {
     id: "c_lasagna",
-    name: "Lasaña fit de calabacín con boloñesa de res",
+    name: "Lasaña fit de zapallito con boloñesa de res",
     category: "lunch",
     kcal: 620,
     protein: 48,
@@ -158,7 +158,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "cebolla", qty: 0.5 },
       { ing: "ensalada", qty: 0.5 }
     ],
-    prep: "Láminas finas de calabacín y berenjena en vez de pasta. Capas con la boloñesa, queso arriba y horno 25 min a 190°."
+    prep: "Láminas finas de zapallito y berenjena en vez de pasta. Capas con la boloñesa, queso arriba y horno 25 min a 190°."
   },
   c_berenjenasrellenas: {
     id: "c_berenjenasrellenas",
@@ -190,7 +190,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "espinacas", qty: 80 },
       { ing: "ajo", qty: 2 }
     ],
-    prep: "Salsa cremosa sin nata: queso crema light + un cazo del agua de cocción de la pasta. Espinacas al final."
+    prep: "Salsa cremosa sin crema: queso crema light + un cazo del agua de cocción de la pasta. Espinacas al final."
   },
   c_tacosmaiz: {
     id: "c_tacosmaiz",
@@ -211,7 +211,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
   },
   c_cerdomielmostaza: {
     id: "c_cerdomielmostaza",
-    name: "Solomillo de cerdo a la miel y mostaza con boniato",
+    name: "Lomo de cerdo a la miel y mostaza con batata",
     category: "lunch",
     kcal: 600,
     protein: 46,
@@ -223,7 +223,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "miel", qty: 10 },
       { ing: "aove", qty: 8 }
     ],
-    prep: "Sella el solomillo, glasea con miel y mostaza y termina 10 min al horno. Boniato asado y brócoli al vapor."
+    prep: "Sella el lomo, glasea con miel y mostaza y termina 10 min al horno. Batata asado y brócoli al vapor."
   },
   n_burgerdoble: {
     id: "n_burgerdoble",
@@ -312,7 +312,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
   },
   c_camaronesboniato: {
     id: "c_camaronesboniato",
-    name: "Camarones a la plancha con boniato y ensalada",
+    name: "Camarones a la plancha con batata y ensalada",
     category: "lunch",
     kcal: 540,
     protein: 42,
@@ -324,7 +324,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "ajo", qty: 2 },
       { ing: "aove", qty: 10 }
     ],
-    prep: "Camarones a la plancha fuerte con ajo y limón, 90 segundos por lado. Boniato asado y ensalada generosa."
+    prep: "Camarones a la plancha fuerte con ajo y limón, 90 segundos por lado. Batata asado y ensalada generosa."
   },
   n_camaronesajillo: {
     id: "n_camaronesajillo",
@@ -377,7 +377,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
   },
   c_resconhuevo: {
     id: "c_resconhuevo",
-    name: "Bistec a caballo: res con huevo frito y patatas",
+    name: "Bistec a caballo: res con huevo frito y papas",
     category: "lunch",
     kcal: 640,
     protein: 48,
@@ -388,11 +388,11 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "ensalada", qty: 0.5 },
       { ing: "aove", qty: 10 }
     ],
-    prep: "Filete a la plancha y los huevos fritos con la puntilla encima. Patatas al horno y ensalada al lado."
+    prep: "Filete a la plancha y los huevos fritos con la puntilla encima. Papas al horno y ensalada al lado."
   },
   n_huevoscerdo: {
     id: "n_huevoscerdo",
-    name: "Revuelto de huevo con cerdo y pimientos",
+    name: "Revuelto de huevo con cerdo y locotes",
     category: "dinner",
     kcal: 490,
     protein: 42,
@@ -404,7 +404,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "pan", qty: 35 },
       { ing: "aove", qty: 8 }
     ],
-    prep: "Cerdo en tiras dorado, pimientos y cebolla pochados, y los huevos al final removiendo a fuego suave."
+    prep: "Cerdo en tiras dorado, locotes y cebolla pochados, y los huevos al final removiendo a fuego suave."
   },
   n_tortillacamarones: {
     id: "n_tortillacamarones",
@@ -484,7 +484,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
   },
   n_burgerdoblecheat: {
     id: "n_burgerdoblecheat",
-    name: "🔥 Hamburguesa doble de res con patatas al horno",
+    name: "🔥 Hamburguesa doble de res con papas al horno",
     category: "dinner",
     kcal: 780,
     protein: 55,
@@ -497,11 +497,11 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "mostaza", qty: 10 },
       { ing: "ensalada", qty: 0.5 }
     ],
-    prep: "Dos medallones finos (más costra, más sabor), queso fundido entre ellos. Patatas gajo al horno con pimentón."
+    prep: "Dos medallones finos (más costra, más sabor), queso fundido entre ellos. Papas gajo al horno con pimentón."
   },
   c_costillasbbq: {
     id: "c_costillasbbq",
-    name: "🔥 Costillas BBQ caseras con boniato y ensalada",
+    name: "🔥 Costillas BBQ caseras con batata y ensalada",
     category: "lunch",
     kcal: 760,
     protein: 45,
@@ -531,7 +531,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "ajo", qty: 4 },
       { ing: "aove", qty: 12 }
     ],
-    prep: "Asa las carnes con sal gorda, reposa 5 min antes de cortar. Pimientos y patatas a la brasa, chimichurri generoso."
+    prep: "Asa las carnes con sal gorda, reposa 5 min antes de cortar. Locotes y papas a la brasa, chimichurri generoso."
   }
 };
 

@@ -43,7 +43,7 @@ export default function WelcomePage() {
       </div>
 
       <p className="mt-8 text-center text-xs text-ink-400">
-        Elige una vez en cada móvil. Vuestro progreso y la lista de la compra se sincronizan solos en la nube.
+        Elige una vez en cada móvil. Su progreso y la lista de la compra se sincronizan solos en la nube.
       </p>
     </div>
   );

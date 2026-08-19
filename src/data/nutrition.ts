@@ -7,7 +7,7 @@
  *
  * CONVENCIÓN DE PESOS (esto es lo que más se equivoca la gente):
  * - "crudo"  -> pésalo ANTES de cocinar (arroz, pasta, quinoa, carnes, pescado,
- *               patata, avena). Es el estándar: al cocer, el alimento absorbe
+ *               papa, avena). Es el estándar: al cocer, el alimento absorbe
  *               agua y pesa 2-3x más, pero las calorías son las mismas.
  * - "cocido" -> el producto ya viene cocido de bote/lata (lentejas, garbanzos,
  *               maíz, atún escurrido).
