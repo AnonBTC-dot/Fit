@@ -41,7 +41,11 @@ export default function ShoppingPage() {
 
   const items = useMemo(
     () => buildShoppingList(
-        profiles.map((p) => ({ kcal: calcTargets(p).kcal, eatsBreakfast: p.eats_breakfast ?? true })),
+        profiles.map((p) => ({
+          targets: calcTargets(p),
+          eatsBreakfast: p.eats_breakfast ?? true,
+          cheat: p.cheat_day ?? true
+        })),
         swaps,
         mondayOfThisWeek(),
         semanas

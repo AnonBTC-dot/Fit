@@ -58,7 +58,7 @@ export const NUTRITION: Record<string, Nutrients> = {
   calabacin: { kcal: 34, protein: 2.4, carbs: 6, fat: 0.6, weighAs: "tal cual" }, // ud ~200 g
   pepino: { kcal: 30, protein: 1.3, carbs: 6, fat: 0.2, weighAs: "tal cual" }, // ud ~200 g
   zanahoria: { kcal: 33, protein: 0.7, carbs: 8, fat: 0.2, weighAs: "tal cual" }, // ud ~80 g
-  ensalada: { kcal: 30, protein: 2, carbs: 4, fat: 0.4, weighAs: "tal cual" }, // bolsa ~200 g
+  ensalada: { kcal: 16, protein: 1.4, carbs: 2, fat: 0.2, weighAs: "tal cual" }, // por 100 g de hojas
   brocoli: { kcal: 34, protein: 2.8, carbs: 7, fat: 0.4, weighAs: "crudo" },
   calabaza: { kcal: 26, protein: 1, carbs: 6, fat: 0.1, weighAs: "crudo" },
   champinones: { kcal: 22, protein: 3, carbs: 3, fat: 0.3, weighAs: "crudo" },

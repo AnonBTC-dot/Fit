@@ -65,7 +65,7 @@ export const INGREDIENTS: Record<string, Ingredient> = {
   brocoli: { id: "brocoli", name: "Brócoli", unit: "g", section: "Frescos", packLabel: "pieza ~500 g", packSize: 500, packPrice: 12000 },
   calabaza: { id: "calabaza", name: "Zapallo", unit: "g", section: "Frescos", packLabel: "trozo ~1 kg", packSize: 1000, packPrice: 8000 },
   champinones: { id: "champinones", name: "Champiñones", unit: "g", section: "Frescos", packLabel: "bandeja 250 g", packSize: 250, packPrice: 15000 },
-  ensalada: { id: "ensalada", name: "Ensalada variada (bolsa)", unit: "ud", section: "Frescos", packLabel: "bolsa", packSize: 1, packPrice: 8000 },
+  ensalada: { id: "ensalada", name: "Mix de hojas verdes / ensalada", unit: "g", section: "Frescos", packLabel: "bolsa 200 g", packSize: 200, packPrice: 8000 },
   patata: { id: "patata", name: "Papas", unit: "g", section: "Frescos", packLabel: "malla 3 kg", packSize: 3000, packPrice: 22000 },
 
   /* Proteínas */
@@ -267,7 +267,7 @@ export const MEALS: Record<string, Meal> = {
       { ing: "atun", qty: 84 },
       { ing: "aguacate", qty: 0.5 },
       { ing: "tomate", qty: 1 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "aove", qty: 8 }
     ],
     prep: "Todo al bol: garbanzos escurridos, atún, aguacate y tomate en dados sobre la ensalada. Aliña y mezcla."
@@ -328,7 +328,7 @@ export const MEALS: Record<string, Meal> = {
     items: [
       { ing: "pavopicado", qty: 150 },
       { ing: "pan", qty: 60 },
-      { ing: "ensalada", qty: 0.25 },
+      { ing: "ensalada", qty: 50 },
       { ing: "tomate", qty: 0.5 },
       { ing: "cebolla", qty: 0.25 },
       { ing: "quesorallado", qty: 15 }
@@ -390,7 +390,7 @@ export const MEALS: Record<string, Meal> = {
     items: [
       { ing: "tortillawrap", qty: 1 },
       { ing: "pollo", qty: 130 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "tomate", qty: 0.5 },
       { ing: "yogurgriego", qty: 0.5 }
     ],
@@ -603,7 +603,23 @@ export function buildDayPlan(
   /** Platos que has cambiado tú a mano: mandan sobre la sugerencia. */
   swaps: Partial<Record<MealSlotKey, string>> = {}
 ): DayPlan {
-  const base = MENU_CYCLE[currentCycleWeek()][dayIdx];
+  return buildDayPlanDeSemana(0, dayIdx, targets, eatsBreakfast, cheatEnabled, swaps);
+}
+
+/**
+ * Igual que `buildDayPlan`, pero mirando N semanas por delante del ciclo.
+ * Lo usa la lista de la compra cuando compras 2, 3 o 4 semanas de golpe.
+ */
+export function buildDayPlanDeSemana(
+  semanasAdelante: number,
+  dayIdx: number,
+  targets: { kcal: number; protein_g: number; carbs_g: number; fat_g: number },
+  eatsBreakfast: boolean,
+  cheatEnabled = false,
+  swaps: Partial<Record<MealSlotKey, string>> = {}
+): DayPlan {
+  const semana = (currentCycleWeek() + semanasAdelante) % MENU_CYCLE.length;
+  const base = MENU_CYCLE[semana][dayIdx];
   const slots = activeSlots(eatsBreakfast);
   const menu: DayMenu = { ...base };
   let cheatSlot: MealSlotKey | null = null;
@@ -703,7 +719,7 @@ export function alternativesFor(slot: MealSlotKey, currentId: string): Meal[] {
 /** Cantidad de un ingrediente ya ajustada a tu ración, con nota crudo/cocido. */
 export function itemQtyFor(item: MealItem, factor: number): { qty: number; unit: IngUnit; note: string } {
   const ing = INGREDIENTS[item.ing];
-  const qty = scaleQty(item.qty, factor, ing.unit);
+  const qty = scaleQty(item.qty, factor, ing.unit, item.ing);
   const n = NUTRITION[item.ing];
   return { qty, unit: ing.unit, note: n ? WEIGH_LABEL[n.weighAs] : "" };
 }
@@ -717,8 +733,42 @@ Object.assign(MEALS, NEW_MEALS, CARN_MEALS, GOURMET_MEALS);
 /** Ciclo de 8 semanas equilibradas (res/pollo de base, pescado ocasional). */
 export const MENU_CYCLE: DayMenu[][] = MENU_WEEKS;
 
+const CLAVE_INICIO = "fit-plan-inicio"; // semana ISO en la que arrancó el plan
+
+/** Marca esta semana como la Semana 1 del ciclo. */
+export function empezarPlanEstaSemana(): void {
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(CLAVE_INICIO, String(isoWeekNumber()));
+  }
+}
+
+/** Fija manualmente en qué semana del ciclo estás (1..8). */
+export function fijarSemanaDelPlan(semana: number): void {
+  if (typeof window === "undefined") return;
+  const offset = isoWeekNumber() - (semana - 1);
+  window.localStorage.setItem(CLAVE_INICIO, String(offset));
+}
+
+/**
+ * Semana del ciclo (0..7). Cuenta desde la semana en que empezaste el plan,
+ * no desde el calendario: si arrancas hoy, estás en la Semana 1.
+ * Al terminar las 8 vuelve a la 1 con los mismos menús.
+ */
 export function currentCycleWeek(): number {
-  return isoWeekNumber() % MENU_CYCLE.length; // 0..7
+  let inicio = 0;
+  if (typeof window !== "undefined") {
+    const guardado = window.localStorage.getItem(CLAVE_INICIO);
+    if (guardado !== null) {
+      inicio = Number(guardado) || 0;
+    } else {
+      // Primera vez: el plan arranca AHORA, en la Semana 1. No tiene sentido
+      // caer en mitad del ciclo solo por el número de semana del calendario.
+      inicio = isoWeekNumber();
+      window.localStorage.setItem(CLAVE_INICIO, String(inicio));
+    }
+  }
+  const dif = isoWeekNumber() - inicio;
+  return ((dif % MENU_CYCLE.length) + MENU_CYCLE.length) % MENU_CYCLE.length;
 }
 
 /** Menú activo de esta semana (rota solo, según la semana ISO del año). */
@@ -733,10 +783,28 @@ export function kcalFactor(targetKcal: number): number {
   return Math.min(1.45, Math.max(0.75, targetKcal / BASE_KCAL));
 }
 
-export function scaleQty(qty: number, factor: number, unit: IngUnit): number {
+/**
+ * Ingredientes que solo tienen sentido en piezas enteras: no se cocina medio
+ * huevo ni tres cuartos de tortilla.
+ */
+const SOLO_ENTEROS = new Set(["huevo", "tortillawrap", "tortillamaiz", "yogurgriego"]);
+
+export function scaleQty(qty: number, factor: number, unit: IngUnit, ing?: string): number {
   const v = qty * factor;
-  if (unit === "ud") return Math.round(v * 4) / 4; // cuartos de unidad
+  if (unit === "ud") {
+    if (ing && SOLO_ENTEROS.has(ing)) return Math.max(1, Math.round(v)); // piezas enteras
+    return Math.round(v * 2) / 2; // medias unidades: media cebolla, medio locote
+  }
   return Math.round(v / 5) * 5; // redondeo a 5 g/ml
+}
+
+/**
+ * Para la LISTA DE LA COMPRA: en el súper compras piezas enteras, así que las
+ * unidades se redondean hacia arriba. Nadie compra 1,25 aguacates.
+ */
+export function qtyParaComprar(qty: number, unit: IngUnit): number {
+  if (unit === "ud") return Math.ceil(qty - 0.001);
+  return Math.round(qty / 5) * 5;
 }
 
 export interface ShoppingItem {
@@ -748,7 +816,13 @@ export interface ShoppingItem {
 
 /** Lista de la compra COMPARTIDA de la semana: suma los menús de ambos. */
 export function buildShoppingList(
-  eaters: { kcal: number; eatsBreakfast: boolean }[],
+  eaters: {
+    /** Objetivo diario completo: hace falta para calcular las mismas raciones
+     *  que ves en Nutrición (el snack se ajusta para cuadrar macros). */
+    targets: { kcal: number; protein_g: number; carbs_g: number; fat_g: number };
+    eatsBreakfast: boolean;
+    cheat?: boolean;
+  }[],
   /** Platos que han cambiado, por fecha: "YYYY-MM-DD|comida" -> plato. */
   swaps: Record<string, string> = {},
   /** Lunes de la semana que se compra (para casar los cambios con su día). */
@@ -764,13 +838,14 @@ export function buildShoppingList(
   for (let w = 0; w < Math.max(1, semanas); w++) {
     week.push(...MENU_CYCLE[(inicio + w) % MENU_CYCLE.length]);
   }
-  // Aplica a cada día los platos que hayan cambiado
-  const days = week.map((day, i) => {
-    if (!weekStart) return day;
+  // Solo los platos que TÚ has cambiado a mano: el resto (incluida la comida
+  // libre del finde) lo decide el planificador, igual que en Nutrición.
+  const cambios = week.map((_, i) => {
+    const out: Partial<Record<MealSlotKey, string>> = {};
+    if (!weekStart) return out;
     const d = new Date(weekStart);
-    d.setDate(d.getDate() + i);  // i avanza también entre semanas
+    d.setDate(d.getDate() + i); // i avanza también entre semanas
     const iso = d.toISOString().slice(0, 10);
-    const out: DayMenu = { ...day };
     for (const k of ["breakfast", "lunch", "snack", "dinner"] as MealSlotKey[]) {
       const chosen = swaps[`${iso}|${k}`];
       if (chosen && MEALS[chosen]) out[k] = chosen;
@@ -778,26 +853,35 @@ export function buildShoppingList(
     return out;
   });
   for (const eater of eaters) {
-    for (const day of days) {
-      const slots: [MealSlotKey, string][] = [
-        ["breakfast", day.breakfast],
-        ["lunch", day.lunch],
-        ["snack", day.snack],
-        ["dinner", day.dinner]
-      ];
-      for (const [slotKey, mealId] of slots) {
-        // Si no desayuna, ese plato no se compra; el resto van con SU ración real
-        const f = servingFactor(mealId, slotKey, eater.kcal, eater.eatsBreakfast);
-        if (f <= 0) continue;
-        for (const item of MEALS[mealId].items) {
+    cambios.forEach((swapsDia, i) => {
+      const dayIdx = i % 7; // día de la semana, aunque compres varias semanas
+      // Se usa EXACTAMENTE el mismo planificador que ves en Nutrición: así lo
+      // que compras es lo que vas a cocinar, sin sobrantes ni faltantes.
+      const plan = buildDayPlanDeSemana(
+        Math.floor(i / 7),
+        dayIdx,
+        eater.targets,
+        eater.eatsBreakfast,
+        eater.cheat ?? false,
+        swapsDia
+      );
+      for (const slotKey of plan.slots) {
+        const mealId = plan.menu[slotKey];
+        const meal = MEALS[mealId];
+        if (!meal) continue;
+        const f = plan.factors[slotKey];
+        if (!f || f <= 0) continue;
+        for (const item of meal.items) {
           const unit = INGREDIENTS[item.ing].unit;
-          totals[item.ing] = (totals[item.ing] ?? 0) + scaleQty(item.qty, f, unit);
+          totals[item.ing] = (totals[item.ing] ?? 0) + scaleQty(item.qty, f, unit, item.ing);
         }
       }
-    }
+    });
   }
-  return Object.entries(totals).map(([id, totalQty]) => {
+  return Object.entries(totals).map(([id, bruto]) => {
     const ingredient = INGREDIENTS[id];
+    // En el súper se compran piezas enteras
+    const totalQty = qtyParaComprar(bruto, ingredient.unit);
     const packs = Math.max(1, Math.ceil(totalQty / ingredient.packSize));
     return {
       ingredient,

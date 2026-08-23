@@ -117,7 +117,7 @@ export const CARN_MEALS: Record<string, Meal> = {
     items: [
       { ing: "ternerafilete", qty: 180 },
       { ing: "patata", qty: 200 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "ajo", qty: 2 },
       { ing: "aove", qty: 10 }
     ],
@@ -184,7 +184,7 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "tomate", qty: 1 },
       { ing: "cebolla", qty: 0.5 },
       { ing: "aguacate", qty: 0.5 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "limon", qty: 0.5 },
       { ing: "especias", qty: 3 }
     ],
@@ -268,7 +268,7 @@ export const CARN_MEALS: Record<string, Meal> = {
     protein: 42,
     items: [
       { ing: "ternerafilete", qty: 150 },
-      { ing: "ensalada", qty: 1 },
+      { ing: "ensalada", qty: 200 },
       { ing: "aguacate", qty: 0.5 },
       { ing: "quesofresco", qty: 40 },
       { ing: "tomate", qty: 1 },
@@ -286,7 +286,7 @@ export const CARN_MEALS: Record<string, Meal> = {
     items: [
       { ing: "pollo", qty: 150 },
       { ing: "huevo", qty: 2 },
-      { ing: "ensalada", qty: 1 },
+      { ing: "ensalada", qty: 200 },
       { ing: "aguacate", qty: 0.5 },
       { ing: "maiz", qty: 40 },
       { ing: "aove", qty: 10 }
@@ -303,7 +303,7 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "pollo", qty: 140 },
       { ing: "quesofresco", qty: 50 },
       { ing: "tomate", qty: 2 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "pan", qty: 30 },
       { ing: "aove", qty: 8 }
     ],
@@ -322,7 +322,7 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "pan", qty: 60 },
       { ing: "quesofresco", qty: 25 },
       { ing: "tomate", qty: 1 },
-      { ing: "ensalada", qty: 0.25 },
+      { ing: "ensalada", qty: 50 },
       { ing: "boniato", qty: 150 },
       { ing: "mostaza", qty: 8 }
     ],
@@ -339,7 +339,7 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "patata", qty: 200 },
       { ing: "pavopicado", qty: 60 },
       { ing: "pimiento", qty: 1 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "aove", qty: 12 },
       { ing: "especias", qty: 2 }
     ],
@@ -371,7 +371,7 @@ export const CARN_MEALS: Record<string, Meal> = {
     protein: 44,
     items: [
       { ing: "ternerafilete", qty: 170 },
-      { ing: "ensalada", qty: 1 },
+      { ing: "ensalada", qty: 200 },
       { ing: "quesofresco", qty: 30 },
       { ing: "tomate", qty: 1 },
       { ing: "aove", qty: 8 }
@@ -434,7 +434,7 @@ export const CARN_MEALS: Record<string, Meal> = {
     items: [
       { ing: "merluza", qty: 200 },
       { ing: "patata", qty: 150 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "limon", qty: 0.5 },
       { ing: "ajo", qty: 2 },
       { ing: "aove", qty: 10 }
@@ -453,7 +453,7 @@ export const CARN_MEALS: Record<string, Meal> = {
     items: [
       { ing: "cerdocostilla", qty: 200 },
       { ing: "boniato", qty: 180 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "ajo", qty: 3 },
       { ing: "especias", qty: 4 }
     ],
@@ -470,7 +470,7 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "tortillawrap", qty: 2 },
       { ing: "cebolla", qty: 0.5 },
       { ing: "tomate", qty: 1 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "especias", qty: 4 }
     ],
     prep: "Cuece la aguja 2 h a fuego lento con cebolla y especias (o 40 min en olla exprés) y desmecha con dos tenedores."
@@ -517,7 +517,7 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "cerdolomo", qty: 180 },
       { ing: "pimiento", qty: 0.5 },
       { ing: "cebolla", qty: 0.5 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "pan", qty: 40 },
       { ing: "especias", qty: 4 }
     ],
@@ -532,7 +532,7 @@ export const CARN_MEALS: Record<string, Meal> = {
     items: [
       { ing: "cerdolomo", qty: 180 },
       { ing: "champinones", qty: 130 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "ajo", qty: 3 },
       { ing: "aove", qty: 10 }
     ],
@@ -549,7 +549,7 @@ export const CARN_MEALS: Record<string, Meal> = {
     items: [
       { ing: "ternerafalda", qty: 190 },
       { ing: "patata", qty: 180 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "ajo", qty: 3 },
       { ing: "aove", qty: 10 }
     ],
@@ -565,7 +565,7 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "ternerafilete", qty: 180 },
       { ing: "cebolla", qty: 1 },
       { ing: "arroz", qty: 65 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "aove", qty: 10 }
     ],
     prep: "Sella el bistec y retíralo. Poch a la cebolla en la misma sartén hasta dorar, devuelve la carne 1 min. Clásico y perfecto."
@@ -597,7 +597,7 @@ export const CARN_MEALS: Record<string, Meal> = {
       { ing: "huevo", qty: 1 },
       { ing: "pan", qty: 35 },
       { ing: "patata", qty: 150 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "aove", qty: 8 }
     ],
     prep: "Empana con huevo y pan rallado, y al horno 200° 20 min sobre rejilla: queda crujiente sin fritura."

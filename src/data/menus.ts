@@ -31,7 +31,7 @@ export const MENU_WEEKS: DayMenu[][] = [
     { breakfast: "d_tortitas", lunch: "c_churrasco", dinner: "n_tortillaverde", snack: "s_heladoplatano" },
     { breakfast: "d_tostavo", lunch: "c_carneasada", dinner: "n_shakshuka", snack: "s_mousseproteico" },
     { breakfast: "d_bowlyogur", lunch: "c_ensaladaternera", dinner: "n_huevosalhorno", snack: "s_tortillamini" },
-    { breakfast: "d_overnight", lunch: "c_chili", dinner: "n_milanesa", snack: "s_huevoaguacate" }
+    { breakfast: "d_overnight", lunch: "c_chili", dinner: "n_salmonteriyaki", snack: "s_huevoaguacate" }
   ],
   /* Semana 3 */
   [
@@ -51,7 +51,7 @@ export const MENU_WEEKS: DayMenu[][] = [
     { breakfast: "d_tortillajamon", lunch: "c_pulledpork", dinner: "n_huevoscerdo", snack: "s_mugcake" },
     { breakfast: "d_gachas", lunch: "c_cerdomielmostaza", dinner: "n_tortillaverde", snack: "s_tartaqueso" },
     { breakfast: "d_overnight", lunch: "c_ensaladaternera", dinner: "n_cremacalabaza", snack: "s_yogurnueces" },
-    { breakfast: "d_bowlyogur", lunch: "c_resconhuevo", dinner: "n_ropavieja", snack: "s_palomitas" }
+    { breakfast: "d_bowlyogur", lunch: "c_resconhuevo", dinner: "n_merluza", snack: "s_palomitas" }
   ],
   /* Semana 5 */
   [
@@ -71,7 +71,7 @@ export const MENU_WEEKS: DayMenu[][] = [
     { breakfast: "d_tortillajamon", lunch: "c_wokternera", dinner: "n_huevosalhorno", snack: "s_tartaqueso" },
     { breakfast: "d_tostavo", lunch: "c_churrasco", dinner: "n_shakshuka", snack: "s_batidoproteico" },
     { breakfast: "d_overnight", lunch: "c_entrecot", dinner: "n_tortillaverde", snack: "s_huevosduros" },
-    { breakfast: "d_bowlyogur", lunch: "c_pulledpork", dinner: "n_huevosrotos", snack: "s_mugcake" }
+    { breakfast: "d_bowlyogur", lunch: "c_pulledpork", dinner: "n_salmonteriyaki", snack: "s_mugcake" }
   ],
   /* Semana 7 */
   [
@@ -91,6 +91,6 @@ export const MENU_WEEKS: DayMenu[][] = [
     { breakfast: "d_tostavo", lunch: "c_ensaladaternera", dinner: "n_pollocrujiente", snack: "s_mugcake" },
     { breakfast: "d_tortillaavena", lunch: "c_churrasco", dinner: "n_huevosalhorno", snack: "s_mugcakewhey" },
     { breakfast: "d_huevosrancheros", lunch: "c_tacos", dinner: "n_shakshuka", snack: "s_platanonueces" },
-    { breakfast: "d_bowlyogur", lunch: "c_tacosmaiz", dinner: "n_huevosrotos", snack: "s_huevoaguacate" }
+    { breakfast: "d_bowlyogur", lunch: "c_tacosmaiz", dinner: "n_merluza", snack: "s_huevoaguacate" }
   ]
 ];

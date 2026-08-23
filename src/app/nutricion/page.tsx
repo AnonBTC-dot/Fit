@@ -16,6 +16,7 @@ import {
   alternativesFor,
   buildDayPlan,
   currentCycleWeek,
+  empezarPlanEstaSemana,
   formatQty,
   getCurrentWeekMenu,
   itemQtyFor,
@@ -268,6 +269,7 @@ function SwapPicker({
 export default function NutritionPage() {
   const { profiles, mySlot, viewSlot, viewBoth, intake, swaps, swapMeal, addIntake, removeIntake } = useApp();
   const [swapping, setSwapping] = useState<MealSlotKey | null>(null);
+  const [verSemana, setVerSemana] = useState(false);
   const active = profiles.find((p) => p.slot === viewSlot) ?? profiles[0];
   const todayDow = (new Date().getDay() + 6) % 7; // 0 = lunes
   const [tab, setTab] = useState<"hoy" | "menu" | "recetas">("hoy");
@@ -509,6 +511,24 @@ export default function NutritionPage() {
       {/* ─────────── MENÚ SEMANAL ─────────── */}
       {tab === "menu" && (
         <>
+          <div className="flex rounded-full bg-ink-100 p-1">
+            {[
+              { k: false, l: "Un día" },
+              { k: true, l: "Semana completa" }
+            ].map((o) => (
+              <button
+                key={String(o.k)}
+                onClick={() => setVerSemana(o.k)}
+                className={`flex-1 rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${
+                  verSemana === o.k ? "bg-ink-200 text-brand-400 shadow-sm" : "text-ink-500"
+                }`}
+              >
+                {o.l}
+              </button>
+            ))}
+          </div>
+
+          {!verSemana && (
           <div className="flex gap-2 overflow-x-auto pb-1">
             {DAY_NAMES.map((d, i) => (
               <button
@@ -527,10 +547,24 @@ export default function NutritionPage() {
               </button>
             ))}
           </div>
+          )}
 
+          {!verSemana && (
+          <>
           <Card className="flex items-center justify-between !py-3">
             <span className="text-sm font-semibold text-ink-700">
               {DAY_NAMES[dayIdx]} · Semana {currentCycleWeek() + 1}/8
+              <button
+                onClick={() => {
+                  if (confirm("¿Empezar el plan desde la Semana 1 esta semana?")) {
+                    empezarPlanEstaSemana();
+                    location.reload();
+                  }
+                }}
+                className="ml-2 text-[11px] font-normal text-brand-400 underline"
+              >
+                empezar de nuevo
+              </button>
             </span>
             <span className="text-xs text-ink-500">
               {viewPlan.totals.kcal} kcal · {viewPlan.totals.protein}P / {viewPlan.totals.carbs}C / {viewPlan.totals.fat}G
@@ -552,6 +586,51 @@ export default function NutritionPage() {
               juntos={juntosPara(menu[k], k)}
             />
           ))}
+          </>
+          )}
+        </>
+      )}
+
+      {/* ─────────── MENÚ · SEMANA COMPLETA ─────────── */}
+      {tab === "menu" && verSemana && targets && (
+        <>
+          <p className="-mt-1 text-xs text-ink-500">
+            Vista rápida de los 7 días para que sepas qué carne sacar del freezer.
+            Toca un día para abrirlo con sus gramos y macros.
+          </p>
+          {DAY_NAMES.map((nombre, i) => {
+            const plan = buildDayPlan(i, targets, eatsBreakfast, cheatOn, i === todayDow ? mySwaps : {});
+            return (
+              <Card key={nombre} className="!py-3">
+                <button
+                  onClick={() => {
+                    setDayIdx(i);
+                    setVerSemana(false);
+                  }}
+                  className="w-full text-left"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className={`text-sm font-bold ${i === todayDow ? "text-brand-400" : "text-ink-700"}`}>
+                      {nombre}
+                      {i === todayDow && " · hoy"}
+                    </span>
+                    <span className="text-[11px] text-ink-500">{plan.totals.kcal} kcal</span>
+                  </div>
+                  <ul className="grid gap-1">
+                    {plan.slots.map((k) => (
+                      <li key={k} className="flex items-start gap-2 text-xs text-ink-600">
+                        <span className="shrink-0">{MEAL_EMOJI[k]}</span>
+                        <span className="flex-1">
+                          {MEALS[plan.menu[k]]?.name ?? "—"}
+                          {plan.cheatSlot === k && " · 🔥 libre"}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </button>
+              </Card>
+            );
+          })}
         </>
       )}
 

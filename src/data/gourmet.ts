@@ -156,7 +156,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "tomatetrit", qty: 150 },
       { ing: "quesorallado", qty: 35 },
       { ing: "cebolla", qty: 0.5 },
-      { ing: "ensalada", qty: 0.5 }
+      { ing: "ensalada", qty: 100 }
     ],
     prep: "Láminas finas de zapallito y berenjena en vez de pasta. Capas con la boloñesa, queso arriba y horno 25 min a 190°."
   },
@@ -172,7 +172,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "tomatetrit", qty: 120 },
       { ing: "cebolla", qty: 0.5 },
       { ing: "quesorallado", qty: 30 },
-      { ing: "ensalada", qty: 0.5 }
+      { ing: "ensalada", qty: 100 }
     ],
     prep: "Vacía las berenjenas, saltea la pulpa con la carne y el tomate. Rellena, queso encima y gratina 15 min."
   },
@@ -204,7 +204,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "tomate", qty: 1 },
       { ing: "cebolla", qty: 0.5 },
       { ing: "aguacate", qty: 0.5 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "limon", qty: 0.5 }
     ],
     prep: "Falda a la plancha bien dorada y picada. Tortillas de maíz calientes, pico de gallo, aguacate y mucho limón."
@@ -238,7 +238,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "skyr", qty: 40 },
       { ing: "mostaza", qty: 8 },
       { ing: "tomate", qty: 1 },
-      { ing: "ensalada", qty: 0.5 }
+      { ing: "ensalada", qty: 100 }
     ],
     prep: "Salsa casera: Skyr + mostaza + pepinillo picado. Carne sin apretar, 3 min por lado, y monta en el pan de masa madre."
   },
@@ -269,7 +269,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "huevo", qty: 1 },
       { ing: "avena", qty: 30 },
       { ing: "skyr", qty: 60 },
-      { ing: "ensalada", qty: 1 },
+      { ing: "ensalada", qty: 200 },
       { ing: "especias", qty: 4 }
     ],
     prep: "Empana con huevo y avena molida especiada, horno 200° 20 min sobre rejilla. Salsa de Skyr con ajo y limón."
@@ -319,7 +319,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
     items: [
       { ing: "gambas", qty: 190 },
       { ing: "boniato", qty: 190 },
-      { ing: "ensalada", qty: 1 },
+      { ing: "ensalada", qty: 200 },
       { ing: "limon", qty: 0.5 },
       { ing: "ajo", qty: 2 },
       { ing: "aove", qty: 10 }
@@ -335,7 +335,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
     items: [
       { ing: "gambas", qty: 190 },
       { ing: "pan", qty: 45 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "ajo", qty: 4 },
       { ing: "aove", qty: 12 }
     ],
@@ -385,7 +385,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "ternerafilete", qty: 165 },
       { ing: "huevo", qty: 2 },
       { ing: "patata", qty: 180 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "aove", qty: 10 }
     ],
     prep: "Filete a la plancha y los huevos fritos con la puntilla encima. Papas al horno y ensalada al lado."
@@ -478,7 +478,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "tomatetrit", qty: 100 },
       { ing: "quesorallado", qty: 50 },
       { ing: "champinones", qty: 80 },
-      { ing: "ensalada", qty: 0.5 }
+      { ing: "ensalada", qty: 100 }
     ],
     prep: "Masa: avena molida + Skyr + levadura, estira y hornea 8 min sola. Añade tomate, carne y queso y 10 min más."
   },
@@ -495,7 +495,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "patata", qty: 200 },
       { ing: "skyr", qty: 40 },
       { ing: "mostaza", qty: 10 },
-      { ing: "ensalada", qty: 0.5 }
+      { ing: "ensalada", qty: 100 }
     ],
     prep: "Dos medallones finos (más costra, más sabor), queso fundido entre ellos. Papas gajo al horno con pimentón."
   },
@@ -511,7 +511,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "tomatetrit", qty: 60 },
       { ing: "miel", qty: 12 },
       { ing: "mostaza", qty: 8 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "especias", qty: 5 }
     ],
     prep: "Salsa BBQ casera: tomate + miel + mostaza + pimentón ahumado. Costillas 45 min tapadas y 15 min glaseando."
@@ -527,7 +527,7 @@ export const GOURMET_MEALS: Record<string, Meal> = {
       { ing: "cerdochuleta", qty: 120 },
       { ing: "patata", qty: 180 },
       { ing: "pimiento", qty: 1 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "ajo", qty: 4 },
       { ing: "aove", qty: 12 }
     ],

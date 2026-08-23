@@ -110,7 +110,7 @@ export const NEW_MEALS: Record<string, Meal> = {
     kcal: 560,
     protein: 40,
     items: [
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "pavopicado", qty: 150 },
       { ing: "tomatetrit", qty: 150 },
       { ing: "arroz", qty: 70 },
@@ -159,7 +159,7 @@ export const NEW_MEALS: Record<string, Meal> = {
     protein: 40,
     items: [
       { ing: "pollo", qty: 130 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "pan", qty: 30 },
       { ing: "yogurgriego", qty: 0.5 },
       { ing: "quesorallado", qty: 10 }
@@ -193,7 +193,7 @@ export const NEW_MEALS: Record<string, Meal> = {
       { ing: "patata", qty: 200 },
       { ing: "huevo", qty: 2 },
       { ing: "cebolla", qty: 0.5 },
-      { ing: "ensalada", qty: 0.5 },
+      { ing: "ensalada", qty: 100 },
       { ing: "aove", qty: 10 }
     ],
     prep: "Papa al micro 8 min en vez de frita, mezcla con huevo y cebolla pochada y cuaja. Ensalada aliñada al lado."
