@@ -37,7 +37,8 @@ function MealCard({
   tag,
   onEat,
   onSwap,
-  swapped
+  swapped,
+  juntos
 }: {
   meal: Meal;
   factor: number;
@@ -45,9 +46,13 @@ function MealCard({
   onEat?: (servings: number) => void;
   onSwap?: () => void;
   swapped?: boolean;
+  /** Modo cocina para dos: cantidades sumadas y macros de cada uno. */
+  juntos?: { nombre: string; factor: number }[];
 }) {
   const [open, setOpen] = useState(false);
-  const m = roundMacros(scaleMacros(mealMacrosBase(meal.id), factor));
+  // En modo conjunto las cantidades son la SUMA (lo que va a la olla)
+  const factorTotal = juntos ? juntos.reduce((t, j) => t + j.factor, 0) : factor;
+  const m = roundMacros(scaleMacros(mealMacrosBase(meal.id), factorTotal));
 
   return (
     <Card>
@@ -57,28 +62,49 @@ function MealCard({
           <h3 className="font-bold text-ink-800">{meal.name}</h3>
         </div>
         <span className="shrink-0 rounded-full bg-ink-200 px-2 py-1 text-[10px] font-semibold text-brand-400">
-          {m.kcal} kcal
+          {m.kcal} kcal{juntos ? " total" : ""}
         </span>
       </div>
 
-      {/* Macros del plato */}
-      <div className="mt-2 grid grid-cols-3 gap-2 text-center">
-        {[
-          { l: "Proteína", v: `${m.protein} g` },
-          { l: "Carbos", v: `${m.carbs} g` },
-          { l: "Grasa", v: `${m.fat} g` }
-        ].map((x) => (
-          <div key={x.l} className="rounded-lg bg-ink-200 py-1.5">
-            <div className="text-sm font-bold text-ink-800">{x.v}</div>
-            <div className="text-[9px] font-medium uppercase tracking-wide text-ink-400">{x.l}</div>
-          </div>
-        ))}
-      </div>
+      {/* Macros: del plato, o de cada persona si cocinan juntos */}
+      {juntos ? (
+        <div className="mt-2 grid gap-1.5">
+          {juntos.map((j) => {
+            const mj = roundMacros(scaleMacros(mealMacrosBase(meal.id), j.factor));
+            return (
+              <div key={j.nombre} className="flex items-center justify-between rounded-lg bg-ink-200 px-2.5 py-1.5">
+                <span className="text-xs font-semibold text-ink-700">{j.nombre}</span>
+                <span className="text-[11px] text-ink-500">
+                  <span className="font-bold text-brand-400">{mj.kcal}</span> kcal · {mj.protein}P / {mj.carbs}C / {mj.fat}G
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+          {[
+            { l: "Proteína", v: `${m.protein} g` },
+            { l: "Carbos", v: `${m.carbs} g` },
+            { l: "Grasa", v: `${m.fat} g` }
+          ].map((x) => (
+            <div key={x.l} className="rounded-lg bg-ink-200 py-1.5">
+              <div className="text-sm font-bold text-ink-800">{x.v}</div>
+              <div className="text-[9px] font-medium uppercase tracking-wide text-ink-400">{x.l}</div>
+            </div>
+          ))}
+        </div>
+      )}
 
+      {juntos && (
+        <p className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-ink-400">
+          Para cocinar (los dos juntos)
+        </p>
+      )}
       <ul className="mt-3 grid gap-1">
         {meal.items.map((it) => {
           const ing = INGREDIENTS[it.ing];
-          const q = itemQtyFor(it, factor);
+          const q = itemQtyFor(it, factorTotal);
           return (
             <li key={it.ing} className="flex justify-between gap-2 text-sm text-ink-600">
               <span>{ing.name}</span>
@@ -240,7 +266,7 @@ function SwapPicker({
 }
 
 export default function NutritionPage() {
-  const { profiles, mySlot, viewSlot, intake, swaps, swapMeal, addIntake, removeIntake } = useApp();
+  const { profiles, mySlot, viewSlot, viewBoth, intake, swaps, swapMeal, addIntake, removeIntake } = useApp();
   const [swapping, setSwapping] = useState<MealSlotKey | null>(null);
   const active = profiles.find((p) => p.slot === viewSlot) ?? profiles[0];
   const todayDow = (new Date().getDay() + 6) % 7; // 0 = lunes
@@ -288,6 +314,20 @@ export default function NutritionPage() {
   if (!active || !targets) return null;
 
   const cheatOn = active.cheat_day ?? true;
+  // Cocinan juntos: cantidades sumadas, pero macros de cada uno por separado
+  const cocinaJuntos = viewBoth && profiles.length === 2;
+  const comensales = profiles.map((p) => ({
+    nombre: p.name,
+    kcal: calcTargets(p).kcal,
+    eatsBreakfast: p.eats_breakfast ?? true
+  }));
+  const juntosPara = (mealId: string, k: MealSlotKey) =>
+    cocinaJuntos
+      ? comensales.map((c) => ({
+          nombre: c.nombre,
+          factor: servingFactor(mealId, k, c.kcal, c.eatsBreakfast)
+        }))
+      : undefined;
   // Cambios manuales guardados para hoy
   // Los platos son COMPARTIDOS (comen juntos); las raciones, de cada uno
   const mySwaps: Partial<Record<MealSlotKey, string>> = {};
@@ -339,12 +379,14 @@ export default function NutritionPage() {
       <header>
         <h1 className="text-xl font-extrabold">Nutrición</h1>
         <p className="text-sm text-ink-500">
-          {targets.kcal} kcal · raciones de {active.name}
-          {!eatsBreakfast && " · sin desayuno"}
+          {cocinaJuntos
+            ? `Cantidades para cocinar los dos · ${comensales.map((c) => `${c.nombre} ${c.kcal}`).join(" · ")} kcal`
+            : `${targets.kcal} kcal · raciones de ${active.name}`}
+          {!cocinaJuntos && !eatsBreakfast && " · sin desayuno"}
         </p>
       </header>
 
-      <ProfileSwitcher />
+      <ProfileSwitcher allowBoth />
 
       {/* Tabs */}
       <div className="flex rounded-full bg-ink-100 p-1">
@@ -445,6 +487,7 @@ export default function NutritionPage() {
                       onEat={isMe && !done ? (s) => eat(mealId, k, s) : undefined}
                       onSwap={isMe && !done ? () => setSwapping(k) : undefined}
                       swapped={Boolean(mySwaps[k])}
+                      juntos={juntosPara(mealId, k)}
                     />
                   </div>
                 );
@@ -506,6 +549,7 @@ export default function NutritionPage() {
               meal={MEALS[menu[k]]}
               factor={servingFactor(menu[k], k, targets.kcal, eatsBreakfast)}
               tag={`${MEAL_EMOJI[k]} ${MEAL_LABELS[k]}${viewPlan.cheatSlot === k ? " · 🔥 libre" : ""}`}
+              juntos={juntosPara(menu[k], k)}
             />
           ))}
         </>

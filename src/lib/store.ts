@@ -19,6 +19,7 @@ interface AppState {
   hydrated: boolean;
   mySlot: Slot | null; // quién soy YO en este dispositivo
   viewSlot: Slot; // qué perfil estoy viendo
+  viewBoth: boolean; // ver los dos a la vez (cocinan juntos)
   profiles: Profile[];
   measurements: Measurement[];
   logs: WorkoutLog[];
@@ -29,6 +30,7 @@ interface AppState {
 
   chooseMe: (s: Slot) => void;
   setViewSlot: (s: Slot) => void;
+  setViewBoth: (b: boolean) => void;
   loadFromServer: () => Promise<void>;
   saveProfile: (p: Profile) => Promise<void>;
   addMeasurement: (m: Measurement) => Promise<void>;
@@ -46,6 +48,7 @@ export const useApp = create<AppState>()(
       hydrated: false,
       mySlot: null,
       viewSlot: "p1",
+      viewBoth: false,
       profiles: [],
       measurements: [],
       logs: [],
@@ -54,8 +57,9 @@ export const useApp = create<AppState>()(
       settings: { wedding_date: null },
       checks: {},
 
-      chooseMe: (s) => set({ mySlot: s, viewSlot: s }),
-      setViewSlot: (s) => set({ viewSlot: s }),
+      chooseMe: (s) => set({ mySlot: s, viewSlot: s, viewBoth: false }),
+      setViewSlot: (s) => set({ viewSlot: s, viewBoth: false }),
+      setViewBoth: (b) => set({ viewBoth: b }),
 
       loadFromServer: async () => {
         const sb = getSupabase();
@@ -187,6 +191,7 @@ export const useApp = create<AppState>()(
       partialize: (s) => ({
         mySlot: s.mySlot,
         viewSlot: s.viewSlot,
+        viewBoth: s.viewBoth,
         profiles: s.profiles,
         measurements: s.measurements,
         logs: s.logs,
