@@ -796,40 +796,33 @@ Object.assign(MEALS, NEW_MEALS, CARN_MEALS, GOURMET_MEALS);
 /** Ciclo de 8 semanas equilibradas (res/pollo de base, pescado ocasional). */
 export const MENU_CYCLE: DayMenu[][] = MENU_WEEKS;
 
-const CLAVE_INICIO = "fit-plan-inicio"; // semana ISO en la que arrancó el plan
+/**
+ * Semana ISO en la que arrancó el plan. Es un dato de LA PAREJA, no del
+ * teléfono: si cada móvil guarda el suyo, uno va por la semana 3 y el otro
+ * por la 6, y entonces ni la cena ni la compra coinciden. Lo escribe el
+ * store al sincronizar con Supabase.
+ */
+let PLAN_INICIO: number | null = null;
 
-/** Marca esta semana como la Semana 1 del ciclo. */
-export function empezarPlanEstaSemana(): void {
-  if (typeof window !== "undefined") {
-    window.localStorage.setItem(CLAVE_INICIO, String(isoWeekNumber()));
-  }
+/** Lo llama el store con el valor compartido que viene de la nube. */
+export function setPlanInicio(semanaIso: number | null): void {
+  PLAN_INICIO = semanaIso;
 }
 
-/** Fija manualmente en qué semana del ciclo estás (1..8). */
-export function fijarSemanaDelPlan(semana: number): void {
-  if (typeof window === "undefined") return;
-  const offset = isoWeekNumber() - (semana - 1);
-  window.localStorage.setItem(CLAVE_INICIO, String(offset));
+/** Semana ISO de hoy, para que el store pueda guardar el arranque. */
+export function semanaIsoDeHoy(): number {
+  return isoWeekNumber();
 }
 
 /**
- * Semana del ciclo (0..7). Cuenta desde la semana en que empezaste el plan,
- * no desde el calendario: si arrancas hoy, estás en la Semana 1.
+ * Semana del ciclo (0..7). Cuenta desde la semana en que empezasteis el plan,
+ * no desde el calendario: si arrancáis hoy, estáis en la Semana 1.
  * Al terminar las 8 vuelve a la 1 con los mismos menús.
  */
 export function currentCycleWeek(): number {
-  let inicio = 0;
-  if (typeof window !== "undefined") {
-    const guardado = window.localStorage.getItem(CLAVE_INICIO);
-    if (guardado !== null) {
-      inicio = Number(guardado) || 0;
-    } else {
-      // Primera vez: el plan arranca AHORA, en la Semana 1. No tiene sentido
-      // caer en mitad del ciclo solo por el número de semana del calendario.
-      inicio = isoWeekNumber();
-      window.localStorage.setItem(CLAVE_INICIO, String(inicio));
-    }
-  }
+  // Sin dato compartido todavía (primer arranque o sin conexión) el ciclo
+  // empieza en la semana 1 de este calendario, igual en los dos móviles.
+  const inicio = PLAN_INICIO ?? 0;
   const dif = isoWeekNumber() - inicio;
   return ((dif % MENU_CYCLE.length) + MENU_CYCLE.length) % MENU_CYCLE.length;
 }

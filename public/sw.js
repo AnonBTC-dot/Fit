@@ -3,7 +3,7 @@
    - Estáticos (_next, iconos): cache-first.
    - API Supabase: siempre red (los datos offline los sirve localStorage). */
 
-const CACHE = "fit-v15";
+const CACHE = "fit-v16";
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(["/", "/manifest.json"])));

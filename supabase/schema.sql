@@ -60,8 +60,13 @@ create table if not exists public.shopping_checks (
 create table if not exists public.couple_settings (
   id           int primary key default 1 check (id = 1),
   wedding_date date,
+  -- Semana ISO en la que arrancó el plan de menús. Va aquí y no en el móvil:
+  -- si cada teléfono lleva su cuenta, cada uno cae en una semana distinta del
+  -- ciclo y el menú del día deja de coincidir.
+  plan_start_week int,
   updated_at   timestamptz not null default now()
 );
+alter table public.couple_settings add column if not exists plan_start_week int;
 
 -- Acceso con la anon key del proyecto (solo la tenéis vosotros dos).
 alter table public.profiles        enable row level security;
@@ -84,6 +89,12 @@ create policy "open settings" on public.couple_settings for all using (true) wit
 -- Realtime: el tick de la compra aparece en el otro móvil al momento.
 do $$ begin
   alter publication supabase_realtime add table public.shopping_checks;
+exception when duplicate_object then null;
+end $$;
+
+-- Si uno reinicia el ciclo de menús, el otro móvil se entera al momento.
+do $$ begin
+  alter publication supabase_realtime add table public.couple_settings;
 exception when duplicate_object then null;
 end $$;
 

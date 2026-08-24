@@ -1,4 +1,5 @@
 "use client";
+import { setPlanInicio, semanaIsoDeHoy } from "@/data/meals";
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -40,6 +41,8 @@ interface AppState {
   removeIntake: (e: IntakeEntry) => Promise<void>;
   toggleCheck: (ingredientId: string) => Promise<void>;
   setWeddingDate: (date: string | null) => Promise<void>;
+  /** Reinicia el ciclo de menús en la Semana 1 para los dos móviles. */
+  empezarPlanEstaSemana: () => Promise<void>;
 }
 
 export const useApp = create<AppState>()(
@@ -54,7 +57,7 @@ export const useApp = create<AppState>()(
       logs: [],
       intake: [],
       swaps: {},
-      settings: { wedding_date: null },
+      settings: { wedding_date: null, plan_start_week: null },
       checks: {},
 
       chooseMe: (s) => set({ mySlot: s, viewSlot: s, viewBoth: false }),
@@ -77,6 +80,9 @@ export const useApp = create<AppState>()(
           ]);
           const checkMap: Record<string, boolean> = {};
           for (const c of checks.data ?? []) checkMap[c.ingredient_id] = c.checked;
+          // El ciclo de menús tiene que arrancar en la misma semana en los dos
+          // móviles, así que se aplica antes de pintar nada.
+          setPlanInicio(settings.data?.plan_start_week ?? null);
           set({
             profiles: (profiles.data as Profile[]) ?? [],
             measurements: (measurements.data as Measurement[]) ?? [],
@@ -88,7 +94,10 @@ export const useApp = create<AppState>()(
                 r.meal_id
               ])
             ),
-            settings: { wedding_date: settings.data?.wedding_date ?? null },
+            settings: {
+              wedding_date: settings.data?.wedding_date ?? null,
+              plan_start_week: settings.data?.plan_start_week ?? null
+            },
             checks: checkMap
           });
         } catch {
@@ -178,14 +187,30 @@ export const useApp = create<AppState>()(
       },
 
       setWeddingDate: async (date) => {
-        set({ settings: { wedding_date: date } });
+        set({ settings: { ...get().settings, wedding_date: date } });
         const sb = getSupabase();
         if (sb) await sb.from("couple_settings").upsert({ id: 1, wedding_date: date });
+      },
+
+      /**
+       * Marca esta semana como la Semana 1 del ciclo PARA LOS DOS. Se guarda en
+       * la nube, no en el teléfono: si cada móvil lleva su propia cuenta, uno
+       * cena milanesa y el otro shakshuka el mismo día.
+       */
+      empezarPlanEstaSemana: async () => {
+        const semana = semanaIsoDeHoy();
+        setPlanInicio(semana);
+        set({ settings: { ...get().settings, plan_start_week: semana } });
+        const sb = getSupabase();
+        if (sb) await sb.from("couple_settings").upsert({ id: 1, plan_start_week: semana });
       }
     }),
     {
       name: "fit-store",
-      onRehydrateStorage: () => () => {
+      onRehydrateStorage: () => (state) => {
+        // La copia local vale para arrancar sin conexión; en cuanto responda
+        // Supabase, loadFromServer la pisa con el valor compartido.
+        if (state) setPlanInicio(state.settings?.plan_start_week ?? null);
         useApp.setState({ hydrated: true });
       },
       partialize: (s) => ({
@@ -244,6 +269,23 @@ export function subscribeShoppingRealtime(): () => void {
         if (row?.date && row.meal_slot && row.meal_id) {
           useApp.setState((s) => ({ swaps: { ...s.swaps, [`${row.date}|${row.meal_slot}`]: row.meal_id! } }));
         }
+      }
+    )
+    // Si uno reinicia el ciclo de menús, el otro salta a la misma semana
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "couple_settings" },
+      (payload: { new?: { plan_start_week?: number | null; wedding_date?: string | null } }) => {
+        const row = payload.new;
+        if (!row) return;
+        setPlanInicio(row.plan_start_week ?? null);
+        useApp.setState((s) => ({
+          settings: {
+            ...s.settings,
+            plan_start_week: row.plan_start_week ?? null,
+            wedding_date: row.wedding_date ?? s.settings.wedding_date
+          }
+        }));
       }
     )
     .subscribe();

@@ -16,7 +16,6 @@ import {
   alternativesFor,
   buildDayPlan,
   currentCycleWeek,
-  empezarPlanEstaSemana,
   formatQty,
   getCurrentWeekMenu,
   itemQtyFor,
@@ -267,7 +266,8 @@ function SwapPicker({
 }
 
 export default function NutritionPage() {
-  const { profiles, mySlot, viewSlot, viewBoth, intake, swaps, swapMeal, addIntake, removeIntake } = useApp();
+  const { profiles, mySlot, viewSlot, viewBoth, intake, swaps, swapMeal, addIntake, removeIntake, empezarPlanEstaSemana } =
+    useApp();
   const [swapping, setSwapping] = useState<MealSlotKey | null>(null);
   const [verSemana, setVerSemana] = useState(false);
   const active = profiles.find((p) => p.slot === viewSlot) ?? profiles[0];
@@ -557,9 +557,9 @@ export default function NutritionPage() {
             <span className="text-sm font-semibold text-ink-700">
               {DAY_NAMES[dayIdx]} · Semana {currentCycleWeek() + 1}/8
               <button
-                onClick={() => {
-                  if (confirm("¿Empezar el plan desde la Semana 1 esta semana?")) {
-                    empezarPlanEstaSemana();
+                onClick={async () => {
+                  if (confirm("¿Empezar el plan desde la Semana 1 esta semana?\n\nSe aplica a los dos móviles.")) {
+                    await empezarPlanEstaSemana();
                     location.reload();
                   }
                 }}

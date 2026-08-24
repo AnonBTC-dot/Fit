@@ -58,6 +58,9 @@ export interface WorkoutLog {
 
 export interface CoupleSettings {
   wedding_date: string | null; // YYYY-MM-DD
+  /** Semana ISO en la que la pareja arrancó el plan. Compartida: si no, cada
+   *  móvil cae en una semana distinta del ciclo y el menú deja de coincidir. */
+  plan_start_week: number | null;
 }
 
 export interface MacroTargets {
