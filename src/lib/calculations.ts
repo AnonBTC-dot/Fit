@@ -107,3 +107,26 @@ export function computeStreak(completedDates: string[]): number {
   }
   return streak;
 }
+
+/**
+ * REFERENCIA DE LA PAREJA.
+ *
+ * Comen juntos el 99% del tiempo: se cocina UN plato y cada uno se sirve su
+ * ración. Para que el planificador no le proponga a cada uno un snack o una
+ * cena distinta, el plato lo decide siempre el mismo perfil de referencia
+ * (el de p1, y si no está, el primero). Las cantidades sí son de cada uno.
+ */
+export function refDePareja(profiles: Profile[]): { targets: MacroTargets; eatsBreakfast: boolean } | undefined {
+  if (profiles.length < 2) return undefined;
+  const ref = profiles.find((p) => p.slot === "p1") ?? profiles[0];
+  return { targets: calcTargets(ref), eatsBreakfast: ref.eats_breakfast ?? true };
+}
+
+/**
+ * ¿Toca comida libre? Es una decisión de la pareja, no de cada uno: si uno
+ * tiene el finde libre activado, la cena del sábado es la misma para los dos.
+ */
+export function cheatDePareja(profiles: Profile[]): boolean {
+  if (profiles.length === 0) return true;
+  return profiles.some((p) => p.cheat_day ?? true);
+}

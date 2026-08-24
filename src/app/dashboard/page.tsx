@@ -5,7 +5,7 @@ import { Clock, Dumbbell, Flame, Trophy, UtensilsCrossed } from "lucide-react";
 import { Button, Card, Ring } from "@/components/ui";
 import { LineChart } from "@/components/LineChart";
 import { ProfileSwitcher } from "@/components/ProfileSwitcher";
-import { calcTargets, computeStreak, todayISO } from "@/lib/calculations";
+import { calcTargets, computeStreak, todayISO , refDePareja, cheatDePareja } from "@/lib/calculations";
 import { getPlan, todayDayIndex } from "@/data/workouts";
 import { MEALS, MEAL_EMOJI, buildDayPlan, mealMacrosFor } from "@/data/meals";
 import { useApp } from "@/lib/store";
@@ -27,7 +27,7 @@ export default function DashboardPage() {
 
   const todayDow = (new Date().getDay() + 6) % 7;
   const eatsBreakfast = active.eats_breakfast ?? true;
-  const dayPlan = buildDayPlan(todayDow, targets, eatsBreakfast, active.cheat_day ?? true);
+  const dayPlan = buildDayPlan(todayDow, targets, eatsBreakfast, cheatDePareja(profiles), {}, refDePareja(profiles));
   const todayMenu = dayPlan.menu;
   const slots = dayPlan.slots;
 

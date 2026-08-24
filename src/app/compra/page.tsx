@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, Circle, Cloud, ShoppingCart } from "lucide-react";
 import { Card } from "@/components/ui";
-import { calcTargets } from "@/lib/calculations";
+import { calcTargets , refDePareja, cheatDePareja } from "@/lib/calculations";
 import { SECTION_ORDER, buildShoppingList, formatGs, formatQty } from "@/data/meals";
 import { subscribeShoppingRealtime, useApp } from "@/lib/store";
 
@@ -44,7 +44,8 @@ export default function ShoppingPage() {
         profiles.map((p) => ({
           targets: calcTargets(p),
           eatsBreakfast: p.eats_breakfast ?? true,
-          cheat: p.cheat_day ?? true
+          cheat: cheatDePareja(profiles),
+          ref: refDePareja(profiles)
         })),
         swaps,
         mondayOfThisWeek(),

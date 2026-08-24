@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Check, Plus, RefreshCw, Search, Trash2, X } from "lucide-react";
 import { Card, Input, Ring } from "@/components/ui";
 import { ProfileSwitcher } from "@/components/ProfileSwitcher";
-import { calcTargets, todayISO } from "@/lib/calculations";
+import { calcTargets, todayISO , refDePareja, cheatDePareja } from "@/lib/calculations";
 import {
   CATEGORY_LABELS,
   DAY_NAMES,
@@ -315,7 +315,9 @@ export default function NutritionPage() {
 
   if (!active || !targets) return null;
 
-  const cheatOn = active.cheat_day ?? true;
+  // Comen juntos: el PLATO lo decide la pareja, la RACIÓN cada uno.
+  const refPareja = refDePareja(profiles);
+  const cheatOn = cheatDePareja(profiles);
   // Cocinan juntos: cantidades sumadas, pero macros de cada uno por separado
   const cocinaJuntos = viewBoth && profiles.length === 2;
   const comensales = profiles.map((p) => ({
@@ -338,8 +340,8 @@ export default function NutritionPage() {
     if (v) mySwaps[k] = v;
   }
   // Plan del día: comida libre del finde + tus cambios + snack que cuadra macros
-  const todayPlan = buildDayPlan(todayDow, targets, eatsBreakfast, cheatOn, mySwaps);
-  const viewPlan = buildDayPlan(dayIdx, targets, eatsBreakfast, cheatOn, dayIdx === todayDow ? mySwaps : {});
+  const todayPlan = buildDayPlan(todayDow, targets, eatsBreakfast, cheatOn, mySwaps, refPareja);
+  const viewPlan = buildDayPlan(dayIdx, targets, eatsBreakfast, cheatOn, dayIdx === todayDow ? mySwaps : {}, refPareja);
   const slots = viewPlan.slots;
   const menu = viewPlan.menu;
   const todayMenu = todayPlan.menu;
@@ -599,7 +601,7 @@ export default function NutritionPage() {
             Toca un día para abrirlo con sus gramos y macros.
           </p>
           {DAY_NAMES.map((nombre, i) => {
-            const plan = buildDayPlan(i, targets, eatsBreakfast, cheatOn, i === todayDow ? mySwaps : {});
+            const plan = buildDayPlan(i, targets, eatsBreakfast, cheatOn, i === todayDow ? mySwaps : {}, refPareja);
             return (
               <Card key={nombre} className="!py-3">
                 <button

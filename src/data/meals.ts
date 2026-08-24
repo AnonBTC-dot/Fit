@@ -595,15 +595,85 @@ function macrosOfDay(menu: DayMenu, slots: MealSlotKey[], kcal: number, eatsBrea
  * 2. Elige el SNACK que deja los macros del día lo más cerca posible del
  *    objetivo (esa es su función: cuadrar la cuenta, no rellenar).
  */
+/**
+ * Referencia de la pareja: fija QUÉ se cocina para que los dos coman el mismo
+ * plato. Cada uno ajusta solo el tamaño de su ración.
+ */
+export interface RefPareja {
+  targets: { kcal: number; protein_g: number; carbs_g: number; fat_g: number };
+  eatsBreakfast: boolean;
+}
+
+/** Busca plato de snack + ración que mejor cierran el día. */
+function ajustarSnack(
+  fixed: Macros,
+  poolIds: string[],
+  targets: { kcal: number; protein_g: number; carbs_g: number; fat_g: number },
+  fallbackId: string,
+  /** Snack que propone el menú de la semana: se respeta salvo que descuadre. */
+  sugerido?: string
+): { id: string; factor: number } {
+  let bestId = fallbackId;
+  let bestFactor = 1;
+  let bestScore = Infinity;
+  for (const id of poolIds) {
+    const base = mealMacrosBase(id);
+    if (base.kcal <= 0) continue;
+    /**
+     * Sin esto el optimizador acaba proponiendo SIEMPRE el mismo snack, el que
+     * cuadra mejor, y comes helado proteico seis días de siete. La penalización
+     * hace que solo se aparte de lo que propone el menú si de verdad merece la
+     * pena. Variedad primero; los macros ya se ajustan con la ración.
+     */
+    const penal = sugerido && id !== sugerido ? 1.2 : 0;
+    for (let f = 0.5; f <= 2.01; f += 0.1) {
+      const t = addMacros(fixed, scaleMacros(base, f));
+      const score = penal +
+        4 * Math.abs(t.protein - targets.protein_g) / Math.max(1, targets.protein_g) +
+        3 * Math.abs(t.kcal - targets.kcal) / Math.max(1, targets.kcal) +
+        Math.abs(t.carbs - targets.carbs_g) / Math.max(1, targets.carbs_g) +
+        Math.abs(t.fat - targets.fat_g) / Math.max(1, targets.fat_g);
+      if (score < bestScore) {
+        bestScore = score;
+        bestId = id;
+        bestFactor = Math.round(f * 10) / 10;
+      }
+    }
+  }
+  return { id: bestId, factor: bestFactor };
+}
+
+/** Qué snack elegiría la referencia de la pareja: ese es el que se cocina. */
+function elegirSnack(
+  menu: DayMenu,
+  slotsTodos: MealSlotKey[],
+  targets: { kcal: number; protein_g: number; carbs_g: number; fat_g: number },
+  eatsBreakfast: boolean,
+  _cheatEnabled: boolean,
+  _dayIdx: number,
+  _semana: number
+): { id: string; factor: number } {
+  const slots = activeSlots(eatsBreakfast);
+  let fixed: Macros = { ...ZERO_MACROS };
+  for (const k of slots) {
+    if (k === "snack") continue;
+    const f = servingFactor(menu[k], k, targets.kcal, eatsBreakfast);
+    fixed = addMacros(fixed, scaleMacros(mealMacrosBase(menu[k]), f));
+  }
+  const pool = Object.values(MEALS).filter((m) => m.category === "snack").map((m) => m.id);
+  return ajustarSnack(fixed, pool, targets, menu.snack, menu.snack);
+}
+
 export function buildDayPlan(
   dayIdx: number,
   targets: { kcal: number; protein_g: number; carbs_g: number; fat_g: number },
   eatsBreakfast: boolean,
   cheatEnabled = false,
   /** Platos que has cambiado tú a mano: mandan sobre la sugerencia. */
-  swaps: Partial<Record<MealSlotKey, string>> = {}
+  swaps: Partial<Record<MealSlotKey, string>> = {},
+  referencia?: RefPareja
 ): DayPlan {
-  return buildDayPlanDeSemana(0, dayIdx, targets, eatsBreakfast, cheatEnabled, swaps);
+  return buildDayPlanDeSemana(0, dayIdx, targets, eatsBreakfast, cheatEnabled, swaps, referencia);
 }
 
 /**
@@ -616,7 +686,9 @@ export function buildDayPlanDeSemana(
   targets: { kcal: number; protein_g: number; carbs_g: number; fat_g: number },
   eatsBreakfast: boolean,
   cheatEnabled = false,
-  swaps: Partial<Record<MealSlotKey, string>> = {}
+  swaps: Partial<Record<MealSlotKey, string>> = {},
+  /** Si comen juntos, el plato lo decide la referencia y no cada uno. */
+  referencia?: RefPareja
 ): DayPlan {
   const semana = (currentCycleWeek() + semanasAdelante) % MENU_CYCLE.length;
   const base = MENU_CYCLE[semana][dayIdx];
@@ -655,30 +727,21 @@ export function buildDayPlanDeSemana(
    * El snack cierra la cuenta: se busca la combinación de plato + tamaño de
    * ración que deja el día lo más cerca posible del objetivo. Prioriza
    * proteína (lo crítico en recomposición) y calorías.
+   *
+   * OJO: el PLATO tiene que ser el mismo para los dos (cocinan una vez); lo
+   * que cambia es la RACIÓN. Por eso, si hay referencia de pareja, primero se
+   * elige el snack con ella y después cada uno ajusta solo su factor.
    */
-  const snackPool = swaps.snack && MEALS[swaps.snack]
-    ? [MEALS[swaps.snack]] // si tú elegiste el snack, solo se ajusta su ración
-    : Object.values(MEALS).filter((m) => m.category === "snack");
-  let bestId = menu.snack;
-  let bestFactor = 1;
-  let bestScore = Infinity;
-  for (const cand of snackPool) {
-    const base = mealMacrosBase(cand.id);
-    if (base.kcal <= 0) continue;
-    for (let f = 0.5; f <= 2.01; f += 0.1) {
-      const t = addMacros(fixed, scaleMacros(base, f));
-      const score =
-        4 * Math.abs(t.protein - targets.protein_g) / Math.max(1, targets.protein_g) +
-        3 * Math.abs(t.kcal - targets.kcal) / Math.max(1, targets.kcal) +
-        Math.abs(t.carbs - targets.carbs_g) / Math.max(1, targets.carbs_g) +
-        Math.abs(t.fat - targets.fat_g) / Math.max(1, targets.fat_g);
-      if (score < bestScore) {
-        bestScore = score;
-        bestId = cand.id;
-        bestFactor = Math.round(f * 10) / 10;
-      }
-    }
+  let poolIds: string[];
+  if (swaps.snack && MEALS[swaps.snack]) {
+    poolIds = [swaps.snack]; // lo elegiste tú a mano
+  } else if (referencia) {
+    poolIds = [elegirSnack(menu, slots, referencia.targets, referencia.eatsBreakfast, cheatEnabled, dayIdx, semana).id];
+  } else {
+    poolIds = Object.values(MEALS).filter((m) => m.category === "snack").map((m) => m.id);
   }
+
+  const { id: bestId, factor: bestFactor } = ajustarSnack(fixed, poolIds, targets, menu.snack, base.snack);
   menu.snack = bestId;
   factors.snack = bestFactor;
 
@@ -822,6 +885,8 @@ export function buildShoppingList(
     targets: { kcal: number; protein_g: number; carbs_g: number; fat_g: number };
     eatsBreakfast: boolean;
     cheat?: boolean;
+    /** Referencia de la pareja: cocinan el mismo plato, distinta ración. */
+    ref?: RefPareja;
   }[],
   /** Platos que han cambiado, por fecha: "YYYY-MM-DD|comida" -> plato. */
   swaps: Record<string, string> = {},
@@ -863,7 +928,8 @@ export function buildShoppingList(
         eater.targets,
         eater.eatsBreakfast,
         eater.cheat ?? false,
-        swapsDia
+        swapsDia,
+        eater.ref
       );
       for (const slotKey of plan.slots) {
         const mealId = plan.menu[slotKey];
