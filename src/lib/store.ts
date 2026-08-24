@@ -1,5 +1,5 @@
 "use client";
-import { setPlanInicio, semanaIsoDeHoy } from "@/data/meals";
+import { setPlanInicio, semanaIsoDeHoy, planInicioHeredado, inicioParaSemana, currentCycleWeek } from "@/data/meals";
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -43,6 +43,8 @@ interface AppState {
   setWeddingDate: (date: string | null) => Promise<void>;
   /** Reinicia el ciclo de menús en la Semana 1 para los dos móviles. */
   empezarPlanEstaSemana: () => Promise<void>;
+  /** Impone a la pareja la semana que muestra este móvil. Devuelve cuál. */
+  sincronizarSemanaDesdeAqui: () => Promise<number>;
 }
 
 export const useApp = create<AppState>()(
@@ -80,9 +82,21 @@ export const useApp = create<AppState>()(
           ]);
           const checkMap: Record<string, boolean> = {};
           for (const c of checks.data ?? []) checkMap[c.ingredient_id] = c.checked;
-          // El ciclo de menús tiene que arrancar en la misma semana en los dos
-          // móviles, así que se aplica antes de pintar nada.
-          setPlanInicio(settings.data?.plan_start_week ?? null);
+          /*
+           * El ciclo tiene que arrancar en la misma semana en los dos móviles,
+           * así que se aplica antes de pintar nada.
+           *
+           * Si en la nube todavía no hay nada (primera vez tras el cambio) NO
+           * se reinicia el plan: se sube la semana que este teléfono ya venía
+           * siguiendo. Así nadie pierde la semana empezada, y el otro móvil se
+           * acopla a ella en cuanto sincronice.
+           */
+          let inicio = settings.data?.plan_start_week ?? null;
+          if (inicio === null || inicio === undefined) {
+            inicio = planInicioHeredado() ?? semanaIsoDeHoy();
+            void sb.from("couple_settings").upsert({ id: 1, plan_start_week: inicio });
+          }
+          setPlanInicio(inicio);
           set({
             profiles: (profiles.data as Profile[]) ?? [],
             measurements: (measurements.data as Measurement[]) ?? [],
@@ -197,6 +211,21 @@ export const useApp = create<AppState>()(
        * la nube, no en el teléfono: si cada móvil lleva su propia cuenta, uno
        * cena milanesa y el otro shakshuka el mismo día.
        */
+      /**
+       * Toma la semana que muestra ESTE móvil y la impone como la de la pareja.
+       * Es lo que quieres cuando ya habéis empezado y solo falta que el otro
+       * teléfono se ponga al día, sin reiniciar nada.
+       */
+      sincronizarSemanaDesdeAqui: async () => {
+        const semana = currentCycleWeek() + 1; // 1..8
+        const inicio = inicioParaSemana(semana);
+        setPlanInicio(inicio);
+        set({ settings: { ...get().settings, plan_start_week: inicio } });
+        const sb = getSupabase();
+        if (sb) await sb.from("couple_settings").upsert({ id: 1, plan_start_week: inicio });
+        return semana;
+      },
+
       empezarPlanEstaSemana: async () => {
         const semana = semanaIsoDeHoy();
         setPlanInicio(semana);

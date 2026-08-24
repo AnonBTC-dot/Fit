@@ -815,6 +815,25 @@ export function semanaIsoDeHoy(): number {
 }
 
 /**
+ * Arranque que guardó ESTE teléfono cuando el dato aún era local. Sirve para
+ * no perder la semana que ya estabais siguiendo al pasar el plan a la nube:
+ * el primero que abra la app publica su semana y el otro se acopla.
+ */
+export function planInicioHeredado(): number | null {
+  if (typeof window === "undefined") return null;
+  const v = window.localStorage.getItem("fit-plan-inicio");
+  return v === null ? null : Number(v) || 0;
+}
+
+/**
+ * Arranque que hay que guardar para quedarse en la semana `semana` (1..8)
+ * del ciclo. Lo usa el botón de "sincronizar desde este móvil".
+ */
+export function inicioParaSemana(semana: number): number {
+  return isoWeekNumber() - (semana - 1);
+}
+
+/**
  * Semana del ciclo (0..7). Cuenta desde la semana en que empezasteis el plan,
  * no desde el calendario: si arrancáis hoy, estáis en la Semana 1.
  * Al terminar las 8 vuelve a la 1 con los mismos menús.

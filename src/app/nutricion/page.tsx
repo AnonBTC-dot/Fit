@@ -266,7 +266,7 @@ function SwapPicker({
 }
 
 export default function NutritionPage() {
-  const { profiles, mySlot, viewSlot, viewBoth, intake, swaps, swapMeal, addIntake, removeIntake, empezarPlanEstaSemana } =
+  const { profiles, mySlot, viewSlot, viewBoth, intake, swaps, swapMeal, addIntake, removeIntake, empezarPlanEstaSemana, sincronizarSemanaDesdeAqui } =
     useApp();
   const [swapping, setSwapping] = useState<MealSlotKey | null>(null);
   const [verSemana, setVerSemana] = useState(false);
@@ -558,14 +558,37 @@ export default function NutritionPage() {
               {DAY_NAMES[dayIdx]} · Semana {currentCycleWeek() + 1}/8
               <button
                 onClick={async () => {
-                  if (confirm("¿Empezar el plan desde la Semana 1 esta semana?\n\nSe aplica a los dos móviles.")) {
-                    await empezarPlanEstaSemana();
+                  const n = currentCycleWeek() + 1;
+                  if (
+                    confirm(
+                      `¿Poner a los dos móviles en la Semana ${n}?\n\n` +
+                        "No cambia lo que ya estáis comiendo: solo hace que el otro teléfono " +
+                        "siga esta misma semana."
+                    )
+                  ) {
+                    await sincronizarSemanaDesdeAqui();
                     location.reload();
                   }
                 }}
                 className="ml-2 text-[11px] font-normal text-brand-400 underline"
               >
-                empezar de nuevo
+                sincronizar
+              </button>
+              <button
+                onClick={async () => {
+                  if (
+                    confirm(
+                      "¿Volver a empezar el plan desde la Semana 1?\n\n" +
+                        "Cambia el menú de esta semana en los dos móviles."
+                    )
+                  ) {
+                    await empezarPlanEstaSemana();
+                    location.reload();
+                  }
+                }}
+                className="ml-2 text-[11px] font-normal text-ink-500 underline"
+              >
+                reiniciar
               </button>
             </span>
             <span className="text-xs text-ink-500">
