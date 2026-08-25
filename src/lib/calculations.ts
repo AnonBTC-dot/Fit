@@ -92,6 +92,45 @@ export function daysUntil(dateISO: string): number {
 }
 
 /** Racha: nº de días consecutivos (terminando hoy o ayer) con entreno completado. */
+/**
+ * RACHA POR SEMANAS, no por días seguidos.
+ *
+ * El plan son N sesiones a la semana y tú eliges qué día hacer cada una: si
+ * entrenas lunes, miércoles y sábado, una racha de días consecutivos se rompe
+ * siempre y no mide nada. Esto cuenta cuántas semanas seguidas has cumplido
+ * el objetivo, que es lo que de verdad hace el progreso.
+ *
+ * La semana en curso no rompe la racha si todavía vas a tiempo de cumplirla.
+ */
+export function computeWeeklyStreak(completedDates: string[], objetivo: number): number {
+  if (objetivo <= 0) return 0;
+  const porSemana = new Map<string, number>();
+  for (const d of completedDates) {
+    const k = mondayOf(new Date(d + "T12:00:00"));
+    porSemana.set(k, (porSemana.get(k) ?? 0) + 1);
+  }
+  const hoy = new Date();
+  const cursor = new Date(hoy);
+  let racha = 0;
+
+  // Semana en curso: solo cuenta si ya cumpliste; si no, se mira la anterior
+  if ((porSemana.get(mondayOf(cursor)) ?? 0) >= objetivo) racha++;
+  cursor.setDate(cursor.getDate() - 7);
+
+  while ((porSemana.get(mondayOf(cursor)) ?? 0) >= objetivo) {
+    racha++;
+    cursor.setDate(cursor.getDate() - 7);
+  }
+  return racha;
+}
+
+function mondayOf(d: Date): string {
+  const x = new Date(d);
+  x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+  x.setHours(0, 0, 0, 0);
+  return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`;
+}
+
 export function computeStreak(completedDates: string[]): number {
   const set = new Set(completedDates);
   const day = new Date();
@@ -129,4 +168,15 @@ export function refDePareja(profiles: Profile[]): { targets: MacroTargets; eatsB
 export function cheatDePareja(profiles: Profile[]): boolean {
   if (profiles.length === 0) return true;
   return profiles.some((p) => p.cheat_day ?? true);
+}
+
+/** Lunes de la semana en curso, en ISO (YYYY-MM-DD). */
+export function mondayOfThisWeek(): string {
+  const d = new Date();
+  const dow = (d.getDay() + 6) % 7; // 0 = lunes
+  d.setDate(d.getDate() - dow);
+  d.setHours(0, 0, 0, 0);
+  const mes = String(d.getMonth() + 1).padStart(2, "0");
+  const dia = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${mes}-${dia}`;
 }

@@ -5,8 +5,8 @@ import { Clock, Dumbbell, Flame, Trophy, UtensilsCrossed } from "lucide-react";
 import { Button, Card, Ring } from "@/components/ui";
 import { LineChart } from "@/components/LineChart";
 import { ProfileSwitcher } from "@/components/ProfileSwitcher";
-import { calcTargets, computeStreak, todayISO , refDePareja, cheatDePareja } from "@/lib/calculations";
-import { getPlan, todayDayIndex } from "@/data/workouts";
+import { calcTargets, computeWeeklyStreak, todayISO, mondayOfThisWeek, refDePareja, cheatDePareja } from "@/lib/calculations";
+import { getPlan } from "@/data/workouts";
 import { MEALS, MEAL_EMOJI, buildDayPlan, mealMacrosFor } from "@/data/meals";
 import { useApp } from "@/lib/store";
 
@@ -21,9 +21,23 @@ export default function DashboardPage() {
 
   const targets = calcTargets(active);
   const today = todayISO();
-  const dayIdx = todayDayIndex(active.days_per_week);
   const plan = getPlan(active.venue, active.days_per_week);
   const todayLog = logs.find((l) => l.slot === active.slot && l.date === today);
+
+  /*
+   * No hay "día de descanso" marcado en el calendario: son N sesiones por
+   * semana y tú eliges qué día hacer cada una, fines de semana incluidos.
+   * Aquí se propone la siguiente que te falte.
+   */
+  const lunes = mondayOfThisWeek();
+  const hechas = new Set(
+    logs
+      .filter((l) => l.slot === active.slot && l.date >= lunes && l.date <= today && l.completed)
+      .map((l) => l.day_index)
+  );
+  const pendiente = plan.findIndex((_, i) => !hechas.has(i));
+  const dayIdx = todayLog?.day_index ?? (pendiente >= 0 ? pendiente : 0);
+  const semanaCompleta = hechas.size >= plan.length;
 
   const todayDow = (new Date().getDay() + 6) % 7;
   const eatsBreakfast = active.eats_breakfast ?? true;
@@ -39,10 +53,17 @@ export default function DashboardPage() {
   );
   const kcalPct = Math.min(100, (eaten.kcal / targets.kcal) * 100);
 
-  const streak = computeStreak(logs.filter((l) => l.slot === active.slot && l.completed).map((l) => l.date));
+  // Semanas seguidas cumpliendo el objetivo, no días seguidos: entrenar
+  // lunes, miércoles y sábado rompía la racha aunque cumplieras de sobra.
+  const objetivo = plan.length;
+  const streak = computeWeeklyStreak(
+    logs.filter((l) => l.slot === active.slot && l.completed).map((l) => l.date),
+    objetivo
+  );
   const teamDates = new Set(logs.filter((l) => l.slot === "p1" && l.completed).map((l) => l.date));
-  const teamStreak = computeStreak(
-    logs.filter((l) => l.slot === "p2" && l.completed && teamDates.has(l.date)).map((l) => l.date)
+  const teamStreak = computeWeeklyStreak(
+    logs.filter((l) => l.slot === "p2" && l.completed && teamDates.has(l.date)).map((l) => l.date),
+    objetivo
   );
 
   const last7 = Array.from({ length: 7 }, (_, i) => {
@@ -119,24 +140,24 @@ export default function DashboardPage() {
               <Dumbbell size={22} />
             </div>
             <div className="min-w-0">
-              <div className="truncate font-bold">{dayIdx >= 0 ? plan[dayIdx].title : "Descanso activo 🧘"}</div>
+              <div className="truncate font-bold">
+                {semanaCompleta ? "Semana completa 🎉" : plan[dayIdx].title}
+              </div>
               <div className="flex min-w-0 items-center gap-1 truncate text-xs text-ink-500">
-                {dayIdx >= 0 ? (
+                {semanaCompleta ? (
+                  `Las ${plan.length} sesiones hechas. Camina, estira o repite la que quieras.`
+                ) : (
                   <>
-                    <Clock size={12} /> {plan[dayIdx].minutes} min · {plan[dayIdx].focus}
+                    <Clock size={12} /> {plan[dayIdx].minutes} min · {hechas.size}/{plan.length} esta semana
                     {todayLog?.completed && " · ✅"}
                   </>
-                ) : (
-                  "Camina 30-60 min o estira. Mañana más."
                 )}
               </div>
             </div>
           </div>
-          {dayIdx >= 0 && (
-            <Link href="/entrenamiento" className="shrink-0">
-              <Button className="!px-3 !py-2 text-xs">{todayLog?.completed ? "Ver" : "Ir"}</Button>
-            </Link>
-          )}
+          <Link href="/entrenamiento" className="shrink-0">
+            <Button className="!px-3 !py-2 text-xs">{todayLog?.completed ? "Ver" : "Ir"}</Button>
+          </Link>
         </div>
       </Card>
 
@@ -176,12 +197,12 @@ export default function DashboardPage() {
         <Card className="text-center">
           <Flame className="mx-auto text-brand-500" size={20} />
           <div className="mt-1 text-xl font-extrabold">{streak}</div>
-          <div className="text-[10px] font-medium uppercase text-ink-400">{isMe ? "Tu racha" : "Su racha"}</div>
+          <div className="text-[10px] font-medium uppercase text-ink-400">{isMe ? "Tus semanas" : "Sus semanas"}</div>
         </Card>
         <Card className="text-center">
           <Trophy className="mx-auto text-amber-500" size={20} />
           <div className="mt-1 text-xl font-extrabold">{teamStreak}</div>
-          <div className="text-[10px] font-medium uppercase text-ink-400">Racha juntos</div>
+          <div className="text-[10px] font-medium uppercase text-ink-400">Semanas juntos</div>
         </Card>
         <Card className="flex flex-col items-center justify-center">
           <Ring pct={weekPct} size={52} stroke={6} label={`${done7}`} sub={`/ ${active.days_per_week}`} />
